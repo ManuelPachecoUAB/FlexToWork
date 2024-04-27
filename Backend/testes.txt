@@ -1,0 +1,19 @@
+Utilizar o Postman para testar base de dados.
+
+POST
+http://127.0.0.1:5000/signup
+Body -> raw -> JSON
+{
+    "email":"test.manuel@gmai.com",
+    "password":"123456789"
+}
+127.0.0.1 - - [27/Apr/2024 03:20:56] "POST /signup HTTP/1.1" 200 -
+
+POST
+http://127.0.0.1:5000/login
+Body -> raw -> JSON
+{
+    "email":"test.manuel@gmai.com",
+    "password":"123456789"
+}
+127.0.0.1 - - [27/Apr/2024 03:27:51] "POST /login HTTP/1.1" 200 -
