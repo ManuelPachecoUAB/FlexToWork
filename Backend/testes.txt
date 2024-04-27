@@ -17,3 +17,9 @@ Body -> raw -> JSON
     "password":"123456789"
 }
 127.0.0.1 - - [27/Apr/2024 03:27:51] "POST /login HTTP/1.1" 200 -
+
+Backend run:
+flask run
+
+Frontend run:
+npm start --debug=true
