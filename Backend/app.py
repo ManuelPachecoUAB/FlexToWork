@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, session
-from flask_bcrypt import
+from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
 from models import db, User
 
@@ -30,8 +30,8 @@ def signup():
     password = request.json["password"]
 
     # validations
-    if len(username) < 5:
-        return alert("Username muito pequeno")
+    if len(email) < 5:
+        return alert("email muito pequeno")
     if len(password) < 8:
         return alert("Password muito pequena")
     user_exists = User.query.filter_by(email=email).first() is not None
