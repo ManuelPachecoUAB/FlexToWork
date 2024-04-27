@@ -6,5 +6,6 @@ pip install flask-login
 
 pip install flask-sqlalchemy
 
-Hello World ! 
-test2
+pip install Flask-Bcrypt
+
+flask run
