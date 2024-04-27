@@ -1,10 +1,8 @@
 # FlexToWork
 
 pip install flask
-
 pip install flask-login
-
 pip install flask-sqlalchemy
+pip install Flask-Bcrypt
 
-Hello World ! 
-test2
+flask run
