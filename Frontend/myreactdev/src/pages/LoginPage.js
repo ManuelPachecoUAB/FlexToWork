@@ -65,7 +65,7 @@ export default function LoginPage(){
 
                         <div className="login-footer">
                             <a href="/forgot-password" className="login-forgot-link">Esqueceste-te da password?</a>
-                            <p className="login-register-link">Esqueceste-te da conta? <a href="/register">Registar</a></p>
+                            <a href="/register">Registar</a>
                         </div>
                     </div>
                 </div>
