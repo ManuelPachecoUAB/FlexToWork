@@ -1,0 +1,18 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import '../estilos/Welcome.css'; //
+
+export default function Colaborador() {
+    return (
+        <div className="main-container">
+            <div>
+                <Navbar />
+                <div className="welcome-section">
+                    <img src="/Frontend/myreactdev/public/img/logo.png" alt="Welcome" className="welcome-image" />
+                    <h1 className="welcome-text">Bem-vindo ao Flex2Work</h1>
+                </div>
+            </div>
+        </div>
+    );
+}

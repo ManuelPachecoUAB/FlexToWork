@@ -1,8 +1,24 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../estilos/Navbar.css'; // Make sure the navbar styles are located here
+import { Link,useNavigate } from 'react-router-dom';
+import '../estilos/Navbar.css';
+import axios from "axios"; // Make sure the navbar styles are located here
 
 function Navbar() {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Call the backend logout endpoint
+        axios.get('http://127.0.0.1:5000/logout') // Assuming the backend is proxied correctly
+            .then(response => {
+                sessionStorage.removeItem('userToken');
+                localStorage.removeItem('userToken');
+                navigate('/login');
+            })
+            .catch(error => {
+                console.error('Logout failed', error);
+            });
+    };
+
     return (
         <nav className="navbar">
             <div className="logo-container">
@@ -16,6 +32,9 @@ function Navbar() {
                 </li>
                 <li className="nav-item">
                     <Link to="/register" className="nav-link">REGISTAR</Link>
+                </li>
+                <li className="nav-item">
+                    <button onClick={handleLogout} className="nav-link">LOGOUT</button>
                 </li>
             </ul>
         </nav>

@@ -4,12 +4,12 @@ import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 import Navbar from '../components/Navbar';
 import '../estilos/LoginPage.css';
+import Colaborador from "./Colaborador";
 
 export default function LoginPage(){
 
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-
     const navigate = useNavigate();
 
     const logInUser = () => {
@@ -26,13 +26,22 @@ export default function LoginPage(){
             })
                 .then(function (response) {
                     console.log(response);
-                    //console.log(response.data);
-                    navigate("/");
+                    const token = response.data.access_token;
+                    localStorage.setItem('userToken', token);
+                    if (response.idnivel = 1) {
+                        navigate("/Colaborador");
+                    }
+                    else{
+                        navigate("/");
+                    }
                 })
                 .catch(function (error) {
-                    console.log(error, 'error');
-                    if (error.response.status === 401) {
+                    console.error('Login error:', error);
+                    if (error.response && error.response.status === 401) {
                         alert("Invalid credentials");
+                    } else {
+                        // Handle no response scenario
+                        alert("An error occurred. Please check your connection and try again.");
                     }
                 });
         }
