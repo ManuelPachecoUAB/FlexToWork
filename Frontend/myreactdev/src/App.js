@@ -12,6 +12,8 @@ import RH from './pages/RH'
 import Admin from './pages/Admin'
 import Logout from './pages/Logout'
 import ProtectedRoute1 from './components/ProtectedRoute1';
+import ProtectedRoute2 from './components/ProtectedRoute2';
+import ProtectedRoute3 from './components/ProtectedRoute3';
 import ProtectedRoute5 from './components/ProtectedRoute5';
 
  
