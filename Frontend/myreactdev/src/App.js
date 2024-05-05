@@ -7,6 +7,8 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import Colaborador from './pages/Colaborador'
+import Manager from './pages/Manager'
+import RH from './pages/RH'
 import Admin from './pages/Admin'
 import Logout from './pages/Logout'
 import ProtectedRoute1 from './components/ProtectedRoute1';
@@ -24,6 +26,16 @@ function App() {
                   <ProtectedRoute1>
                       <Colaborador />
                   </ProtectedRoute1>
+              } />
+              <Route path="/manager" element={
+                  <ProtectedRoute2>
+                      <Manager />
+                  </ProtectedRoute2>
+              } />
+              <Route path="/rh" element={
+                  <ProtectedRoute3>
+                      <RH />
+                  </ProtectedRoute3>
               } />
               <Route path="/admin" element={
                   <ProtectedRoute5>
