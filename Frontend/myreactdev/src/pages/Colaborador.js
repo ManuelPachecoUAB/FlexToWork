@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 import NavbarColaborador from '../components/NavbarColaborador';
-import '../estilos/Welcome.css';
+import '../estilos/Colaborador.css';
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
@@ -53,7 +53,7 @@ export default function Colaborador() {
         <div className="main-container">
             <div>
                 <NavbarColaborador />
-                <div className="container">
+                <div className="container-colaborador">
                     <div className="calendar-container">
                         <Calendar
                             value={selectedDate}

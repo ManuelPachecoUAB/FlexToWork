@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, session
 from flask_jwt_extended import JWTManager, create_access_token
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
-from models import db, User
+from models import db, users
 
 app = Flask(__name__)
 
@@ -30,6 +30,8 @@ def hello():
 @app.route("/signup", methods=["POST"])
 def signup():
     email = request.json["email"]
+    primeironome = request.json["primeironome"]
+    segundonome = request.json["segundonome"]
     password = request.json["password"]
     equipa = request.json["equipa"]
     nivel = request.json["nivel"]
@@ -39,14 +41,14 @@ def signup():
         return alert("email muito pequeno")
     if len(password) < 8:
         return alert("Password muito pequena")
-    user_exists = User.query.filter_by(email=email).first() is not None
+    user_exists = users.query.filter_by(email=email).first() is not None
     if nivel > 4 or nivel < 1:
         return alert("Tipo de utilizador inexistente")
     if user_exists:
         return jsonify({"error": "Email já existe"}), 409
 
     hashed_password = bcrypt.generate_password_hash(password)
-    new_user = User(email=email, password=hashed_password, idequipa=equipa,idnivel=nivel)
+    new_user = users(email=email, password=hashed_password,primeironome=primeironome,segundanome=segundonome,idequipa=equipa,idnivel=nivel)
     db.session.add(new_user)
     db.session.commit()
 
@@ -64,7 +66,7 @@ def login_user():
     email = request.json["email"]
     password = request.json["password"]
 
-    user = User.query.filter_by(email=email).first()
+    user = users.query.filter_by(email=email).first()
 
     if user and bcrypt.check_password_hash(user.password, password):
         access_token = create_access_token(identity=email)
