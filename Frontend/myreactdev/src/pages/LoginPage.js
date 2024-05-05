@@ -4,7 +4,6 @@ import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 import Navbar from '../components/Navbar';
 import '../estilos/LoginPage.css';
-import Colaborador from "./Colaborador";
 
 export default function LoginPage(){
 
@@ -28,7 +27,7 @@ export default function LoginPage(){
                     console.log(response);
                     const token = response.data.access_token;
                     localStorage.setItem('userToken', token);
-                    if (response.idnivel = 1) {
+                    if (response.idnivel == 1) {
                         navigate("/Colaborador");
                     }
                     else{
