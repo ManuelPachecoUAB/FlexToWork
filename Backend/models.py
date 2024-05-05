@@ -13,7 +13,7 @@ class users(db.Model):
     idutlizador = db.Column(db.Integer, primary_key=True, unique=True)
     email = db.Column(db.String(150), unique=True)
     primeironome = db.Column(db.Text, nullable=False)
-    segundanome = db.Column(db.Text, nullable=False)
+    segundonome = db.Column(db.Text, nullable=False)
     password = db.Column(db.Text, nullable=False)
     idequipa = db.Column(db.Integer, nullable=False)
     idnivel = db.Column(db.Integer, nullable=False)
