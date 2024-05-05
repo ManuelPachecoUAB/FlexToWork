@@ -12,6 +12,7 @@ function Navbar() {
             .then(response => {
                 sessionStorage.removeItem('userToken');
                 localStorage.removeItem('userToken');
+                localStorage.removeItem('nivel');
                 navigate('/login');
             })
             .catch(error => {
