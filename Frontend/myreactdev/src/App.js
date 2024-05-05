@@ -7,8 +7,10 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import Colaborador from './pages/Colaborador'
+import Admin from './pages/Admin'
 import Logout from './pages/Logout'
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute1 from './components/ProtectedRoute1';
+import ProtectedRoute5 from './components/ProtectedRoute5';
 
  
 function App() {
@@ -19,9 +21,14 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/colaborador" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute1>
                       <Colaborador />
-                  </ProtectedRoute>
+                  </ProtectedRoute1>
+              } />
+              <Route path="/admin" element={
+                  <ProtectedRoute5>
+                      <Admin />
+                  </ProtectedRoute5>
               } />
               <Route path="/logout" element={<Logout />} />
           </Routes>
