@@ -10,7 +10,7 @@ export default function LandingPage() {
                 <Navbar />
                 <div className="welcome-section">
                     <img src={'/img/logo.png'} alt="Welcome" className="welcome-image" />
-                    <h1 className="welcome-text">Bem-vindo ao Flex2Work</h1>
+                    <h1 className="welcome-text">Bem-vindo</h1>
                     <p className="welcome-subtext">A tua ferramenta de gestão de Idas ao escritorio e muito mais</p>
                 </div>
             </div>
