@@ -27,7 +27,7 @@ export default function LoginPage(){
                     console.log(response);
                     const token = response.data.access_token;
                     localStorage.setItem('userToken', token);
-                    if (response.idnivel == 1) {
+                    if (response.idnivel = 1) {
                         navigate("/Colaborador");
                     }
                     else{
