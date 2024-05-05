@@ -14,6 +14,7 @@ export default function Logout() {
                 // Clear any frontend storage or state
                 sessionStorage.removeItem('userToken');
                 localStorage.removeItem('userToken');
+                localStorage.removeItem('nivel');
                 // Redirect to the login page or landing page
                 navigate('/login');
             })
