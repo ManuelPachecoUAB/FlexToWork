@@ -23,7 +23,7 @@ function NavbarColaborador() {
         <nav className="NavbarColaborador">
             <div className="logo-container">
                 <Link to="/" className="navbar-logo">
-                    <img src="/Frontend/myreactdev/public/img/logo.png" alt="Flex2Work" />
+                    <img src={'/img/logo.png'} alt="Flex2Work" />
                 </Link>
             </div>
             <ul className="nav-menu">
