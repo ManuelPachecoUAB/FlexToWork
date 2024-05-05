@@ -10,8 +10,8 @@ export default function LandingPage() {
                 <Navbar />
                 <div className="welcome-section">
                     <img src={'/img/logo.png'} alt="Welcome" className="welcome-image" />
-                    <h1 className="welcome-text">Bem-vindo</h1>
-                    <p className="welcome-subtext">A tua ferramenta de gestão de Idas ao escritorio e muito mais</p>
+                    <h1 className="welcome-text">Bem-Vindo!</h1>
+                    <p className="welcome-subtext">Gestão Integrada de Pessoas e Postos de Trabalho</p>
                 </div>
             </div>
         </div>
