@@ -2,10 +2,6 @@ import React from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import '../estilos/Navbar.css';
 import axios from "axios"; // Make sure the navbar styles are located here
-import LoginIcone from '../icones/login.svg';
-import RegistoIcone from '../icones/register.svg';
-import LogoutIcone from '../icones/logout.svg';
-
 
 function Navbar() {
     const navigate = useNavigate();
