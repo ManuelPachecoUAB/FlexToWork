@@ -66,11 +66,6 @@ export default function LoginPage(){
                                className="login-input" placeholder="Password" />
 
                         <button onClick={logInUser} className="login-button">Login</button>
-
-                        <div className="login-footer">
-                            <a href="/forgot-password" className="login-forgot-link">Esqueceste-te da password?</a>
-                            <a href="/register">Registar</a>
-                        </div>
                     </div>
                 </div>
             </div>
