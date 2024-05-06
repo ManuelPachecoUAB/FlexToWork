@@ -1,21 +1,85 @@
+.container-colaborador {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.metrics {
+    flex: 0 0 10%;
+}
+
 .calendar-container {
+    margin-left: -300px;
+    padding-left: 0px;
+    flex-grow: 1;
     display: flex;
     justify-content: center;
-    margin: 0 auto;
+    align-items: center;
 }
 
 .react-calendar {
+    min-width: 800px;
     width: 100%;
-    max-width: 800px; /* Ajuste conforme necessário */
-    font-size: 1.5em; /* Aumenta o texto dentro do calendário */
-    transform: scale(2); /* Dobrar o tamanho */
-    transform-origin: top center;
-    align-self: center;
-    alignment-baseline: center;
-    align-content: center;
 
 }
 
 .event-container {
+    width: 20%; /* Ajuste a largura conforme necessário */
     display: flex;
+    flex-direction: column;
+    margin-top: 1px; /* Espaço após o calendário */
+
+}
+
+.event-form, .event-list {
+    width: 30%; /* Ocupa toda a largura do container de eventos */
+}
+
+.react-calendar__month-view__days__day {
+    flex-grow: 1;  /* Isso permitirá que cada tile cresça para preencher o espaço disponível*/
+}
+
+.react-calendar__tile {
+    flex: 1 0 14%;
+    margin: 2px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.react-calendar__navigation {
+    font-size: 24px;
+    padding: 20px;
+}
+
+.react-calendar__navigation button {
+    padding: 15px 30px;
+    font-size: 24px;
+}
+
+
+.react-calendar__month-view__weekdays__weekday {
+    font-size: 18px;
+    padding: 10px 0;
+}
+
+
+@media (max-width: 768px) {
+    .react-calendar__tile {
+        padding: 10px;
+        font-size: 16px;
+        height: 100px;
+    }
+
+    .metrics {
+        width: 100%;
+        order: -1;
+    }
+
+    .calendar-container {
+        width: 100%;
+        padding: 10px;
+    }
 }
