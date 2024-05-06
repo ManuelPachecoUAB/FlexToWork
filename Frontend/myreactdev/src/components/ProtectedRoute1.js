@@ -1,25 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute1 = ({ children }) => {
-    const [isAllowed, setIsAllowed] = useState(true);
-    const isAuthenticated = localStorage.getItem('userToken');
-    const nivel = localStorage.getItem('nivel');
+    const isAuthenticated = localStorage.getItem('userToken'); // or however you handle authentication tokens
 
-    useEffect(() => {
-        if (!isAuthenticated || nivel !== '1') {  // Alterado para verificar se o nível é '1'
-            localStorage.removeItem('nivel');     // Limpa o nível de acesso inadequado
-            setIsAllowed(false);                  // Atualiza o estado para não permitido
-        }
-    }, [isAuthenticated, nivel]);
-
-    if (!isAllowed) {
-        // Mostra uma mensagem ou componente específico que não requer mudança de página
-        return <div>Access Denied. You are not allowed to view this page.</div>;
+    if (!isAuthenticated) {
+        return <Navigate to="/login" />;
     }
 
-    // Renderiza os componentes filhos se estiver autenticado e com o nível correto
     return children;
 };
-
 
 export default ProtectedRoute1;
