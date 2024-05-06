@@ -5,8 +5,9 @@
 }
 
 .welcome-image {
-    max-width: 400%;
+    max-width: 50%;
     height: auto;
+    margin-top: 20px
 }
 
 .welcome-text {

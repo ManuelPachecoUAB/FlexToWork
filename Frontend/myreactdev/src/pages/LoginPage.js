@@ -26,9 +26,14 @@ export default function LoginPage(){
                 .then(function (response) {
                     console.log(response);
                     const token = response.data.access_token;
+                    const nivel = response.data.idnivel;
                     localStorage.setItem('userToken', token);
-                    if (response.idnivel = 1) {
+                    if (nivel == 1) {
                         navigate("/Colaborador");
+                    }
+                    else if (nivel == 5) {
+                        navigate("/Admin");
+                        localStorage.setItem('nivel', nivel);
                     }
                     else{
                         navigate("/");
@@ -37,7 +42,7 @@ export default function LoginPage(){
                 .catch(function (error) {
                     console.error('Login error:', error);
                     if (error.response && error.response.status === 401) {
-                        alert("Invalid credentials");
+                        alert("Credenciais invalidas");
                     } else {
                         // Handle no response scenario
                         alert("An error occurred. Please check your connection and try again.");
