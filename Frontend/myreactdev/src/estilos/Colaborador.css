@@ -6,12 +6,14 @@
 
 .metrics {
     flex: 0 0 10%;
+    margin-left: 50px;
+    padding-left: 10px;
 }
 
 .calendar-container {
-    margin-left: -300px;
-    padding-left: 0px;
-    flex-grow: 1;
+    margin-left: 250px;
+    padding-left: 10px;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,19 +22,12 @@
 .react-calendar {
     min-width: 800px;
     width: 100%;
-
-}
-
-.event-container {
-    width: 20%; /* Ajuste a largura conforme necessário */
-    display: flex;
-    flex-direction: column;
-    margin-top: 1px; /* Espaço após o calendário */
-
 }
 
 .event-form, .event-list {
-    width: 30%; /* Ocupa toda a largura do container de eventos */
+    width: 100%; /* Ocupa toda a largura do container de eventos */
+    margin-left: 150px;
+    padding-left: 10px;
 }
 
 .react-calendar__month-view__days__day {
