@@ -52,22 +52,22 @@ export default function LoginPage(){
     }
 
     return (
-            <div>
-                <Navbar />
-                <div className="login-container">
-                    <div className="login-form-container">
-                        <h1 className="login-title">Bem Vindo!</h1>
-                        <p className="login-subtitle">Por-favor entrar os dados de login</p>
+        <div>
+            <Navbar />
+            <div className="login-container">
+                <div className="login-form-container">
+                    <h1 className="login-title">Bem Vindo!</h1>
+                    <p className="login-subtitle">Por-favor entrar os dados de login</p>
 
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                               className="login-input" placeholder="Email" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                           className="login-input" placeholder="Email" />
 
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                               className="login-input" placeholder="Password" />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                           className="login-input" placeholder="Password" />
 
-                        <button onClick={logInUser} className="login-button">Login</button>
-                    </div>
+                    <button onClick={logInUser} className="login-button">Login</button>
                 </div>
             </div>
+        </div>
     );
 }
