@@ -13,10 +13,10 @@ export default function LoginPage(){
 
     const logInUser = () => {
         if(email.length === 0){
-            alert("Email has left Blank!");
+            alert("Email vazio!");
         }
         else if(password.length === 0){
-            alert("password has left Blank!");
+            alert("Password vazia!");
         }
         else{
             axios.post('http://127.0.0.1:5000/login', {
@@ -45,7 +45,7 @@ export default function LoginPage(){
                         alert("Credenciais invalidas");
                     } else {
                         // Handle no response scenario
-                        alert("An error occurred. Please check your connection and try again.");
+                        alert("Erro. Verificar Ligação e tentar novamente.");
                     }
                 });
         }
