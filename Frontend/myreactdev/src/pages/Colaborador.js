@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
-import NavbarColaborador from '../components/NavbarColaborador';
+import NavbarColaborador from '../components/NavbarLogado.js';
 import '../estilos/Colaborador.css';
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";

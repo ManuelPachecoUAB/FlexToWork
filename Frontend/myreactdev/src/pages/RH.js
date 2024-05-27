@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
-import NavbarRH from '../components/NavbarRH';
-import '../estilos/RH.css';
+import NavbarRH from '../components/NavbarLogado.js';
+import '../estilos/NavbarLogado.css';
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
