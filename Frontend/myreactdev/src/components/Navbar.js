@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import '../estilos/Navbar.css';
 import axios from "axios"; // Make sure the navbar styles are located here
@@ -32,10 +32,7 @@ function Navbar() {
                     <Link to="/login" className="nav-link">LOGIN</Link>
                 </li>
                 <li className="nav-item">
-                    <Link to="/register" className="nav-link">REGISTAR</Link>
-                </li>
-                <li className="nav-item">
-                    <button onClick={handleLogout} className="nav-link">LOGOUT</button>
+                    <Link to="/register" className="nav-link">REGISTO</Link>
                 </li>
             </ul>
         </nav>

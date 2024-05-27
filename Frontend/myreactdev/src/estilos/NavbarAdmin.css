@@ -1,26 +1,42 @@
+.main-container {
+    text-align: center;
+    padding: 1rem;
+}
+
 .NavbarAdmin {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 50px;
+    padding: 0.5rem 2rem;
+    background-color: #f0ffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
 }
 
 .logo-container {
-    margin-left: 20px;
+
+}
+
+.navbar-logo img {
+    width: auto;
+    height: 50px;
+    align-self: center;
 }
 
 .nav-menu {
     list-style: none;
     display: flex;
-    margin-right: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-item {
-    margin: 0 10px;
-    align-self: center;
+    margin-left: 1rem;
 }
 
 .nav-link {
+    display: block;
     text-decoration: none;
-    color: black;
+    font-weight: bold;
+    color: #007bff;
+    text-transform: uppercase;
 }
