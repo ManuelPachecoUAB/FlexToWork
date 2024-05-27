@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link,useNavigate } from 'react-router-dom';
-import '../estilos/NavbarManager.css';
+import '../estilos/NavbarLogado.css';
 import axios from "axios"; // Make sure the navbar styles are located here
 
 function NavbarManager() {
@@ -27,6 +27,12 @@ function NavbarManager() {
                 </Link>
             </div>
             <ul className="nav-menu">
+                <li className="nav-item">
+                    <Link to="/Colaborador" className="nav-link">Colaborador</Link>
+                </li>
+                <li className="nav-item">
+                    <Link to="/Manager" className="nav-link">Manager</Link>
+                </li>
                 <li className="nav-item">
                     <button onClick={handleLogout} className="nav-link">LOGOUT</button>
                 </li>

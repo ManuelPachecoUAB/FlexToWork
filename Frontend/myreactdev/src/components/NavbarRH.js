@@ -28,6 +28,12 @@ function NavbarRH() {
             </div>
             <ul className="nav-menu">
                 <li className="nav-item">
+                    <Link to="/Colaborador" className="nav-link">Colaborador</Link>
+                </li>
+                <li className="nav-item">
+                    <Link to="/Rh" className="nav-link">RH</Link>
+                </li>
+                <li className="nav-item">
                     <button onClick={handleLogout} className="nav-link">LOGOUT</button>
                 </li>
             </ul>
