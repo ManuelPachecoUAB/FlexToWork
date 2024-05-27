@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import NavbarAdmin from '../components/NavbarAdmin';
-
+import { Link } from 'react-router-dom';
+import NavbarAdmin from '../components/NavbarLogado.js';
+import '../estilos/Admin.css';
 export default function Admin() {
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [users, setUsers] = useState([]);
