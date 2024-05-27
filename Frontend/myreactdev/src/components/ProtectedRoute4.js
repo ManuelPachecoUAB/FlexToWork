@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-const ProtectedRoute3 = ({ children }) => {
+const ProtectedRoute4 = ({ children }) => {
     const [isAllowed, setIsAllowed] = useState(true);
     const isAuthenticated = localStorage.getItem('userToken');
     const nivel = localStorage.getItem('nivel');
 
     useEffect(() => {
-        if (!isAuthenticated || (nivel !== '3' && nivel !== '4' && nivel !== '5')) {  // Alterado para verificar se o nível é '3'
+        if (!isAuthenticated || (nivel !== '4' && nivel !== '5')) {  // Alterado para verificar se o nível é '3'
             localStorage.removeItem('nivel');     // Limpa o nível de acesso inadequado
             setIsAllowed(false);                  // Atualiza o estado para não permitido
         }
@@ -22,4 +22,4 @@ const ProtectedRoute3 = ({ children }) => {
 };
 
 
-export default ProtectedRoute3;
+export default ProtectedRoute4;

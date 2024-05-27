@@ -6,7 +6,7 @@ const ProtectedRoute2 = ({ children }) => {
     const nivel = localStorage.getItem('nivel');
 
     useEffect(() => {
-        if (!isAuthenticated || nivel !== '2') {  // Alterado para verificar se o nível é '2'
+        if (!isAuthenticated || (nivel !== '2' && nivel !== '4' && nivel !== '5')) {  // Alterado para verificar se o nível é '2'
             localStorage.removeItem('nivel');     // Limpa o nível de acesso inadequado
             setIsAllowed(false);                  // Atualiza o estado para não permitido
         }
