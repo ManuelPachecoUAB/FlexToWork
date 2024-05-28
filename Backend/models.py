@@ -17,6 +17,22 @@ class users(db.Model):
     password = db.Column(db.Text, nullable=False)
     idequipa = db.Column(db.Integer, nullable=False)
     idnivel = db.Column(db.Integer, nullable=False)
+    ferias = db.relationship('ferias', backref='users', lazy=True, uselist=False)
+
+# Ferias
+class ferias(db.Model):
+    __tablename__ = "ferias"
+    id = db.Column(db.Integer, primary_key=True)
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    totalferias = db.Column(db.Integer, default=25)  # Inicialmente 25 dias de férias
+    feriasdisponiveis = db.Column(db.Integer, default=25)
+    ano = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, idcolaborador, ano):
+        self.idcolaborador = idcolaborador
+        self.ano = ano
+        self.totalferias = 25
+        self.feriasdisponiveis = 25
 
 # Tabela Equipa
 class equipa(db.Model):
@@ -44,15 +60,6 @@ class capacidadezona(db.Model):
     idzona = db.Column(db.Integer, db.ForeignKey('zona.idzona'))
     lugareslivres = db.Column(db.Integer, nullable=False)
     data = db.Column(db.Date, nullable=False)
-
-# Ferias
-class ferias(db.Model):
-    __tablename__ = "ferias"
-    id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
-    totalferias = db.Column(db.Integer, nullable=False)
-    feriasdisponiveis = db.Column(db.Integer, nullable=False)
-    ano = db.Column(db.Integer, nullable=False)
 
 # Ferias Marcadas
 class feriasmarcadas(db.Model):
