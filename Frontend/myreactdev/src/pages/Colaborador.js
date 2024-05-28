@@ -19,8 +19,14 @@ export default function Colaborador() {
         feriasPendentes: 0,
         feriasPorMarcar: 0,
     });
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
     useEffect(() => {
+        fetchUserEvents();
+    }, []);
+
+    const fetchUserEvents = () => {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/get_user_events', {
             headers: { Authorization: `Bearer ${userToken}` }
@@ -36,12 +42,12 @@ export default function Colaborador() {
                     ausenciasPendentes: 0,
                     feriasAprovadas: 0,
                     feriasPendentes: 0,
-                    feriasPorMarcar: 0,
+                    feriasPorMarcar: userEvents.ferias_disponiveis || 0,
                 };
 
                 userEvents.ferias.forEach(event => {
                     newEvents.push({
-                        id: event.id, // Certifique-se de carregar o ID corretamente
+                        id: event.id,
                         date: new Date(event.data),
                         title: "Férias",
                         status: event.estado === 1 ? "pending" : "approved"
@@ -55,7 +61,7 @@ export default function Colaborador() {
 
                 userEvents.ausencias.forEach(event => {
                     newEvents.push({
-                        id: event.id, // Certifique-se de carregar o ID corretamente
+                        id: event.id,
                         date: new Date(event.data),
                         title: "Ausência",
                         status: event.estado === 1 ? "pending" : "approved"
@@ -69,7 +75,7 @@ export default function Colaborador() {
 
                 userEvents.presenciais.forEach(event => {
                     newEvents.push({
-                        id: event.id, // Certifique-se de carregar o ID corretamente
+                        id: event.id,
                         date: new Date(event.data),
                         title: "Presencial",
                         status: event.estado === 1 ? "pending" : "approved"
@@ -88,21 +94,18 @@ export default function Colaborador() {
                 console.error('Erro ao carregar eventos do usuário:', error);
                 alert('Erro ao carregar eventos do usuário. Tente novamente.');
             });
-    }, []);
+    };
 
     const Date_Click_Fun = (date) => {
         const dateString = date.toDateString();
         const event = events.find(event => event.date.toDateString() === dateString);
 
-        // Verificar se há uma data com marcação selecionada
         const selectedEvent = selectedDates.some(selectedDate => events.find(event => event.date.toDateString() === selectedDate.toDateString()));
 
-        // Se há uma data com marcação selecionada ou a data clicada já está marcada
         if (selectedEvent || event) {
             console.log(`Data ${dateString} já está marcada ou outra data com marcação está selecionada. Selecionando apenas ${dateString}.`);
-            setSelectedDates([date]); // Manter apenas essa data selecionada
+            setSelectedDates([date]);
         } else {
-            // Adicionar ou remover a data selecionada
             if (selectedDates.some(selectedDate => selectedDate.toDateString() === dateString)) {
                 setSelectedDates(selectedDates.filter(selectedDate => selectedDate.toDateString() !== dateString));
             } else {
@@ -111,14 +114,11 @@ export default function Colaborador() {
         }
     };
 
-
-
-
     const Create_Event_Fun = (type) => {
         const userToken = localStorage.getItem('userToken');
         if (selectedDates.length > 0) {
             const requests = selectedDates.map(date => {
-                const dateString = date.toISOString().split('T')[0];  // Garante que está enviando apenas a data
+                const dateString = date.toISOString().split('T')[0];
                 if (type === "Férias") {
                     return axios.post('http://127.0.0.1:5000/api/ferias', { data: dateString, duracao: 1 }, {
                         headers: { Authorization: `Bearer ${userToken}` }
@@ -136,13 +136,7 @@ export default function Colaborador() {
 
             Promise.all(requests)
                 .then(responses => {
-                    const newEvents = responses.map((response, index) => ({
-                        id: response.data.id,
-                        date: selectedDates[index],
-                        title: type,
-                        status: "pending"
-                    }));
-                    setEvents([...events, ...newEvents]);
+                    fetchUserEvents(); // Atualiza os eventos após criar
                     setSelectedDates([]);
                     alert(`${type} marcadas com sucesso!`);
                 })
@@ -152,7 +146,6 @@ export default function Colaborador() {
                 });
         }
     };
-
 
     const Delete_Event_Fun = () => {
         const userToken = localStorage.getItem('userToken');
@@ -170,16 +163,13 @@ export default function Colaborador() {
                     endpoint = `http://127.0.0.1:5000/api/presencial/${event.id}`;
                 }
 
-                console.log("Endpoint:", endpoint);
-
                 axios.delete(endpoint, {
                     headers: { Authorization: `Bearer ${userToken}` }
                 })
                     .then(response => {
-                        setEvents(events.filter(e => e.id !== event.id));
+                        fetchUserEvents(); // Atualiza os eventos após deletar
                         setSelectedDates([]);
                         alert('Marcação removida com sucesso!');
-                        window.location.reload(); // Adicione esta linha para recarregar a página
                     })
                     .catch(error => {
                         console.error('Erro ao remover marcação:', error.response ? error.response.data.error : error);
@@ -188,8 +178,6 @@ export default function Colaborador() {
             }
         }
     };
-
-
 
     const getTileClassName = ({ date, view }) => {
         if (view === 'month') {
@@ -218,14 +206,14 @@ export default function Colaborador() {
                     <h3>Presencial</h3>
                     <p>Aprovadas: <span id="presencial-aprovadas">{metrics.presencialAprovadas}</span></p>
                     <p>Pendentes: <span id="presencial-pendentes">{metrics.presencialPendentes}</span></p>
-                    <p>Obrigatórias: <span id="presencial-obrigatorias">{metrics.presencialObrigatorias}</span></p>
+                    <p>Obrigatórios: <span id="presencial-obrigatorias">{metrics.presencialObrigatorias}</span></p>
                     <h3>Ausências</h3>
                     <p>Aprovadas: <span id="ausencias-aprovadas">{metrics.ausenciasAprovadas}</span></p>
                     <p>Pendentes: <span id="ausencias-pendentes">{metrics.ausenciasPendentes}</span></p>
                     <h3>Férias</h3>
                     <p>Aprovadas: <span id="ferias-aprovadas">{metrics.feriasAprovadas}</span></p>
                     <p>Pendentes: <span id="ferias-pendentes">{metrics.feriasPendentes}</span></p>
-                    <p>Por Marcar: <span id="ferias-por-marcar">{metrics.feriasPorMarcar}</span></p>
+                    <p>Disponiveis: <span id="ferias-por-marcar">{metrics.feriasPorMarcar}</span></p>
                 </div>
                 <div className="calendar-and-actions">
                     <div className="calendar-container">
