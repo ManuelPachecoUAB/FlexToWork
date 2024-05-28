@@ -1,157 +1,149 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 import NavbarManager from '../components/NavbarLogado.js';
 import '../estilos/Manager.css';
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import axios from 'axios';
+import moment from 'moment'; // Biblioteca para formatação de datas
 
 export default function Manager() {
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [eventName, setEventName] = useState("");
-    const [events, setEvents] = useState([]);
+    const [feriasPendentes, setFeriasPendentes] = useState([]);
+    const [ausenciasPendentes, setAusenciasPendentes] = useState([]);
+    const [presenciaisPendentes, setPresenciaisPendentes] = useState([]);
+    const [mostrarFerias, setMostrarFerias] = useState(false);
+    const [mostrarAusencias, setMostrarAusencias] = useState(false);
+    const [mostrarPresenciais, setMostrarPresenciais] = useState(false);
 
-    const Date_Click_Fun = (date) => {
-        setSelectedDate(date);
-    };
-
-    const Event_Data_Update = (event) => {
-        setEventName(event.target.value);
-    };
-
-    const Create_Event_Fun = () => {
-        if (selectedDate && eventName) {
-            const newEvent = {
-                id: new Date().getTime(),
-                date: selectedDate,
-                title: eventName,
-            };
-            setEvents([...events, newEvent]);
-            setSelectedDate(null);
-            setEventName("");
-            setSelectedDate(newEvent.date);
+    useEffect(() => {
+        const tokenUtilizador = localStorage.getItem('userToken');
+        if (!tokenUtilizador) {
+            console.error('Token não encontrado');
+            alert('Token não encontrado. Faça login novamente.');
+            return;
         }
+
+        axios.get('http://127.0.0.1:5000/api/get_team_events', {
+            headers: { Authorization: `Bearer ${tokenUtilizador}` }
+        })
+            .then(response => {
+                const eventos = response.data;
+                setFeriasPendentes(eventos.filter(evento => evento.type === 'ferias'));
+                setAusenciasPendentes(eventos.filter(evento => evento.type === 'ausencias'));
+                setPresenciaisPendentes(eventos.filter(evento => evento.type === 'presencial'));
+            })
+            .catch(error => {
+                console.error('Erro ao carregar eventos pendentes:', error);
+                alert('Erro ao carregar eventos pendentes. Tente novamente.');
+            });
+    }, []);
+
+    const handleApprove = (id, type) => {
+        const tokenUtilizador = localStorage.getItem('userToken');
+        if (!tokenUtilizador) {
+            console.error('Token não encontrado');
+            alert('Token não encontrado. Faça login novamente.');
+            return;
+        }
+
+        let endpoint = `http://127.0.0.1:5000/api/${type}/approve/${id}`;
+
+        axios.put(endpoint, {}, {
+            headers: { Authorization: `Bearer ${tokenUtilizador}` }
+        })
+            .then(response => {
+                if (type === 'ferias') {
+                    setFeriasPendentes(feriasPendentes.filter(evento => evento.id !== id));
+                } else if (type === 'ausencias') {
+                    setAusenciasPendentes(ausenciasPendentes.filter(evento => evento.id !== id));
+                } else if (type === 'presencial') {
+                    setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
+                }
+                alert('Evento aprovado com sucesso!');
+            })
+            .catch(error => {
+                console.error('Erro ao aprovar evento:', error);
+                alert('Erro ao aprovar evento. Tente novamente.');
+            });
     };
 
-    const Update_Event_Fun = (eventId, newName) => {
-        const updated_Events = events.map((event) => {
-            if (event.id === eventId) {
-                return {
-                    ...event,
-                    title: newName,
-                };
-            }
-            return event;
-        });
-        setEvents(updated_Events);
+    const handleReject = (id, type) => {
+        const tokenUtilizador = localStorage.getItem('userToken');
+        if (!tokenUtilizador) {
+            console.error('Token não encontrado');
+            alert('Token não encontrado. Faça login novamente.');
+            return;
+        }
+
+        let endpoint = `http://127.0.0.1:5000/api/${type}/reject/${id}`;
+
+        axios.put(endpoint, {}, {
+            headers: { Authorization: `Bearer ${tokenUtilizador}` }
+        })
+            .then(response => {
+                if (type === 'ferias') {
+                    setFeriasPendentes(feriasPendentes.filter(evento => evento.id !== id));
+                } else if (type === 'ausencias') {
+                    setAusenciasPendentes(ausenciasPendentes.filter(evento => evento.id !== id));
+                } else if (type === 'presencial') {
+                    setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
+                }
+                alert('Evento rejeitado com sucesso!');
+            })
+            .catch(error => {
+                console.error('Erro ao rejeitar evento:', error);
+                alert('Erro ao rejeitar evento. Tente novamente.');
+            });
     };
 
-    const Delete_Event_Fun = (eventId) => {
-        const updated_Events = events.filter((event) => event.id !== eventId);
-        setEvents(updated_Events);
+    const toggleFerias = () => setMostrarFerias(!mostrarFerias);
+    const toggleAusencias = () => setMostrarAusencias(!mostrarAusencias);
+    const togglePresenciais = () => setMostrarPresenciais(!mostrarPresenciais);
+
+    const renderEventosPendentes = (eventos, tipo) => {
+        return eventos.length > 0 ? (
+            eventos.map(evento => (
+                <div key={evento.id} className="event-card">
+                    <p>
+                        <strong>{evento.user}</strong> - {moment(evento.date).format('DD/MM/YYYY')} - {evento.title}
+                    </p>
+                    <div className="event-actions">
+                        <button onClick={() => handleApprove(evento.id, evento.type)}>Aprovar</button>
+                        <button onClick={() => handleReject(evento.id, evento.type)}>Rejeitar</button>
+                    </div>
+                </div>
+            ))
+        ) : (
+            <p>Não há {tipo} pendentes.</p>
+        );
     };
+
     return (
         <div className="main-container">
-            <div>
-                <NavbarManager />
-                <div className="container-Manager">
-                    <div className="calendar-container">
-                        <Calendar
-                            value={selectedDate}
-                            onClickDay={Date_Click_Fun}
-                            tileClassName={({ date }) =>
-                                selectedDate &&
-                                date.toDateString() === selectedDate.toDateString()
-                                    ? "selected"
-                                    : events.some(
-                                        (event) =>
-                                            event.date.toDateString() ===
-                                            date.toDateString(),
-                                    )
-                                        ? "event-marked"
-                                        : ""
-                            }
-                        />{" "}
-                    </div>
-                    <div className="event-container">
-                        {" "}
-                        {selectedDate && (
-                            <div className="event-form">
-                                <h2> Create Event </h2>{" "}
-                                <p>
-                                    {" "}
-                                    Selected Date: {selectedDate.toDateString()}{" "}
-                                </p>{" "}
-                                <input
-                                    type="text"
-                                    placeholder="Event Name"
-                                    value={eventName}
-                                    onChange={Event_Data_Update}
-                                />{" "}
-                                <button
-                                    className="create-btn"
-                                    onClick={Create_Event_Fun}
-                                >
-                                    Click Here to Add Event{" "}
-                                </button>{" "}
-                            </div>
-                        )}
-                        {events.length > 0 && selectedDate && (
-                            <div className="event-list">
-                                <h2> My Created Event List </h2>{" "}
-                                <div className="event-cards">
-                                    {" "}
-                                    {events.map((event) =>
-                                        event.date.toDateString() ===
-                                        selectedDate.toDateString() ? (
-                                            <div
-                                                key={event.id}
-                                                className="event-card"
-                                            >
-                                                <div className="event-card-header">
-                                                <span className="event-date">
-                                                    {" "}
-                                                    {event.date.toDateString()}{" "}
-                                                </span>{" "}
-                                                    <div className="event-actions">
-                                                        <button
-                                                            className="update-btn"
-                                                            onClick={() =>
-                                                                Update_Event_Fun(
-                                                                    event.id,
-                                                                    prompt(
-                                                                        "ENTER NEW TITLE",
-                                                                    ),
-                                                                )
-                                                            }
-                                                        >
-                                                            Update Event{" "}
-                                                        </button>{" "}
-                                                        <button
-                                                            className="delete-btn"
-                                                            onClick={() =>
-                                                                Delete_Event_Fun(
-                                                                    event.id,
-                                                                )
-                                                            }
-                                                        >
-                                                            Delete Event{" "}
-                                                        </button>{" "}
-                                                    </div>{" "}
-                                                </div>{" "}
-                                                <div className="event-card-body">
-                                                    <p className="event-title">
-                                                        {" "}
-                                                        {event.title}{" "}
-                                                    </p>{" "}
-                                                </div>{" "}
-                                            </div>
-                                        ) : null,
-                                    )}{" "}
-                                </div>{" "}
-                            </div>
-                        )}{" "}
-                    </div>{" "}
-                </div>{" "}
+            <NavbarManager />
+            <div className="container-manager">
+                <h2>Marcações Pendentes</h2>
+                <div className="event-section">
+                    <h3 onClick={toggleFerias} className="expandable-title">Férias</h3>
+                    {mostrarFerias && (
+                        <div className="pending-events-list">
+                            {renderEventosPendentes(feriasPendentes, "férias")}
+                        </div>
+                    )}
+                </div>
+                <div className="event-section">
+                    <h3 onClick={toggleAusencias} className="expandable-title">Ausências</h3>
+                    {mostrarAusencias && (
+                        <div className="pending-events-list">
+                            {renderEventosPendentes(ausenciasPendentes, "ausências")}
+                        </div>
+                    )}
+                </div>
+                <div className="event-section">
+                    <h3 onClick={togglePresenciais} className="expandable-title">Presenciais</h3>
+                    {mostrarPresenciais && (
+                        <div className="pending-events-list">
+                            {renderEventosPendentes(presenciaisPendentes, "presenciais")}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -1,0 +1,57 @@
+.container-manager {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.pending-events-list {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.event-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.event-actions button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.event-actions button:hover {
+    background-color: #ddd;
+}
+
+.event-section {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.event-section h3 {
+    cursor: pointer;
+    user-select: none;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.event-section h3:hover {
+    background-color: #f0f0f0;
+}
