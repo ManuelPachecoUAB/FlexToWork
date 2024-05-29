@@ -126,7 +126,7 @@
 }
 
 .selected {
-    background-color: blue !important;
+    background-color: lightgray !important;
     color: white;
 }
 

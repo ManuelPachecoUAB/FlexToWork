@@ -21,15 +21,13 @@ export default function Colaborador() {
     });
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-    useEffect(() => {
-        fetchUserEvents();
-    }, []);
-
-    const fetchUserEvents = () => {
+    const fetchUserEvents = (ano, mes) => {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/get_user_events', {
-            headers: { Authorization: `Bearer ${userToken}` }
+            headers: { Authorization: `Bearer ${userToken}` },
+            params: { ano: ano, mes: mes }
         })
             .then(response => {
                 const userEvents = response.data;
@@ -37,7 +35,7 @@ export default function Colaborador() {
                 let metricsUpdate = {
                     presencialAprovadas: 0,
                     presencialPendentes: 0,
-                    presencialObrigatorias: 0,
+                    presencialObrigatorias: 10,
                     ausenciasAprovadas: 0,
                     ausenciasPendentes: 0,
                     feriasAprovadas: 0,
@@ -96,6 +94,7 @@ export default function Colaborador() {
             });
     };
 
+
     const Date_Click_Fun = (date) => {
         const dateString = date.toDateString();
         const event = events.find(event => event.date.toDateString() === dateString);
@@ -117,26 +116,23 @@ export default function Colaborador() {
     const Create_Event_Fun = (type) => {
         const userToken = localStorage.getItem('userToken');
         if (selectedDates.length > 0) {
-            const requests = selectedDates.map(date => {
-                const dateString = date.toISOString().split('T')[0];
-                if (type === "Férias") {
-                    return axios.post('http://127.0.0.1:5000/api/ferias', { data: dateString, duracao: 1 }, {
-                        headers: { Authorization: `Bearer ${userToken}` }
-                    });
-                } else if (type === "Ausência") {
-                    return axios.post('http://127.0.0.1:5000/api/ausencias', { data: dateString, duracao: 1 }, {
-                        headers: { Authorization: `Bearer ${userToken}` }
-                    });
-                } else if (type === "Presencial") {
-                    return axios.post('http://127.0.0.1:5000/api/presencial', { data: dateString }, {
-                        headers: { Authorization: `Bearer ${userToken}` }
-                    });
-                }
-            });
+            const dateStrings = selectedDates.map(date => new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0]);
+            const requestData = { datas: dateStrings };
 
-            Promise.all(requests)
-                .then(responses => {
-                    fetchUserEvents(); // Atualiza os eventos após criar
+            let endpoint = '';
+            if (type === "Férias") {
+                endpoint = 'http://127.0.0.1:5000/api/ferias';
+            } else if (type === "Ausência") {
+                endpoint = 'http://127.0.0.1:5000/api/ausencias';
+            } else if (type === "Presencial") {
+                endpoint = 'http://127.0.0.1:5000/api/presencial';
+            }
+
+            axios.post(endpoint, requestData, {
+                headers: { Authorization: `Bearer ${userToken}` }
+            })
+                .then(response => {
+                    fetchUserEvents(currentYear, currentMonth); // Atualiza os eventos após criar
                     setSelectedDates([]);
                     alert(`${type} marcadas com sucesso!`);
                 })
@@ -146,6 +142,7 @@ export default function Colaborador() {
                 });
         }
     };
+
 
     const Delete_Event_Fun = () => {
         const userToken = localStorage.getItem('userToken');
@@ -167,7 +164,7 @@ export default function Colaborador() {
                     headers: { Authorization: `Bearer ${userToken}` }
                 })
                     .then(response => {
-                        fetchUserEvents(); // Atualiza os eventos após deletar
+                        fetchUserEvents(currentYear, currentMonth); // Atualiza os eventos após deletar
                         setSelectedDates([]);
                         alert('Marcação removida com sucesso!');
                     })
@@ -198,11 +195,50 @@ export default function Colaborador() {
         return '';
     };
 
+    const fetchPresencialMes = (ano, mes) => {
+        const userToken = localStorage.getItem('userToken');
+        axios.get('http://127.0.0.1:5000/api/presencial_mes', {
+            headers: { Authorization: `Bearer ${userToken}` },
+            params: { ano: ano, mes: mes }
+        })
+            .then(response => {
+                setMetrics(prevMetrics => ({
+                    ...prevMetrics,
+                    presencialAprovadas: response.data.presenciais_aprovadas,
+                    presencialPendentes: response.data.presenciais_pendentes
+                }));
+            })
+            .catch(error => {
+                console.error('Erro ao carregar presença do mês:', error);
+                alert('Erro ao carregar presença do mês. Tente novamente.');
+            });
+        axios.get('http://127.0.0.1:5000/api/presencial_obrigatorios', {
+            headers: { Authorization: `Bearer ${userToken}` },
+            params: { ano: ano, mes: mes }
+        })
+            .then(response => {
+                setMetrics(prevMetrics => ({
+                    ...prevMetrics,
+                    presencialObrigatorias: response.data.total_presencial
+                }));
+            })
+            .catch(error => {
+                console.error('Erro ao carregar presença obrigatória:', error);
+                alert('Erro ao carregar presença obrigatória. Tente novamente.');
+            });
+    };
+
+    useEffect(() => {
+        fetchUserEvents(currentYear, currentMonth);
+        fetchPresencialMes(currentYear, currentMonth);
+    }, [currentMonth, currentYear]);
+
     return (
         <div className="main-container">
             <NavbarColaborador/>
             <div className="container-colaborador">
                 <div className="metrics">
+                    <h4>Dados de {monthNames[currentMonth - 1]} {currentYear}</h4>
                     <h3>Presencial</h3>
                     <p>Aprovadas: <span id="presencial-aprovadas">{metrics.presencialAprovadas}</span></p>
                     <p>Pendentes: <span id="presencial-pendentes">{metrics.presencialPendentes}</span></p>
@@ -221,6 +257,10 @@ export default function Colaborador() {
                             onClickDay={Date_Click_Fun}
                             tileClassName={getTileClassName}
                             selectRange={false}
+                            onActiveStartDateChange={({ activeStartDate }) => {
+                                setCurrentMonth(activeStartDate.getMonth() + 1);
+                                setCurrentYear(activeStartDate.getFullYear());
+                            }}
                         />
                     </div>
                     <div className="selected-dates-container">
