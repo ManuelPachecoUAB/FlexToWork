@@ -226,23 +226,28 @@ def add_ausencias():
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        data = request.json["data"]
-        duracao = request.json.get("duracao", 1)
+        datas = request.json.get("datas", [])
+        if not datas:
+            return jsonify({"error": "Nenhuma data fornecida"}), 400
+
         estado = 1  # Pendente de aprovação
 
-        nova_ausencia = ausenciasmarcadas(
-            idcolaborador=current_user.idutlizador,
-            duracao=duracao,
-            data=datetime.strptime(data, '%Y-%m-%d').date(),
-            estado=estado
-        )
-        db.session.add(nova_ausencia)
+        for data in datas:
+            nova_ausencia = ausenciasmarcadas(
+                idcolaborador=current_user.idutlizador,
+                duracao=1,
+                data=datetime.strptime(data, '%Y-%m-%d').date(),
+                estado=estado
+            )
+            db.session.add(nova_ausencia)
+
         db.session.commit()
 
-        return jsonify({"message": "Ausência marcada com sucesso"}), 201
+        return jsonify({"message": "Ausências marcadas com sucesso"}), 201
     except Exception as e:
         print(f"Erro ao marcar ausência: {e}")
         return jsonify({"error": f"Erro ao marcar ausência: {e}"}), 500
+
 
 @app.route("/api/presencial", methods=["POST"])
 @jwt_required()
@@ -254,21 +259,27 @@ def add_presencial():
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        data = request.json["data"]
+        datas = request.json.get("datas", [])
+        if not datas:
+            return jsonify({"error": "Nenhuma data fornecida"}), 400
+
         estado = 1  # Pendente de aprovação
 
-        nova_presencial = presencialmarcadas(
-            idcolaborador=current_user.idutlizador,
-            data=datetime.strptime(data, '%Y-%m-%d').date(),
-            estado=estado
-        )
-        db.session.add(nova_presencial)
+        for data in datas:
+            nova_presencial = presencialmarcadas(
+                idcolaborador=current_user.idutlizador,
+                data=datetime.strptime(data, '%Y-%m-%d').date(),
+                estado=estado
+            )
+            db.session.add(nova_presencial)
+
         db.session.commit()
 
-        return jsonify({"message": "Presencial marcada com sucesso"}), 201
+        return jsonify({"message": "Presenciais marcadas com sucesso"}), 201
     except Exception as e:
         print(f"Erro ao marcar presencial: {e}")
         return jsonify({"error": f"Erro ao marcar presencial: {e}"}), 500
+
 
 @app.route("/api/get_user_events", methods=["GET"])
 @jwt_required()
