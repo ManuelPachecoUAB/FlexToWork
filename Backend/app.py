@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
-from models import db, users, ferias, feriasmarcadas, ausenciasmarcadas, presencialmarcadas
+from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas
 from datetime import datetime
 
 app = Flask(__name__)
@@ -60,6 +60,12 @@ def signup():
     db.session.add(new_ferias)
     db.session.commit()
 
+    # Inicializar 10 dias de presencial por mês para o novo utilizador
+    for mes in range(1, 13):
+        new_presencial = presencial(idcolaborador=new_user.idutlizador, ano=ano_atual, mes=mes)
+        db.session.add(new_presencial)
+
+    db.session.commit()
     session["user_id"] = new_user.id
 
     return jsonify({
@@ -177,8 +183,12 @@ def add_ferias():
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        data = request.json["data"]
-        duracao = request.json.get("duracao", 1)
+        datas = request.json.get("datas", [])
+        if not datas:
+            return jsonify({"error": "Nenhuma data fornecida"}), 400
+
+        # Calcular a duração das férias
+        duracao = len(datas)
         estado = 1  # Pendente de aprovação
 
         # Verificar se há dias de férias suficientes
@@ -186,13 +196,14 @@ def add_ferias():
         if ferias_registro.feriasdisponiveis < duracao:
             return jsonify({"error": "Não há dias de férias suficientes disponíveis"}), 400
 
-        nova_ferias = feriasmarcadas(
-            idcolaborador=current_user.idutlizador,
-            duracao=duracao,
-            data=datetime.strptime(data, '%Y-%m-%d').date(),
-            estado=estado
-        )
-        db.session.add(nova_ferias)
+        for data in datas:
+            nova_ferias = feriasmarcadas(
+                idcolaborador=current_user.idutlizador,
+                duracao=1,  # Cada dia é um registro separado
+                data=datetime.strptime(data, '%Y-%m-%d').date(),
+                estado=estado
+            )
+            db.session.add(nova_ferias)
 
         # Atualizar feriasdisponiveis
         ferias_registro.feriasdisponiveis -= duracao
@@ -202,6 +213,7 @@ def add_ferias():
     except Exception as e:
         print(f"Erro ao marcar férias: {e}")
         return jsonify({"error": f"Erro ao marcar férias: {e}"}), 500
+
 
 
 @app.route("/api/ausencias", methods=["POST"])
@@ -268,12 +280,27 @@ def get_user_events():
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).all()
-        ausencias = ausenciasmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).all()
-        presenciais = presencialmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).all()
+        ano = request.args.get("ano", type=int)
+        mes = request.args.get("mes", type=int)
+
+        if not ano:
+            return jsonify({"error": "Ano é obrigatório"}), 400
+
+        ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+            db.extract('year', feriasmarcadas.data) == ano
+        ).all()
+
+        ausencias = ausenciasmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+            db.extract('year', ausenciasmarcadas.data) == ano
+        ).all()
+
+        presenciais = presencialmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+            db.extract('year', presencialmarcadas.data) == ano,
+            db.extract('month', presencialmarcadas.data) == mes
+        ).all()
 
         # Recuperar o registro de férias do colaborador
-        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutlizador, ano=datetime.now().year).first()
+        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutlizador, ano=ano).first()
         ferias_disponiveis = ferias_registro.feriasdisponiveis if ferias_registro else 0
 
         events = {
@@ -287,6 +314,7 @@ def get_user_events():
     except Exception as e:
         print(f"Erro ao obter eventos do usuário: {e}")
         return jsonify({"error": f"Erro ao obter eventos do usuário: {e}"}), 500
+
 
 
 
@@ -447,6 +475,65 @@ def reject_event(id):
         return jsonify({"message": "Evento rejeitado com sucesso"}), 200
     return jsonify({"error": "Evento não encontrado"}), 404
 
+@app.route("/api/presencial_obrigatorios", methods=["GET"])
+@jwt_required()
+def get_presencial_obrigatorios():
+    try:
+        current_user_email = get_jwt_identity()
+        current_user = users.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        ano = request.args.get("ano", type=int)
+        mes = request.args.get("mes", type=int)
+
+        if not ano or not mes:
+            return jsonify({"error": "Ano e mês são obrigatórios"}), 400
+
+        presenciais = presencial.query.filter_by(idcolaborador=current_user.idutlizador, ano=ano, mes=mes).first()
+
+        if presenciais:
+            total_presencial = presenciais.totalpresencial
+        else:
+            total_presencial = 0
+
+        return jsonify({"total_presencial": total_presencial}), 200
+    except Exception as e:
+        print(f"Erro ao obter presenciais obrigatórios: {e}")
+        return jsonify({"error": f"Erro ao obter presenciais obrigatórios: {e}"}), 500
+
+@app.route("/api/presencial_mes", methods=["GET"])
+@jwt_required()
+def get_presencial_mes():
+    try:
+        current_user_email = get_jwt_identity()
+        current_user = users.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        ano = request.args.get("ano", type=int)
+        mes = request.args.get("mes", type=int)
+
+        if not ano or not mes:
+            return jsonify({"error": "Ano e mês são obrigatórios"}), 400
+
+        presenciais = presencialmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+            db.extract('year', presencialmarcadas.data) == ano,
+            db.extract('month', presencialmarcadas.data) == mes
+        ).all()
+
+        presenciais_aprovadas = sum(1 for p in presenciais if p.estado == 2)
+        presenciais_pendentes = sum(1 for p in presenciais if p.estado == 1)
+
+        return jsonify({
+            "presenciais_aprovadas": presenciais_aprovadas,
+            "presenciais_pendentes": presenciais_pendentes
+        }), 200
+    except Exception as e:
+        print(f"Erro ao obter presenciais por mês: {e}")
+        return jsonify({"error": f"Erro ao obter presenciais por mês: {e}"}), 500
 
 
 if __name__ == "__main__":
