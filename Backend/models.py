@@ -34,6 +34,20 @@ class ferias(db.Model):
         self.totalferias = 25
         self.feriasdisponiveis = 25
 
+class presencial(db.Model):
+    __tablename__ = "presencial"
+    id = db.Column(db.Integer, primary_key=True)
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    totalpresencial = db.Column(db.Integer, nullable=False, default=10)
+    ano = db.Column(db.Integer, nullable=False)
+    mes = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, idcolaborador, ano, mes):
+        self.idcolaborador = idcolaborador
+        self.ano = ano
+        self.mes = mes
+        self.totalpresencial = 10
+
 # Tabela Equipa
 class equipa(db.Model):
     __tablename__ = "equipa"
@@ -87,14 +101,6 @@ class ausenciasmarcadas(db.Model):
     duracao = db.Column(db.Integer, nullable=False)
     data = db.Column(db.Date, nullable=False)
     estado = db.Column(db.Integer, nullable=False)
-
-class presencial(db.Model):
-    __tablename__ = "presencial"
-    id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
-    totalpresencial = db.Column(db.Integer, nullable=False)
-    ano = db.Column(db.Integer, nullable=False)
-    mes = db.Column(db.Integer, nullable=False)
 
 
 # Ausencias Marcadas
