@@ -2,17 +2,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 130px);
     padding-top: 60px;
-    background: #f0f2f5;
+    background-image: url("../img/Loginbackground.png");
+    background-size: cover;
 }
 
 .login-form-container {
     width: 100%;
     max-width: 320px;
-    padding: 20px;
+    padding: 30px;
     background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
 }
 
