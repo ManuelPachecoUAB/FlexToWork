@@ -546,6 +546,50 @@ def get_presencial_mes():
         print(f"Erro ao obter presenciais por mês: {e}")
         return jsonify({"error": f"Erro ao obter presenciais por mês: {e}"}), 500
 
+@app.route("/api/team_members", methods=["GET"])
+@jwt_required()
+def get_team_members():
+    try:
+        current_user_email = get_jwt_identity()
+        current_user = users.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        team_members = users.query.filter_by(idequipa=current_user.idequipa).all()
+
+        # Dicionário de mapeamento de níveis para descrições de posições
+        posicoes = {
+            1: "Colaborador",
+            2: "Manager",
+            3: "RH",
+            4: "RH Manager",
+            5: "Administrador"
+        }
+
+        # Ordenar os membros da equipe pelo nível, colocando os de nível 2 no topo
+        sorted_team_members = sorted(team_members, key=lambda member: (member.idnivel != 2, member.idnivel))
+
+        team_members_list = [
+            {
+                "id": member.idutlizador,
+                "primeironome": member.primeironome,
+                "segundonome": member.segundonome,
+                "idnivel": member.idnivel,
+                "posicao": posicoes.get(member.idnivel, "Desconhecido"),
+                "ordem": index + 1
+            }
+            for index, member in enumerate(sorted_team_members)
+        ]
+
+        return jsonify(team_members_list), 200
+    except Exception as e:
+        print(f"Erro ao obter membros da equipe: {e}")
+        return jsonify({"error": f"Erro ao obter membros da equipe: {e}"}), 500
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
