@@ -238,7 +238,7 @@ export default function Colaborador() {
             <NavbarColaborador/>
             <div className="container-colaborador">
                 <div className="metrics">
-                    <h4>Dados de {monthNames[currentMonth - 1]} {currentYear}</h4>
+                    <h2>Dados de {monthNames[currentMonth - 1]} {currentYear}</h2>
                     <h3>Presencial</h3>
                     <p>Aprovadas: <span id="presencial-aprovadas">{metrics.presencialAprovadas}</span></p>
                     <p>Pendentes: <span id="presencial-pendentes">{metrics.presencialPendentes}</span></p>
