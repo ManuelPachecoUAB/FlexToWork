@@ -1,57 +1,104 @@
+
+
 .container-manager {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 95%;
     padding: 20px;
 }
 
-.pending-events-list {
-    width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.team-members {
+    width: 20%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-right: 20px;
+    box-sizing: border-box;
 }
 
-.event-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.team-members h3 {
+    margin-bottom: 10px;
 }
 
-.event-actions button {
-    margin-left: 10px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+.team-members ul {
+    list-style-type: none;
+    padding: 0;
 }
 
-.event-actions button:hover {
-    background-color: #ddd;
+.team-members li {
+    padding: 5px 0;
+}
+
+.pending-events {
+    width: 75%;
+    padding: 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .event-section {
     margin-bottom: 20px;
-    width: 100%;
-    max-width: 800px;
-}
-
-.event-section h3 {
+    margin-outside: #fff000;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: .25rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.85);
+    font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    min-height: 3rem;
+    padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+    position: relative;
+    text-decoration: none;
+    transition: all 250ms;
     user-select: none;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+}
+.event-section:hover,
+.event-section:focus {
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+    color: rgba(0, 0, 0, 0.65);
 }
 
-.event-section h3:hover {
-    background-color: #f0f0f0;
+.event-section:hover {
+    transform: translateY(-1px);
+}
+
+.event-section:active {
+    background-color: #F0F0F1;
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+    color: rgba(0, 0, 0, 0.65);
+    transform: translateY(0);
+}
+.expandable-title {
+    cursor: pointer;
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.pending-events-list {
+    margin-top: 10px;
+}
+
+.event-card {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+
+.event-actions button {
+    margin-right: 5px;
 }

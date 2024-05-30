@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import NavbarManager from '../components/NavbarLogado.js';
 import '../estilos/Manager.css';
 import axios from 'axios';
-import moment from 'moment'; // Biblioteca para formatação de datas
+import moment from 'moment';
 
 export default function Manager() {
     const [feriasPendentes, setFeriasPendentes] = useState([]);
     const [ausenciasPendentes, setAusenciasPendentes] = useState([]);
     const [presenciaisPendentes, setPresenciaisPendentes] = useState([]);
+    const [teamMembers, setTeamMembers] = useState([]);
     const [mostrarFerias, setMostrarFerias] = useState(false);
     const [mostrarAusencias, setMostrarAusencias] = useState(false);
     const [mostrarPresenciais, setMostrarPresenciais] = useState(false);
@@ -32,6 +33,17 @@ export default function Manager() {
             .catch(error => {
                 console.error('Erro ao carregar eventos pendentes:', error);
                 alert('Erro ao carregar eventos pendentes. Tente novamente.');
+            });
+
+        axios.get('http://127.0.0.1:5000/api/team_members', {
+            headers: { Authorization: `Bearer ${tokenUtilizador}` }
+        })
+            .then(response => {
+                setTeamMembers(response.data);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar membros da equipe:', error);
+                alert('Erro ao carregar membros da equipe. Tente novamente.');
             });
     }, []);
 
@@ -119,30 +131,40 @@ export default function Manager() {
         <div className="main-container">
             <NavbarManager />
             <div className="container-manager">
-                <h2>Marcações Pendentes</h2>
-                <div className="event-section">
-                    <h3 onClick={toggleFerias} className="expandable-title">Férias</h3>
-                    {mostrarFerias && (
-                        <div className="pending-events-list">
-                            {renderEventosPendentes(feriasPendentes, "férias")}
-                        </div>
-                    )}
+                <div className="team-members">
+                    <h2>Membros da Equipa</h2>
+                    <ul>
+                        {teamMembers.map(member => (
+                            <li key={member.id}><b>{member.posicao} - </b>{member.primeironome} {member.segundonome}</li>
+                        ))}
+                    </ul>
                 </div>
-                <div className="event-section">
-                    <h3 onClick={toggleAusencias} className="expandable-title">Ausências</h3>
-                    {mostrarAusencias && (
-                        <div className="pending-events-list">
-                            {renderEventosPendentes(ausenciasPendentes, "ausências")}
-                        </div>
-                    )}
-                </div>
-                <div className="event-section">
-                    <h3 onClick={togglePresenciais} className="expandable-title">Presenciais</h3>
-                    {mostrarPresenciais && (
-                        <div className="pending-events-list">
-                            {renderEventosPendentes(presenciaisPendentes, "presenciais")}
-                        </div>
-                    )}
+                <div className="pending-events">
+                    <h2>Marcações Pendentes</h2>
+                    <div className="event-section">
+                        <h3 onClick={toggleFerias} className="expandable-title">Férias</h3>
+                        {mostrarFerias && (
+                            <div className="pending-events-list">
+                                {renderEventosPendentes(feriasPendentes, "férias")}
+                            </div>
+                        )}
+                    </div>
+                    <div className="event-section">
+                        <h3 onClick={toggleAusencias} className="expandable-title">Ausências</h3>
+                        {mostrarAusencias && (
+                            <div className="pending-events-list">
+                                {renderEventosPendentes(ausenciasPendentes, "ausências")}
+                            </div>
+                        )}
+                    </div>
+                    <div className="event-section">
+                        <h3 onClick={togglePresenciais} className="expandable-title">Presenciais</h3>
+                        {mostrarPresenciais && (
+                            <div className="pending-events-list">
+                                {renderEventosPendentes(presenciaisPendentes, "presenciais")}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
