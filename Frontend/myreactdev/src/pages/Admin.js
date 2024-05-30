@@ -2,6 +2,32 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import NavbarAdmin from '../components/NavbarLogado.js';
 import '../estilos/Admin.css';
+
+// Função para obter o token JWT do localStorage
+const getAuthToken = () => {
+    const token = localStorage.getItem('authToken');
+    console.log('Token obtido do localStorage:', token); // Log para verificar o token
+    return token;
+};
+
+// Configuração do Axios para incluir o token JWT em todas as requisições
+axios.defaults.baseURL = 'http://localhost:5000'; // Base URL do Axios
+axios.interceptors.request.use(
+    config => {
+        const token = getAuthToken();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            console.log('Token não encontrado, cabeçalho de autorização não será adicionado');
+        }
+        console.log('Configuração do Axios:', config); // Log para verificar a configuração do Axios
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    }
+);
+
 export default function Admin() {
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [users, setUsers] = useState([]);
