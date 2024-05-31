@@ -70,7 +70,7 @@ export default function LoginPage(){
             <div className="login-container">
                 <div className="login-form-container">
                     <h1 className="login-title">Bem Vindo!</h1>
-                    <p className="login-subtitle">Por-favor entrar os dados de login</p>
+                    <p className="login-subtitle">Por favor coloque os dados de login</p>
 
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                            className="login-input" placeholder="Email" />
