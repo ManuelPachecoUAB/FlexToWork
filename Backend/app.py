@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
 bcrypt = Bcrypt(app)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000"], methods=["GET", "POST", "DELETE", "OPTIONS"], allow_headers=["Authorization", "Content-Type", "X-Requested-With"])
 db.init_app(app)
 
 with app.app_context():
@@ -149,14 +149,14 @@ def list_users():
     ])
 
 #Apagar Utilizadores
-@app.route("/api/users/<int:user_id>", methods=["DELETE"])
+@app.route("/api/users/<string:user_id>", methods=["DELETE"])
 def delete_user(user_id):
-    user_to_delete = users.query.filter_by(idutlizador=user_id).first()
+    user_to_delete = users.query.filter_by(id=user_id).first()
     if user_to_delete:
         db.session.delete(user_to_delete)
         db.session.commit()
-        return jsonify({"message": "Usuário deletado com sucesso"}), 200
-    return jsonify({"error": "Usuário não encontrado"}), 404
+        return jsonify({"message": "Utilizador removido!"}), 200
+    return jsonify({"error": "Utilizador não encontrado"}), 404
 
 #Modificar Utilizadores
 @app.route("/api/users/<int:user_id>", methods=["PUT"])

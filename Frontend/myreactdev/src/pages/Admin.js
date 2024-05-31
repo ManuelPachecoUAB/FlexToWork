@@ -15,6 +15,7 @@ export default function Admin() {
     const [erro, setErro] = useState('');
 
     axios.defaults.baseURL = 'http://localhost:5000';
+    axios.defaults.withCredentials = true;
     axios.interceptors.request.use(
         config => {
             const token = getAuthToken();
@@ -64,9 +65,15 @@ export default function Admin() {
     }
 
     function handleDeleteUser(id) {
+        console.log('ID do utilizador a remover', id);
         axios.delete(`/api/users/${id}`)
-            .then(fetchUsers)
-            .catch(error => console.error('Failed to delete user', error));
+            .then(response => {
+                console.log('Utilizador removido com sucesso!', response.data);
+                fetchUsers(); // Atualizar a lista de utilizadores após remoção
+            })
+            .catch(error => {
+                console.error('Falha ao remover utilizador!', error);
+            });
     }
 
     function validarDados(email, primeironome, segundonome, password, idequipa, idnivel) {
