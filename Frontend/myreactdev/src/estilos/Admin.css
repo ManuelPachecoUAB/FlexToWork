@@ -1,0 +1,13 @@
+/* Estilos inputs e botões */
+.admin-page .admin-button {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+    cursor: pointer;
+}
+
+.admin-page .admin-button:hover {
+    background-color: #0056b3;
+}

@@ -1,107 +1,106 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import NavbarAdmin from '../components/NavbarLogado.js';
 import '../estilos/Admin.css';
-
-// Função para obter o token JWT do localStorage
-const getAuthToken = () => {
-    const token = localStorage.getItem('authToken');
-    console.log('Token obtido do localStorage:', token); // Log para verificar o token
-    return token;
-};
-
-// Configuração do Axios para incluir o token JWT em todas as requisições
-axios.defaults.baseURL = 'http://localhost:5000'; // Base URL do Axios
-axios.interceptors.request.use(
-    config => {
-        const token = getAuthToken();
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        } else {
-            console.log('Token não encontrado, cabeçalho de autorização não será adicionado');
-        }
-        console.log('Configuração do Axios:', config); // Log para verificar a configuração do Axios
-        return config;
-    },
-    error => {
-        return Promise.reject(error);
-    }
-);
 
 export default function Admin() {
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [users, setUsers] = useState([]);
-    const [email, setEmail] = useState("");
-    const [primeironome, setPrimeironome] = useState("");
-    const [segundonome, setSegundonome] = useState("");
-    const [password, setPassword] = useState("");
-    const [idequipa, setIdequipa] = useState("");
-    const [idnivel, setIdnivel] = useState("");
+    const [email, setEmail] = useState('');
+    const [primeironome, setPrimeironome] = useState('');
+    const [segundonome, setSegundonome] = useState('');
+    const [password, setPassword] = useState('');
+    const [idequipa, setIdequipa] = useState('');
+    const [idnivel, setIdnivel] = useState('');
+    const [erro, setErro] = useState('');
 
-    // Função para carregar os usuários
+    axios.defaults.baseURL = 'http://localhost:5000';
+    axios.interceptors.request.use(
+        config => {
+            const token = getAuthToken();
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            } else {
+                console.log('Token não encontrado, cabeçalho de autorização não será adicionado.');
+            }
+            return config;
+        },
+        error => Promise.reject(error)
+    );
+
     useEffect(() => {
         fetchUsers();
     }, []);
 
-    const fetchUsers = async () => {
-        try {
-            const response = await axios.get('/api/users');
-            setUsers(response.data);
-        } catch (error) {
-            console.error("Failed to fetch users", error);
+    function getAuthToken() {
+        return localStorage.getItem('authToken');
+    }
+
+    function fetchUsers() {
+        axios.get('/api/users')
+            .then(response => setUsers(response.data))
+            .catch(error => console.error('Failed to fetch users', error));
+    }
+
+    function handleAddUser() {
+        const erros = validarDados(email, primeironome, segundonome, password, idequipa, idnivel);
+        if (erros.length > 0) {
+            setErro(erros.join(', '));
+            return;
         }
-    };
+        setErro('');
+        const newUser = { email, primeironome, segundonome, password, idequipa, idnivel };
+        axios.post('/api/users', newUser)
+            .then(() => {
+                setEmail('');
+                setPrimeironome('');
+                setSegundonome('');
+                setPassword('');
+                setIdequipa('');
+                setIdnivel('');
+                fetchUsers();
+            })
+            .catch(error => console.error('Failed to add user', error));
+    }
 
+    function handleDeleteUser(id) {
+        axios.delete(`/api/users/${id}`)
+            .then(fetchUsers)
+            .catch(error => console.error('Failed to delete user', error));
+    }
 
-    const handleAddUser = async () => {
-        const newUser = {
-            email, primeironome, segundonome, password, idequipa, idnivel
-        };
-        try {
-            await axios.post('/api/users', newUser);
-            setEmail('');
-            setPrimeironome('');
-            setSegundonome('');
-            setPassword('');
-            setIdequipa('');
-            setIdnivel('');
-            fetchUsers();
-        } catch (error) {
-            console.error("Failed to add user", error);
-        }
-    };
-
-    const handleDeleteUser = async (id) => {
-        try {
-            await axios.delete(`/api/users/${id}`);
-            fetchUsers();
-        } catch (error) {
-            console.error("Failed to delete user", error);
-        }
-    };
-
+    function validarDados(email, primeironome, segundonome, password, idequipa, idnivel) {
+        const erros = [];
+        if (!email.includes('@')) erros.push('Email inválido.');
+        if (primeironome.length < 2) erros.push('Primeiro nome muito curto.');
+        if (segundonome.length < 2) erros.push('Sobrenome muito curto.');
+        if (password.length < 6) erros.push('Senha deve ter pelo menos 6 caracteres.');
+        if (!Number.isInteger(+idequipa)) erros.push('ID de equipe deve ser numérico.');
+        if (!Number.isInteger(+idnivel)) erros.push('Nível de acesso deve ser numérico.');
+        return erros;
+    }
 
     return (
-        <div>
+        <div className="admin-page">
             <NavbarAdmin />
             <div className="page-container">
-                <button onClick={() => setShowCreateUser(true)}>Criar Utilizador</button>
-                <button onClick={() => setShowCreateUser(false)}>Ver Utilizadores</button>
-
+                <button className="admin-button" onClick={() => setShowCreateUser(true)}>Criar Utilizador</button>
+                <button className="admin-button" onClick={() => setShowCreateUser(false)}>Ver Utilizadores</button>
                 {showCreateUser ? (
                     <div>
                         <h1>Criar Utilizador</h1>
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-                        <input type="text" value={primeironome} onChange={(e) => setPrimeironome(e.target.value)} placeholder="Primeiro Nome" />
-                        <input type="text" value={segundonome} onChange={(e) => setSegundonome(e.target.value)} placeholder="Segundo Nome" />
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" />
-                        <input type="number" value={idequipa} onChange={(e) => setIdequipa(e.target.value)} placeholder="ID Equipe" />
-                        <input type="number" value={idnivel} onChange={(e) => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
+                        {erro && <div className="erro">{erro}</div>}
+                        <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
+                        <input type="text" value={primeironome} onChange={e => setPrimeironome(e.target.value)} placeholder="Primeiro Nome" />
+                        <input type="text" value={segundonome} onChange={e => setSegundonome(e.target.value)} placeholder="Segundo Nome" />
+                        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
+                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipe" />
+                        <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
                         <button onClick={handleAddUser}>Adicionar Utilizador</button>
                     </div>
                 ) : (
                     <div>
-                        <h1>Alterar/Deletar Utilizadores</h1>
+                        <h1>Alterar/Apagar Utilizadores</h1>
                         <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
                             {users.map(user => (
                                 <li key={user.id}>
