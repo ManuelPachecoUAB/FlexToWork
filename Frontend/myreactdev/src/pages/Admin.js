@@ -15,6 +15,8 @@ export default function Admin() {
     const [idequipa, setIdequipa] = useState('');
     const [idnivel, setIdnivel] = useState('');
     const [erro, setErro] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const filteredUsers = users.filter(user => user.email.toLowerCase().includes(searchQuery.toLowerCase()));
 
     axios.defaults.baseURL = 'http://localhost:5000';
     axios.defaults.withCredentials = true;
@@ -136,21 +138,29 @@ export default function Admin() {
                         <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipe" />
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
                         <button onClick={handleAddUser}>Adicionar Utilizador</button>
+                        <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
                         <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
-                        <button onClick={handleClearForm}>Limpar </button> {/* Novo botão */}
                     </div>
                 )}
                 {view === 'viewUsers' && (
                     <div>
                         <h1>Alterar/Apagar Utilizadores</h1>
-                        <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                            {users.map(user => (
-                                <li key={user.id}>
-                                    {user.email} - {user.primeironome}
-                                    <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
-                                </li>
-                            ))}
-                        </ul>
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            placeholder="Pesquisar por email"
+                        />
+                        {searchQuery && (
+                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {filteredUsers.map(user => (
+                                    <li key={user.id}>
+                                        {user.email} - {user.primeironome}
+                                        <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                         <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
                     </div>
                 )}
