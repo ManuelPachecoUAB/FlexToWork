@@ -18,7 +18,7 @@ export default function Admin() {
     axios.defaults.withCredentials = true;
     axios.interceptors.request.use(
         config => {
-            const token = getAuthToken();
+            const token = localStorage.getItem('authToken');
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             } else {
@@ -32,10 +32,6 @@ export default function Admin() {
     useEffect(() => {
         fetchUsers();
     }, []);
-
-    function getAuthToken() {
-        return localStorage.getItem('authToken');
-    }
 
     function fetchUsers() {
         axios.get('/api/users')
