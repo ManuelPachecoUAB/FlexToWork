@@ -46,7 +46,14 @@ export default function Admin() {
             return;
         }
         setErro('');
-        const newUser = { email, primeironome, segundonome, password, idequipa, idnivel };
+        const newUser = {
+            email,
+            primeironome,
+            segundonome,
+            password,
+            equipa: parseInt(idequipa, 10),  // Converte para inteiro
+            nivel: parseInt(idnivel, 10)  // Converte para inteiro
+        };
         axios.post('/api/users', newUser)
             .then(() => {
                 setEmail('');
@@ -57,7 +64,14 @@ export default function Admin() {
                 setIdnivel('');
                 fetchUsers();
             })
-            .catch(error => console.error('Failed to add user', error));
+            .catch(error => {
+                console.error('Erro ao adicionar utilizador', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    setErro('Erro ao adicionar utilizador: ' + error.response.data.error);
+                } else {
+                    setErro('Erro ao adicionar utilizador: An unknown error occurred.');
+                }
+            });
     }
 
     function handleDeleteUser(id) {
