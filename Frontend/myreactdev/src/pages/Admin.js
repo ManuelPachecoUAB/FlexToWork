@@ -5,7 +5,6 @@ import '../estilos/Admin.css';
 
 export default function Admin() {
     const [view, setView] = useState(null);
-    const [showCreateUser, setShowCreateUser] = useState(false);
     const [users, setUsers] = useState([]);
     const [email, setEmail] = useState('');
     const [primeironome, setPrimeironome] = useState('');
