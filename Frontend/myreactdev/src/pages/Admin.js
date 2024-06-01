@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NavbarAdmin from '../components/NavbarLogado.js';
 import '../estilos/Admin.css';
+import addUserIcon from '../img/add_user.png';
+import searchUserIcon from '../img/search_user.png';
 
 export default function Admin() {
     const [view, setView] = useState(null);
@@ -102,9 +104,15 @@ export default function Admin() {
             <NavbarAdmin />
             <div className="page-container">
                 {view === null && (
-                    <div className="button-container">
-                        <button className="admin-button" onClick={() => setView('createUser')}>Criar Utilizador</button>
-                        <button className="admin-button" onClick={() => setView('viewUsers')}>Ver Utilizadores</button>
+                    <div className="icon-container">
+                        <div className="icon-wrapper" onClick={() => setView('createUser')}>
+                            <img src={addUserIcon} alt="Add User" className="icon" />
+                            <div className="icon-label">Criar Utilizador</div>
+                        </div>
+                        <div className="icon-wrapper" onClick={() => setView('viewUsers')}>
+                            <img src={searchUserIcon} alt="Search User" className="icon" />
+                            <div className="icon-label">Ver Utilizadores</div>
+                        </div>
                     </div>
                 )}
                 {view === 'createUser' && (
