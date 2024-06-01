@@ -8,14 +8,15 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+#Configurações Flask
 app.config['SECRET_KEY'] = 'a34r435e354v&%&%&wsd534%&%&%&f4dsasd56r&%&%ety543g#$%"#%fg3544'
 app.config['JWT_SECRET_KEY'] = 'a34r435sdf4fgdf#$&#$&r4533-ddd-346-7856fd7644$##$&gfd543-^3544'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
-jwt = JWTManager(app)
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
+#Inicializar extensões
+jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 CORS(app, supports_credentials=True)
 db.init_app(app)
