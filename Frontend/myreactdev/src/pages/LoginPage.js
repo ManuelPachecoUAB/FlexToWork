@@ -27,7 +27,7 @@ export default function LoginPage(){
                     console.log(response);
                     const token = response.data.access_token;
                     const nivel = response.data.idnivel;
-                    localStorage.setItem('authToken', token);
+                    localStorage.setItem('userToken', token);
                     if (nivel === 1) {
                         navigate("/Colaborador");
                         localStorage.setItem('nivel', nivel);
