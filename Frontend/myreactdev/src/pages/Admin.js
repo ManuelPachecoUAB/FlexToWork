@@ -4,6 +4,7 @@ import NavbarAdmin from '../components/NavbarLogado.js';
 import '../estilos/Admin.css';
 
 export default function Admin() {
+    const [view, setView] = useState(null);
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [users, setUsers] = useState([]);
     const [email, setEmail] = useState('');
@@ -101,9 +102,13 @@ export default function Admin() {
         <div className="admin-page">
             <NavbarAdmin />
             <div className="page-container">
-                <button className="admin-button" onClick={() => setShowCreateUser(true)}>Criar Utilizador</button>
-                <button className="admin-button" onClick={() => setShowCreateUser(false)}>Ver Utilizadores</button>
-                {showCreateUser ? (
+                {view === null && (
+                    <div className="button-container">
+                        <button className="admin-button" onClick={() => setView('createUser')}>Criar Utilizador</button>
+                        <button className="admin-button" onClick={() => setView('viewUsers')}>Ver Utilizadores</button>
+                    </div>
+                )}
+                {view === 'createUser' && (
                     <div>
                         <h1>Criar Utilizador</h1>
                         {erro && <div className="erro">{erro}</div>}
@@ -114,8 +119,10 @@ export default function Admin() {
                         <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipe" />
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
                         <button onClick={handleAddUser}>Adicionar Utilizador</button>
+                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
                     </div>
-                ) : (
+                )}
+                {view === 'viewUsers' && (
                     <div>
                         <h1>Alterar/Apagar Utilizadores</h1>
                         <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
@@ -126,6 +133,7 @@ export default function Admin() {
                                 </li>
                             ))}
                         </ul>
+                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
                     </div>
                 )}
             </div>
