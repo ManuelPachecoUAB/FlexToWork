@@ -99,6 +99,16 @@ export default function Admin() {
         return erros;
     }
 
+    function handleClearForm() {
+        setEmail('');
+        setPrimeironome('');
+        setSegundonome('');
+        setPassword('');
+        setIdequipa('');
+        setIdnivel('');
+        setErro('');
+    }
+
     return (
         <div className="admin-page">
             <NavbarAdmin />
@@ -127,6 +137,7 @@ export default function Admin() {
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
                         <button onClick={handleAddUser}>Adicionar Utilizador</button>
                         <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
+                        <button onClick={handleClearForm}>Limpar </button> {/* Novo botão */}
                     </div>
                 )}
                 {view === 'viewUsers' && (
