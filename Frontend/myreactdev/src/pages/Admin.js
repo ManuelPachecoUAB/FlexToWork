@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NavbarAdmin from '../components/NavbarLogado.js';
 import '../estilos/Admin.css';
+import addUserIcon from '../img/add_user.png';
+import searchUserIcon from '../img/search_user.png';
 
 export default function Admin() {
-    const [showCreateUser, setShowCreateUser] = useState(false);
+    const [view, setView] = useState(null);
     const [users, setUsers] = useState([]);
     const [email, setEmail] = useState('');
     const [primeironome, setPrimeironome] = useState('');
@@ -13,12 +15,14 @@ export default function Admin() {
     const [idequipa, setIdequipa] = useState('');
     const [idnivel, setIdnivel] = useState('');
     const [erro, setErro] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const filteredUsers = users.filter(user => user.email.toLowerCase().includes(searchQuery.toLowerCase()));
 
     axios.defaults.baseURL = 'http://localhost:5000';
     axios.defaults.withCredentials = true;
     axios.interceptors.request.use(
         config => {
-            const token = getAuthToken();
+            const token = localStorage.getItem('authToken');
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             } else {
@@ -33,10 +37,6 @@ export default function Admin() {
         fetchUsers();
     }, []);
 
-    function getAuthToken() {
-        return localStorage.getItem('authToken');
-    }
-
     function fetchUsers() {
         axios.get('/api/users')
             .then(response => setUsers(response.data))
@@ -50,7 +50,14 @@ export default function Admin() {
             return;
         }
         setErro('');
-        const newUser = { email, primeironome, segundonome, password, idequipa, idnivel };
+        const newUser = {
+            email,
+            primeironome,
+            segundonome,
+            password,
+            equipa: parseInt(idequipa, 10),  // Converte para inteiro
+            nivel: parseInt(idnivel, 10)  // Converte para inteiro
+        };
         axios.post('/api/users', newUser)
             .then(() => {
                 setEmail('');
@@ -61,7 +68,14 @@ export default function Admin() {
                 setIdnivel('');
                 fetchUsers();
             })
-            .catch(error => console.error('Failed to add user', error));
+            .catch(error => {
+                console.error('Erro ao adicionar utilizador', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    setErro('Erro ao adicionar utilizador: ' + error.response.data.error);
+                } else {
+                    setErro('Erro ao adicionar utilizador: An unknown error occurred.');
+                }
+            });
     }
 
     function handleDeleteUser(id) {
@@ -87,13 +101,33 @@ export default function Admin() {
         return erros;
     }
 
+    function handleClearForm() {
+        setEmail('');
+        setPrimeironome('');
+        setSegundonome('');
+        setPassword('');
+        setIdequipa('');
+        setIdnivel('');
+        setErro('');
+    }
+
     return (
         <div className="admin-page">
             <NavbarAdmin />
             <div className="page-container">
-                <button className="admin-button" onClick={() => setShowCreateUser(true)}>Criar Utilizador</button>
-                <button className="admin-button" onClick={() => setShowCreateUser(false)}>Ver Utilizadores</button>
-                {showCreateUser ? (
+                {view === null && (
+                    <div className="icon-container">
+                        <div className="icon-wrapper" onClick={() => setView('createUser')}>
+                            <img src={addUserIcon} alt="Add User" className="icon" />
+                            <div className="icon-label">Criar Utilizador</div>
+                        </div>
+                        <div className="icon-wrapper" onClick={() => setView('viewUsers')}>
+                            <img src={searchUserIcon} alt="Search User" className="icon" />
+                            <div className="icon-label">Ver Utilizadores</div>
+                        </div>
+                    </div>
+                )}
+                {view === 'createUser' && (
                     <div>
                         <h1>Criar Utilizador</h1>
                         {erro && <div className="erro">{erro}</div>}
@@ -104,18 +138,30 @@ export default function Admin() {
                         <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipe" />
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
                         <button onClick={handleAddUser}>Adicionar Utilizador</button>
+                        <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
+                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
                     </div>
-                ) : (
+                )}
+                {view === 'viewUsers' && (
                     <div>
                         <h1>Alterar/Apagar Utilizadores</h1>
-                        <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                            {users.map(user => (
-                                <li key={user.id}>
-                                    {user.email} - {user.primeironome}
-                                    <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
-                                </li>
-                            ))}
-                        </ul>
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            placeholder="Pesquisar por email"
+                        />
+                        {searchQuery && (
+                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {filteredUsers.map(user => (
+                                    <li key={user.id}>
+                                        {user.email} - {user.primeironome}
+                                        <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
                     </div>
                 )}
             </div>
