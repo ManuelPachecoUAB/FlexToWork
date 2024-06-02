@@ -1,0 +1,154 @@
+/* RH.css */
+.main-container {
+    text-align: center;
+    padding: 1rem;
+}
+
+.NavbarLogado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 2rem;
+    background-color: #f0ffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.logo-container {
+
+}
+
+.navbar-logo img {
+    width: auto;
+    height: 50px;
+    align-self: center;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin-left: 1rem;
+}
+
+.nav-link {
+    display: block;
+    text-decoration: none;
+    font-weight: bold;
+    color: #007bff;
+    text-transform: uppercase;
+}
+
+.container-RH {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.month-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.month-selector button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.month-selector button:hover {
+    background-color: #0056b3;
+}
+
+.month-selector span {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.report-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.report-buttons button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.report-buttons button:hover {
+    background-color: #218838;
+}
+
+.all-users-events {
+    margin: 20px;
+    width: 100%;
+}
+
+.events-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.events-table th, .events-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.events-table th {
+    background-color: #f2f2f2;
+    color: black;
+}
+
+.events-table td {
+    height: 40px;
+    width: 40px;
+}
+
+/* Cores para os estados dos eventos */
+.P-P {
+    background-color: lightblue;
+    color: #000;
+}
+
+.P-A {
+    background-color: blue;
+    color: #fff;
+}
+
+.F-P {
+    background-color: lightgreen;
+    color: #000;
+}
+
+.F-A {
+    background-color: green;
+    color: #fff;
+}
+
+.A-P {
+    background-color: lightcoral;
+    color: #000;
+}
+
+.A-A {
+    background-color: orange;
+    color: #fff;
+}
