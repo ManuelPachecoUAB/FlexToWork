@@ -58,7 +58,7 @@ export default function Admin() {
             equipa: parseInt(idequipa, 10),  // Converte para inteiro
             nivel: parseInt(idnivel, 10)  // Converte para inteiro
         };
-        axios.post('/api/users', newUser)
+        axios.post('http://localhost:5000/signup', newUser)
             .then(() => {
                 setEmail('');
                 setPrimeironome('');
