@@ -1,9 +1,9 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
-from flask_cors import CORS, cross_origin
-from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas
+from flask_cors import CORS
+from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas, equipa
 from datetime import datetime
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
 bcrypt = Bcrypt(app)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"], methods=["GET", "POST", "DELETE", "OPTIONS"], allow_headers=["Authorization", "Content-Type", "X-Requested-With"])
+CORS(app, supports_credentials=True)
 db.init_app(app)
 
 with app.app_context():
@@ -326,11 +326,6 @@ def get_user_events():
         print(f"Erro ao obter eventos do usuário: {e}")
         return jsonify({"error": f"Erro ao obter eventos do usuário: {e}"}), 500
 
-
-
-
-
-
 @app.route("/api/ferias/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_ferias(id):
@@ -587,9 +582,109 @@ def get_team_members():
         print(f"Erro ao obter membros da equipe: {e}")
         return jsonify({"error": f"Erro ao obter membros da equipe: {e}"}), 500
 
+@app.route("/api/all_users_events", methods=["GET"])
+@jwt_required()
+def get_all_users_events():
+    try:
+        current_user_email = get_jwt_identity()
+        current_user = users.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        if current_user.idnivel not in [3, 4, 5]:  # Verifica se o nível do usuário é RH Manager ou Admin
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        all_users = users.query.all()
+        all_events = []
+
+        for user in all_users:
+            user_events = {
+                "user": {
+                    "id": user.idutlizador,
+                    "primeironome": user.primeironome,
+                    "segundonome": user.segundonome,
+                },
+                "ferias": [],
+                "ausencias": [],
+                "presenciais": []
+            }
+
+            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+
+            user_events["ferias"] = [{"id": f.id, "data": f.data, "estado": f.estado} for f in ferias_marcadas]
+            user_events["ausencias"] = [{"id": a.id, "data": a.data, "estado": a.estado} for a in ausencias_marcadas]
+            user_events["presenciais"] = [{"id": p.id, "data": p.data, "estado": p.estado} for p in presenciais_marcadas]
+
+            all_events.append(user_events)
+
+        return jsonify(all_events), 200
+    except Exception as e:
+        print(f"Erro ao obter eventos de todos os usuários: {e}")
+        return jsonify({"error": f"Erro ao obter eventos de todos os usuários: {e}"}), 500
+
+@app.route("/api/all_users_events_byteam/<string:selectedTeam>", methods=["GET"])
+@jwt_required()
+def get_all_users_events_byteam(selectedTeam):
+    try:
+        current_user_email = get_jwt_identity()
+        current_user = users.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        if current_user.idnivel not in [3, 4, 5]:  # Verifica se o nível do usuário é RH, RH Manager ou Admin
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        # Obter o ID da equipe pelo nome da equipe
+        equipaid = equipa.query.filter_by(nomeequipa=selectedTeam).first()
+
+        if not equipaid:
+            return jsonify({"error": f"Equipa {selectedTeam} não encontrada"}), 404
+
+        all_users = users.query.filter_by(idequipa=equipaid.idequipa).all()
+        all_events = []
+
+        for user in all_users:
+            user_events = {
+                "user": {
+                    "id": user.idutlizador,
+                    "primeironome": user.primeironome,
+                    "segundonome": user.segundonome,
+                },
+                "ferias": [],
+                "ausencias": [],
+                "presenciais": []
+            }
+
+            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+
+            user_events["ferias"] = [{"id": f.id, "data": f.data, "estado": f.estado} for f in ferias_marcadas]
+            user_events["ausencias"] = [{"id": a.id, "data": a.data, "estado": a.estado} for a in ausencias_marcadas]
+            user_events["presenciais"] = [{"id": p.id, "data": p.data, "estado": p.estado} for p in presenciais_marcadas]
+
+            all_events.append(user_events)
+
+        return jsonify(all_events), 200
+    except Exception as e:
+        print(f"Erro ao obter eventos de todos os usuários: {e}")
+        return jsonify({"error": f"Erro ao obter eventos de todos os usuários: {e}"}), 500
 
 
 
+@app.route("/api/teams", methods=["GET"])
+@jwt_required()
+def get_teams():
+    try:
+        teams = equipa.query.all()
+        return jsonify([{"id": team.idequipa, "nome": team.nomeequipa} for team in teams])
+    except Exception as e:
+        print(f"Erro ao obter equipes: {e}")
+        return jsonify({"error": f"Erro ao obter equipes: {e}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
