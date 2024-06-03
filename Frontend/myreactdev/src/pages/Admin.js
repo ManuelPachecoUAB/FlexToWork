@@ -131,11 +131,11 @@ export default function Admin() {
                     <div className="create-user-form">
                         <h1>Criar Utilizador</h1>
                         {erro && <div className="erro">{erro}</div>}
-                        <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
-                        <input type="text" value={primeironome} onChange={e => setPrimeironome(e.target.value)} placeholder="Primeiro Nome" />
-                        <input type="text" value={segundonome} onChange={e => setSegundonome(e.target.value)} placeholder="Segundo Nome" />
+                        <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="@Email" />
+                        <input type="text" value={primeironome} onChange={e => setPrimeironome(e.target.value)} placeholder="Nome" />
+                        <input type="text" value={segundonome} onChange={e => setSegundonome(e.target.value)} placeholder="Apelido" />
                         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
-                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipe" />
+                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" />
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
                         <button className="admin-button" onClick={handleAddUser}>Adicionar Utilizador</button>
                         <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
