@@ -14,6 +14,7 @@ export default function Admin() {
     const [password, setPassword] = useState('');
     const [idequipa, setIdequipa] = useState('');
     const [idnivel, setIdnivel] = useState('');
+    const [sucesso, setSucesso] = useState('');
     const [erro, setErro] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const filteredUsers = users.filter(user => user.email.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -67,6 +68,7 @@ export default function Admin() {
                 setIdequipa('');
                 setIdnivel('');
                 fetchUsers();
+                setSucesso('Utilizador criado com sucesso!');
             })
             .catch(error => {
                 console.error('Erro ao adicionar utilizador', error);
@@ -93,11 +95,11 @@ export default function Admin() {
     function validarDados(email, primeironome, segundonome, password, idequipa, idnivel) {
         const erros = [];
         if (!email.includes('@')) erros.push('Email inválido.');
-        if (primeironome.length < 2) erros.push('Primeiro nome muito curto.');
-        if (segundonome.length < 2) erros.push('Sobrenome muito curto.');
+        if (primeironome.length < 2) erros.push('Primeiro nome muito pequeno.');
+        if (segundonome.length < 2) erros.push('Sobrenome muito pequeno.');
         if (password.length < 6) erros.push('Senha deve ter pelo menos 6 caracteres.');
-        if (!Number.isInteger(+idequipa)) erros.push('ID de equipe deve ser numérico.');
-        if (!Number.isInteger(+idnivel)) erros.push('Nível de acesso deve ser numérico.');
+        if (!Number.isInteger(+idequipa) || idequipa < 1 || idequipa > 10) erros.push('ID de equipa deve ser numérico e entre 1 e 10.');
+        if (!Number.isInteger(+idnivel) || idnivel < 1 || idnivel > 5) erros.push('Nível de acesso deve ser numérico e entre 1 e 5.');
         return erros;
     }
 
@@ -108,6 +110,7 @@ export default function Admin() {
         setPassword('');
         setIdequipa('');
         setIdnivel('');
+        setSucesso('');
         setErro('');
     }
 
@@ -131,12 +134,13 @@ export default function Admin() {
                     <div className="create-user-form">
                         <h1>Criar Utilizador</h1>
                         {erro && <div className="erro">{erro}</div>}
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
                         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="@Email" />
                         <input type="text" value={primeironome} onChange={e => setPrimeironome(e.target.value)} placeholder="Nome" />
                         <input type="text" value={segundonome} onChange={e => setSegundonome(e.target.value)} placeholder="Apelido" />
                         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
-                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" />
-                        <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
+                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" min="1" max="10" />
+                        <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
                         <button className="admin-button" onClick={handleAddUser}>Adicionar Utilizador</button>
                         <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
                         <button className="admin-button" onClick={() => setView(null)}>Voltar</button>

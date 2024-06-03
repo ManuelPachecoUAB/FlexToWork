@@ -49,6 +49,11 @@ h1:hover {
     color: #003d99;
 }
 
+.sucesso {
+    color: green;
+    margin-bottom: 15px;
+}
+
 .erro {
     color: red;
     margin-bottom: 15px;
