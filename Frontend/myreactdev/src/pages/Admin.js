@@ -128,7 +128,7 @@ export default function Admin() {
                     </div>
                 )}
                 {view === 'createUser' && (
-                    <div>
+                    <div className="create-user-form">
                         <h1>Criar Utilizador</h1>
                         {erro && <div className="erro">{erro}</div>}
                         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
@@ -137,7 +137,7 @@ export default function Admin() {
                         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
                         <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipe" />
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" />
-                        <button onClick={handleAddUser}>Adicionar Utilizador</button>
+                        <button className="admin-button" onClick={handleAddUser}>Adicionar Utilizador</button>
                         <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
                         <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
                     </div>

@@ -1,17 +1,60 @@
-/* Estilos inputs e botões */
-.admin-page .admin-button {
-    padding: 10px;
+/* Estilos inputs e botões no formulário de criar utilizador */
+.create-user-form input[type="email"],
+.create-user-form input[type="text"],
+.create-user-form input[type="password"],
+.create-user-form input[type="number"] {
+    width: 100%; /* Ajuste para não ficar esticado */
+    padding: 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+}
+
+.create-user-form input[type="email"]:focus,
+.create-user-form input[type="text"]:focus,
+.create-user-form input[type="password"]:focus,
+.create-user-form input[type="number"]:focus {
+    border: 2px solid #007BFF;
+    outline: none;
+    background-color: #ffffff;
+}
+
+.create-user-form .admin-button,
+.create-user-form .clear-button {
+    padding: 10px 20px;
     margin: 5px;
-    border-radius: 5px;
-    background-color: blue;
+    border-radius: 25px;
+    background-color: #007BFF;
     color: white;
+    border: none;
     cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.admin-page .admin-button:hover {
+.create-user-form .admin-button:hover,
+.create-user-form .clear-button:hover {
     background-color: #0056b3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+h1 {
+    color: #0056b3;
+    transition: color 0.3s ease;
+}
+
+h1:hover {
+    color: #003d99;
+}
+
+.erro {
+    color: red;
+    margin-bottom: 15px;
+}
+
+/* Estilos para ícones */
 .icon-container {
     display: flex;
     justify-content: center;
@@ -44,3 +87,11 @@
     font-weight: bold;
     color: #0056b3;
 }
+
+/* Ajuste do formulário */
+.create-user-form {
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+}
+
