@@ -82,23 +82,25 @@ export default function Admin() {
     }
 
     function handleDeleteUser(id) {
-        console.log('ID do utilizador a remover', id);
-        axios.delete(`/api/users/${id}`)
-            .then(response => {
-                console.log('Utilizador removido com sucesso!', response.data);
-                setSucesso(`Removido com sucesso o utilizador com o id: ${id}`);
-                setErro('');
-                fetchUsers(); // Atualizar a lista de utilizadores após remoção
-            })
-            .catch(error => {
-                console.error('Falha ao remover utilizador!', error);
-                if (error.response && error.response.data && error.response.data.error) {
-                    setErro(`Erro ao remover o utilizador com o id: ${id}: ${error.response.data.error}`);
-                } else {
-                    setErro(`Erro ao remover o utilizador com o id: ${id}: Um erro desconhecido ocorreu.`);
-                }
-                setSucesso(''); // Limpa a mensagem de sucesso se a remoção falhar
-            });
+        if (window.confirm("Tem certeza que deseja excluir este utilizador?")) {
+            console.log('ID do utilizador a remover', id);
+            axios.delete(`/api/users/${id}`)
+                .then(response => {
+                    console.log('Utilizador removido com sucesso!', response.data);
+                    setSucesso(`Removido com sucesso o utilizador com o id: ${id}`);
+                    setErro('');
+                    fetchUsers(); // Atualizar a lista de utilizadores após remoção
+                })
+                .catch(error => {
+                    console.error('Falha ao remover utilizador!', error);
+                    if (error.response && error.response.data && error.response.data.error) {
+                        setErro(`Erro ao remover o utilizador com o id: ${id}: ${error.response.data.error}`);
+                    } else {
+                        setErro(`Erro ao remover o utilizador com o id: ${id}: Um erro desconhecido ocorreu.`);
+                    }
+                    setSucesso(''); // Limpa a mensagem de sucesso se a remoção falhar
+                });
+        }
     }
 
     function handleEditUser(user) {
