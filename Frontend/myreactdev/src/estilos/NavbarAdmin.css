@@ -31,6 +31,7 @@
 
 .nav-item {
     margin-left: 1rem;
+    list-style: none;
 }
 
 .nav-link {

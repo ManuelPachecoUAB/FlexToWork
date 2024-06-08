@@ -201,3 +201,8 @@ h1:hover {
     background-color: #f0f0f0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+
+ul{
+    list-style-type: none;
+    max-height: none;
+}
