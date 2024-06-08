@@ -167,7 +167,7 @@ export default function Admin() {
     }
 
     return (
-        <div className="admin-page">
+        <div className="main-container">
             <NavbarAdmin />
             <div className="page-container">
                 {view === null && (
