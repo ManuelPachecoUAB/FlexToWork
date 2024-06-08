@@ -8,6 +8,7 @@ import searchUserIcon from '../img/search_user.png';
 export default function Admin() {
     const [view, setView] = useState(null);
     const [users, setUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [email, setEmail] = useState('');
     const [primeironome, setPrimeironome] = useState('');
     const [segundonome, setSegundonome] = useState('');
@@ -100,6 +101,42 @@ export default function Admin() {
             });
     }
 
+    function handleEditUser(user) {
+        setSelectedUser(user);
+        setEmail(user.email);
+        setPrimeironome(user.primeironome);
+        setSegundonome(user.segundonome);
+        setIdequipa(user.equipa);
+        setIdnivel(user.nivel);
+        setPassword('');
+        setView('editUser');
+    }
+
+    function handleUpdateUser() {
+        const updatedUser = {};
+        if (password) updatedUser.password = password;
+        if (idequipa) updatedUser.equipa = parseInt(idequipa, 10);
+        if (idnivel) updatedUser.nivel = parseInt(idnivel, 10);
+
+        axios.put(`/api/users/${selectedUser.id}`, updatedUser)
+            .then(response => {
+                console.log('Utilizador atualizado com sucesso!', response.data);
+                setSucesso('Utilizador atualizado com sucesso!');
+                setErro('');
+                fetchUsers();
+                handleClearForm();
+                setView('viewUsers');
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar utilizador', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    setErro('Erro ao atualizar utilizador: ' + error.response.data.error);
+                } else {
+                    setErro('Erro ao atualizar utilizador: An unknown error occurred.');
+                }
+            });
+    }
+
     function validarDados(email, primeironome, segundonome, password, idequipa, idnivel) {
         const erros = [];
         if (!email.includes('@')) erros.push('Email inválido.');
@@ -123,14 +160,7 @@ export default function Admin() {
     }
 
     function handleResetView(){
-        setEmail('');
-        setPrimeironome('');
-        setSegundonome('');
-        setPassword('');
-        setIdequipa('');
-        setIdnivel('');
-        setSucesso('');
-        setErro('');
+        handleClearForm();
         setView(null);
         setSearchQuery('');
     }
@@ -167,6 +197,20 @@ export default function Admin() {
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
+                {view === 'editUser' && (
+                    <div className="create-user-form">
+                        <h1>Editar Utilizador</h1>
+                        {erro && <div className="erro">{erro}</div>}
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
+                        <input type="email" value={email} placeholder="@Email" readOnly />
+                        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
+                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" min="1" max="10" />
+                        <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
+                        <button className="admin-button" onClick={handleUpdateUser}>Atualizar Utilizador</button>
+                        <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
+                    </div>
+                )}
                 {view === 'viewUsers' && (
                     <div className="view-users-container">
                         <h1>Alterar/Apagar Utilizadores</h1>
@@ -183,8 +227,11 @@ export default function Admin() {
                             <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
                                 {filteredUsers.map(user => (
                                     <li key={user.id}>
-                                        {user.email} - {user.primeironome}
-                                        <button onClick={() => handleDeleteUser(user.id)} className="delete-button">Excluir</button>
+                                        <span style={{ flexGrow: 1 }}>{user.email} - {user.primeironome}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
+                                            <button onClick={() => handleEditUser(user)} className="action-button edit-button">Alterar</button>
+                                            <button onClick={() => handleDeleteUser(user.id)} className="action-button delete-button">Excluir</button>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
