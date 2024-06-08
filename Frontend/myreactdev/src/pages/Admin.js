@@ -20,32 +20,22 @@ export default function Admin() {
     const [searchQuery, setSearchQuery] = useState('');
     const filteredUsers = users.filter(user => user.email.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    axios.defaults.baseURL = 'http://localhost:5000';
-    axios.defaults.withCredentials = true;
-    axios.interceptors.request.use(
-        config => {
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            } else {
-                console.log('Token não encontrado, cabeçalho de autorização não será adicionado.');
-            }
-            return config;
-        },
-        error => Promise.reject(error)
-    );
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
     function fetchUsers() {
-        axios.get('/api/users')
+        const userToken = localStorage.getItem('userToken');
+        axios.get('http://127.0.0.1:5000/api/users', {
+            headers: { Authorization: `Bearer ${userToken}` },
+        })
             .then(response => setUsers(response.data))
             .catch(error => console.error('Failed to fetch users', error));
     }
 
     function handleAddUser() {
+        const userToken = localStorage.getItem('userToken');
         const erros = validarDados(email, primeironome, segundonome, password, idequipa, idnivel);
         if (erros.length > 0) {
             setErro(erros.join(', '));
@@ -60,7 +50,10 @@ export default function Admin() {
             equipa: parseInt(idequipa, 10),  // Converte para inteiro
             nivel: parseInt(idnivel, 10)  // Converte para inteiro
         };
-        axios.post('http://localhost:5000/signup', newUser)
+        axios.post('http://127.0.0.1:5000/signup', newUser, {
+            headers: { Authorization: `Bearer ${userToken}` },
+        })
+
             .then(() => {
                 setEmail('');
                 setPrimeironome('');
@@ -82,9 +75,12 @@ export default function Admin() {
     }
 
     function handleDeleteUser(id) {
+        const userToken = localStorage.getItem('userToken');
         if (window.confirm("Tem certeza que deseja excluir este utilizador?")) {
             console.log('ID do utilizador a remover', id);
-            axios.delete(`/api/users/${id}`)
+            axios.delete(`http://127.0.0.1:5000/api/users/${id}`, {
+                headers: { Authorization: `Bearer ${userToken}` }
+            })
                 .then(response => {
                     console.log('Utilizador removido com sucesso!', response.data);
                     setSucesso(`Removido com sucesso o utilizador com o id: ${id}`);
@@ -115,12 +111,15 @@ export default function Admin() {
     }
 
     function handleUpdateUser() {
+        const userToken = localStorage.getItem('userToken');
         const updatedUser = {};
         if (password) updatedUser.password = password;
         if (idequipa) updatedUser.equipa = parseInt(idequipa, 10);
         if (idnivel) updatedUser.nivel = parseInt(idnivel, 10);
 
-        axios.put(`/api/users/${selectedUser.id}`, updatedUser)
+        axios.put(`http://127.0.0.1:5000/api/users/${selectedUser.id}`, updatedUser, {
+            headers: { Authorization: `Bearer ${userToken}` }
+        })
             .then(response => {
                 console.log('Utilizador atualizado com sucesso!', response.data);
                 setSucesso('Utilizador atualizado com sucesso!');
