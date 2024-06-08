@@ -114,6 +114,19 @@ export default function Admin() {
         setErro('');
     }
 
+    function handleResetView(){
+        setEmail('');
+        setPrimeironome('');
+        setSegundonome('');
+        setPassword('');
+        setIdequipa('');
+        setIdnivel('');
+        setSucesso('');
+        setErro('');
+        setView(null);
+        setSearchQuery('');
+    }
+
     return (
         <div className="admin-page">
             <NavbarAdmin />
@@ -143,7 +156,7 @@ export default function Admin() {
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
                         <button className="admin-button" onClick={handleAddUser}>Adicionar Utilizador</button>
                         <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
-                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
                 {view === 'viewUsers' && (
@@ -165,7 +178,7 @@ export default function Admin() {
                                 ))}
                             </ul>
                         )}
-                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
             </div>
