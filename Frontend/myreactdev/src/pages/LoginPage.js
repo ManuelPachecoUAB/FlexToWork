@@ -27,26 +27,31 @@ export default function LoginPage(){
                     console.log(response);
                     const token = response.data.access_token;
                     const nivel = response.data.idnivel;
-                    localStorage.setItem('userToken', token);
+
                     if (nivel === 1) {
                         navigate("/Colaborador");
                         localStorage.setItem('nivel', nivel);
+                        localStorage.setItem('userToken', token);
                     }
                     else if (nivel === 2) {
                         navigate("/Manager");
                         localStorage.setItem('nivel', nivel);
+                        localStorage.setItem('userToken', token);
                     }
                     else if (nivel === 3) {
                         navigate("/RH");
                         localStorage.setItem('nivel', nivel);
+                        localStorage.setItem('userToken', token);
                     }
                     else if (nivel === 4) {
                         navigate("/RHManager");
                         localStorage.setItem('nivel', nivel);
+                        localStorage.setItem('userToken', token);
                     }
                     else if (nivel === 5) {
                         navigate("/Admin");
                         localStorage.setItem('nivel', nivel);
+                        localStorage.setItem('userToken', token);
                     }
                     else{
                         navigate("/");
