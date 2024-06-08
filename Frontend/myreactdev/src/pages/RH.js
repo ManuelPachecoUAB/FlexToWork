@@ -103,6 +103,17 @@ export default function RH() {
         setSelectedDate(newDate);
     };
 
+    const handleYearChange = (direction) => {
+        let newDate;
+        if (direction === 'prev') {
+            newDate = new Date(currentYear - 1, currentMonth);
+        } else {
+            newDate = new Date(currentYear + 1, currentMonth);
+        }
+        setCurrentYear(newDate.getFullYear());
+        setSelectedDate(newDate);
+    };
+
     const handleTeamChange = (event) => {
         setSelectedTeam(event.target.value);
     };
@@ -191,19 +202,25 @@ export default function RH() {
         document.body.removeChild(link);
     };
 
+    const formatDate = (date) => {
+        return date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase());
+    };
+
     return (
         <div className="main-container">
             <Navbarlogado />
             <div className="container-RH">
                 <div className="month-selector">
-                    <button onClick={() => handleMonthChange('prev')}>Anterior</button>
-                    <span>{selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
-                    <button onClick={() => handleMonthChange('next')}>Próximo</button>
+                    <button onClick={() => handleYearChange('prev')}>&laquo;</button>
+                    <button onClick={() => handleMonthChange('prev')}>&lsaquo;</button>
+                    <span>{formatDate(selectedDate)}</span>
+                    <button onClick={() => handleMonthChange('next')}>&rsaquo;</button>
+                    <button onClick={() => handleYearChange('next')}>&raquo;</button>
                 </div>
                 <div className="team-selector">
-                    <label htmlFor="team">Selecionar Equipe: </label>
+                    <label htmlFor="team">Selecionar Equipa: </label>
                     <select id="team" value={selectedTeam} onChange={handleTeamChange}>
-                        <option value="">Todas as Equipes</option>
+                        <option value="">Todas as Equipas</option>
                         {teams.map(team => (
                             <option key={team.id} value={team.nome}>{team.nome}</option>
                         ))}
@@ -214,7 +231,7 @@ export default function RH() {
                     <button onClick={() => generateCSVReport('yearly')}>Gerar Relatório Anual</button>
                 </div>
                 <div className="all-users-events">
-                    <h2>Eventos de Todos os Usuários</h2>
+                    <h2>Situação Atual de Todos os Colaboradores</h2>
                     <table className="events-table">
                         <thead>
                         <tr>
