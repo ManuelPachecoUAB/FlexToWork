@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas, equipa
+from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas, equipa, nivelacesso
 from datetime import datetime
 
 app = Flask(__name__)
@@ -676,7 +676,6 @@ def get_all_users_events_byteam(selectedTeam):
         return jsonify({"error": f"Erro ao obter eventos de todos os usuários: {e}"}), 500
 
 
-
 @app.route("/api/teams", methods=["GET"])
 @jwt_required()
 def get_teams():
@@ -686,6 +685,36 @@ def get_teams():
     except Exception as e:
         print(f"Erro ao obter equipes: {e}")
         return jsonify({"error": f"Erro ao obter equipes: {e}"}), 500
+
+@app.route("/api/add_equipa", methods=["POST"])
+@jwt_required()
+def add_team():
+
+    team_name = request.json["nomeequipa"]
+
+    if not team_name:
+         return jsonify({"error": "Nome da equipa é obrigatório"}), 400
+
+    # Verifica se a equipa já existe
+    team_exists = equipa.query.filter_by(nomeequipa=team_name).first() is not None
+    if team_exists:
+        return jsonify({"error": "Nome da equipa já existe"}), 409
+
+    new_team = equipa(nomeequipa=team_name)
+    db.session.add(new_team)
+    db.session.commit()
+
+    return jsonify({"message": "Equipa criada com sucesso"}), 201
+
+@app.route("/api/access_levels", methods=["GET"])
+@jwt_required()
+def get_access_levels():
+    try:
+        access_levels = nivelacesso.query.all()
+        return jsonify([{"id": level.id, "nome": level.tipoutilizador} for level in access_levels])
+    except Exception as e:
+        print(f"Erro ao obter os niveis: {e}")
+        return jsonify({"error": f"Erro ao obter os niveis: {e}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
