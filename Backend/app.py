@@ -160,9 +160,9 @@ def delete_user(user_id):
     return jsonify({"error": "Utilizador não encontrado"}), 404
 
 #Modificar Utilizadores
-@app.route("/api/users/<int:user_id>", methods=["PUT"])
+@app.route("/api/users/<string:user_id>", methods=["PUT"])
 def update_user(user_id):
-    user_to_update = users.query.filter_by(idutlizador=user_id).first()
+    user_to_update = users.query.filter_by(id=user_id).first()
     if user_to_update:
         user_to_update.email = request.json.get("email", user_to_update.email)
         user_to_update.primeironome = request.json.get("primeironome", user_to_update.primeironome)
@@ -171,8 +171,8 @@ def update_user(user_id):
         user_to_update.idnivel = request.json.get("idnivel", user_to_update.idnivel)
 
         db.session.commit()
-        return jsonify({"message": "Usuário atualizado com sucesso"}), 200
-    return jsonify({"error": "Usuário não encontrado"}), 404
+        return jsonify({"message": "Utilizador atualizado com sucesso"}), 200
+    return jsonify({"error": "Utilizador não encontrado"}), 404
 
 @app.route("/api/ferias", methods=["POST"])
 @jwt_required()
