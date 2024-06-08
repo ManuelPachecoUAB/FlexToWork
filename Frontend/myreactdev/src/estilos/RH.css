@@ -13,9 +13,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,.1);
 }
 
-.logo-container {
-
-}
+.logo-container {}
 
 .navbar-logo img {
     width: auto;
@@ -62,16 +60,8 @@
     font-size: 2.9rem;
     cursor: pointer;
     margin: 0 10px;
-    color: white; /* Cor branca para o texto */
-    text-shadow:
-            -2px -2px 0 #007bff,
-            2px -2px 0 #007bff,
-            -2px 2px 0 #007bff,
-            2px 2px 0 #007bff,
-            -2px 0 0 #007bff,
-            2px 0 0 #007bff,
-            0 -2px 0 #007bff,
-            0 2px 0 #007bff; /* Contorno azul mais espesso */
+    color: white;
+    text-shadow: -2px -2px 0 #007bff, 2px -2px 0 #007bff, -2px 2px 0 #007bff, 2px 2px 0 #007bff, -2px 0 0 #007bff, 2px 0 0 #007bff, 0 -2px 0 #007bff, 0 2px 0 #007bff;
 }
 
 .month-selector button:hover {
@@ -81,7 +71,7 @@
 .month-selector span {
     font-size: 2.9em;
     font-weight: bold;
-    color: #007bff; /* Cor branca para o texto */
+    color: #007bff;
 }
 
 .report-buttons {
@@ -129,6 +119,10 @@
 .events-table td {
     height: 40px;
     width: 40px;
+}
+
+.events-table tr:hover {
+    background-color: #f1f1f1;
 }
 
 /* Cores para os estados dos eventos */
