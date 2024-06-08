@@ -4,6 +4,9 @@ import NavbarAdmin from '../components/NavbarLogado.js';
 import '../estilos/Admin.css';
 import addUserIcon from '../img/add_user.png';
 import searchUserIcon from '../img/search_user.png';
+import addTeamIcon from '../img/add_teams.png';
+
+
 
 export default function Admin() {
     const [view, setView] = useState(null);
@@ -19,10 +22,14 @@ export default function Admin() {
     const [erro, setErro] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const filteredUsers = users.filter(user => user.email.toLowerCase().includes(searchQuery.toLowerCase()));
-
+    const [teamName, setTeamName] = useState('');
+    const [teams, setTeams] = useState([]); // Novo estado para equipes
+    const [accessLevels, setAccessLevels] = useState([]); // Novo estado para níveis de acesso
 
     useEffect(() => {
         fetchUsers();
+        fetchTeams();
+        fetchAccessLevels();
     }, []);
 
     function fetchUsers() {
@@ -32,6 +39,24 @@ export default function Admin() {
         })
             .then(response => setUsers(response.data))
             .catch(error => console.error('Failed to fetch users', error));
+    }
+
+    function fetchTeams() {
+        const userToken = localStorage.getItem('userToken');
+        axios.get('http://127.0.0.1:5000/api/teams',{
+            headers: { Authorization: `Bearer ${userToken}` },
+        })
+            .then(response => setTeams(response.data))
+            .catch(error => console.error('Failed to fetch teams', error));
+    }
+
+    function fetchAccessLevels() {
+        const userToken = localStorage.getItem('userToken');
+        axios.get('http://127.0.0.1:5000/api/access_levels',{
+            headers: { Authorization: `Bearer ${userToken}` },
+        })
+            .then(response => setAccessLevels(response.data))
+            .catch(error => console.error('Failed to fetch access levels', error));
     }
 
     function handleAddUser() {
@@ -70,6 +95,29 @@ export default function Admin() {
                     setErro('Erro ao adicionar utilizador: ' + error.response.data.error);
                 } else {
                     setErro('Erro ao adicionar utilizador: An unknown error occurred.');
+                }
+            });
+    }
+
+    function handleAddTeam() {
+        const userToken = localStorage.getItem('userToken');
+        if (teamName.length < 3) {
+            setErro('O nome da equipa deve ter pelo menos 3 caracteres.');
+            return;
+        }
+        axios.post('http://127.0.0.1:5000/api/add_equipa', { nomeequipa: teamName }, {
+                headers: {Authorization: `Bearer ${userToken}`}
+            })
+            .then(() => {
+                setTeamName('');
+                setSucesso('Equipa criada com sucesso!');
+            })
+            .catch(error => {
+                console.error('Erro ao adicionar equipa', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    setErro('Erro ao adicionar equipa: ' + error.response.data.error);
+                } else {
+                    setErro('Erro ao adicionar equipa: An unknown error occurred.');
                 }
             });
     }
@@ -176,6 +224,10 @@ export default function Admin() {
                             <img src={addUserIcon} alt="Add User" className="icon" />
                             <div className="icon-label">Criar Utilizador</div>
                         </div>
+                        <div className="icon-wrapper" onClick={() => setView('createTeam')}> {/* Novo botão para criar equipa */}
+                            <img src={addTeamIcon} alt="Add Team" className="icon" />
+                            <div className="icon-label">Criar Equipa</div>
+                        </div>
                         <div className="icon-wrapper" onClick={() => setView('viewUsers')}>
                             <img src={searchUserIcon} alt="Search User" className="icon" />
                             <div className="icon-label">Ver Utilizadores</div>
@@ -191,8 +243,18 @@ export default function Admin() {
                         <input type="text" value={primeironome} onChange={e => setPrimeironome(e.target.value)} placeholder="Nome" />
                         <input type="text" value={segundonome} onChange={e => setSegundonome(e.target.value)} placeholder="Apelido" />
                         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
-                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" min="1" max="10" />
-                        <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
+                        <select value={idequipa} onChange={e => setIdequipa(e.target.value)}>
+                            <option value="">Selecionar Equipa</option>
+                            {teams.map(team => (
+                                <option key={team.id} value={team.id}>{team.nome}</option>
+                            ))}
+                        </select>
+                        <select value={idnivel} onChange={e => setIdnivel(e.target.value)}>
+                            <option value="">Selecionar Nível de Acesso</option>
+                            {accessLevels.map(level => (
+                                <option key={level.id} value={level.id}>{level.nome}</option>
+                            ))}
+                        </select>
                         <button className="admin-button" onClick={handleAddUser}>Adicionar Utilizador</button>
                         <button className="clear-button" onClick={handleClearForm}>Limpar Formulário</button>
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
@@ -209,6 +271,16 @@ export default function Admin() {
                         <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
                         <button className="admin-button" onClick={handleUpdateUser}>Atualizar Utilizador</button>
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
+                    </div>
+                )}
+                {view === 'createTeam' && ( /* Novo formulário para criar equipa */
+                    <div className="create-user-form">
+                        <h1>Criar Equipa</h1>
+                        {erro && <div className="erro">{erro}</div>}
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
+                        <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} placeholder="Nome da Equipa" />
+                        <button className="admin-button" onClick={handleAddTeam}>Adicionar Equipa</button>
+                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
                     </div>
                 )}
                 {view === 'viewUsers' && (
