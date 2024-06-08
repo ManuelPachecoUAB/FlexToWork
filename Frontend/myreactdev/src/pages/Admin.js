@@ -160,20 +160,21 @@ export default function Admin() {
                     </div>
                 )}
                 {view === 'viewUsers' && (
-                    <div>
+                    <div className="view-users-container">
                         <h1>Alterar/Apagar Utilizadores</h1>
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                             placeholder="Pesquisar por email"
+                            className="search-input"
                         />
                         {searchQuery && (
                             <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
                                 {filteredUsers.map(user => (
                                     <li key={user.id}>
                                         {user.email} - {user.primeironome}
-                                        <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
+                                        <button onClick={() => handleDeleteUser(user.id)} className="delete-button">Excluir</button>
                                     </li>
                                 ))}
                             </ul>

@@ -98,5 +98,89 @@ h1:hover {
     max-width: 600px;
     width: 100%;
     margin: auto;
+    text-align: center;
 }
 
+/*alterar apagar utilizadores form */
+.view-users-container {
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+    text-align: center; /* Centraliza o conteúdo */
+}
+
+.view-users-container h1 {
+    margin-bottom: 20px;
+}
+
+.view-users-container .search-input {
+    width: 100%; /* Ajuste para não ficar esticado */
+    padding: 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+}
+
+.view-users-container .search-input:focus {
+    border: 2px solid #007BFF;
+    outline: none;
+    background-color: #ffffff;
+}
+
+.view-users-container ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+    margin-top: 20px; /* Adicionado para espaçamento entre a pesquisa e a lista */
+}
+
+.view-users-container ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.view-users-container ul li:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.view-users-container .admin-button,
+.view-users-container .delete-button {
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 25px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.view-users-container .admin-button {
+    background-color: #007BFF;
+}
+
+.view-users-container .admin-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.view-users-container .delete-button {
+    background-color: #ff4d4d;
+    padding: 10px 20px; /* Alinhado com o botão Voltar */
+    margin: 5px;
+    border-radius: 25px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.view-users-container .delete-button:hover {
+    background-color: #cc0000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
