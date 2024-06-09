@@ -686,6 +686,49 @@ def get_teams():
         print(f"Erro ao obter equipes: {e}")
         return jsonify({"error": f"Erro ao obter equipes: {e}"}), 500
 
+@app.route("/api/eventos_equipa_manager", methods=["GET"])
+@jwt_required()
+def get_eventos_equipa_manager():
+    try:
+        current_user_email = get_jwt_identity()
+        current_user = users.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        if current_user.idnivel not in [2, 3, 4, 5]:  # Verifica se o nível do usuário é Manager, RH, RH Manager ou Admin
+            return jsonify({"error": "Acesso não autorizado"}), 403
+
+        team_members = users.query.filter_by(idequipa=current_user.idequipa).all()
+
+        all_events = []
+        for user in team_members:
+            user_events = {
+                "user": {
+                    "id": user.idutlizador,
+                    "primeironome": user.primeironome,
+                    "segundonome": user.segundonome,
+                },
+                "ferias": [],
+                "ausencias": [],
+                "presenciais": []
+            }
+
+            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+
+            user_events["ferias"] = [{"id": f.id, "data": f.data, "estado": f.estado} for f in ferias_marcadas]
+            user_events["ausencias"] = [{"id": a.id, "data": a.data, "estado": a.estado} for a in ausencias_marcadas]
+            user_events["presenciais"] = [{"id": p.id, "data": p.data, "estado": p.estado} for p in presenciais_marcadas]
+
+            all_events.append(user_events)
+
+        return jsonify(all_events), 200
+    except Exception as e:
+        print(f"Erro ao obter eventos de todos os usuários: {e}")
+        return jsonify({"error": f"Erro ao obter eventos de todos os usuários: {e}"}), 500
+
 @app.route("/api/add_equipa", methods=["POST"])
 @jwt_required()
 def add_team():
