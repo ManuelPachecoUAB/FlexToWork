@@ -5,6 +5,8 @@ import axios from 'axios';
 import moment from 'moment';
 
 export default function Manager() {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [allUserEvents, setAllUserEvents] = useState([]);
     const [feriasPendentes, setFeriasPendentes] = useState([]);
     const [ausenciasPendentes, setAusenciasPendentes] = useState([]);
     const [presenciaisPendentes, setPresenciaisPendentes] = useState([]);
@@ -12,6 +14,11 @@ export default function Manager() {
     const [mostrarFerias, setMostrarFerias] = useState(false);
     const [mostrarAusencias, setMostrarAusencias] = useState(false);
     const [mostrarPresenciais, setMostrarPresenciais] = useState(false);
+    const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
+    const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
+    const [formattedEvents, setFormattedEvents] = useState([]);
+
+
 
     useEffect(() => {
         const tokenUtilizador = localStorage.getItem('userToken');
@@ -46,6 +53,86 @@ export default function Manager() {
                 alert('Erro ao carregar membros da equipe. Tente novamente.');
             });
     }, []);
+
+    useEffect(() => {
+        fetchAllUserEvents();
+    }, [currentMonth, currentYear]);
+
+    const fetchAllUserEvents = async () => {
+        try {
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+                console.error("Token JWT não encontrado");
+                return;
+            }
+            let response;
+            response = await axios.get('http://localhost:5000/api/eventos_equipa_manager', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const eventsData = response.data;
+            if (Array.isArray(eventsData)) {
+                setAllUserEvents(eventsData);
+                formatEvents(eventsData);
+            } else {
+                console.error("Unexpected response format:", eventsData);
+            }
+        } catch (error) {
+            console.error("Erro ao obter eventos de todos os usuários:", error.response ? error.response.data : error.message);
+        }
+    };
+
+
+    const handleMonthChange = (direction) => {
+        let newDate;
+        if (direction === 'prev') {
+            newDate = new Date(currentYear, currentMonth - 1);
+        } else {
+            newDate = new Date(currentYear, currentMonth + 1);
+        }
+        setCurrentMonth(newDate.getMonth());
+        setCurrentYear(newDate.getFullYear());
+        setSelectedDate(newDate);
+    };
+
+    const handleYearChange = (direction) => {
+        let newDate;
+        if (direction === 'prev') {
+            newDate = new Date(currentYear - 1, currentMonth);
+        } else {
+            newDate = new Date(currentYear + 1, currentMonth);
+        }
+        setCurrentYear(newDate.getFullYear());
+        setSelectedDate(newDate);
+    };
+
+    const formatEvents = (events) => {
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const formatted = events.map(userEvents => {
+            const days = Array(daysInMonth).fill('');
+            userEvents.ferias.forEach(event => {
+                const date = new Date(event.data);
+                if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+                    days[date.getDate() - 1] = event.estado === 1 ? 'F-P' : 'F-A';
+                }
+            });
+            userEvents.ausencias.forEach(event => {
+                const date = new Date(event.data);
+                if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+                    days[date.getDate() - 1] = event.estado === 1 ? 'A-P' : 'A-A';
+                }
+            });
+            userEvents.presenciais.forEach(event => {
+                const date = new Date(event.data);
+                if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+                    days[date.getDate() - 1] = event.estado === 1 ? 'P-P' : 'P-A';
+                }
+            });
+            return { user: userEvents.user, days };
+        });
+        setFormattedEvents(formatted);
+    };
 
     const handleApprove = (id, type) => {
         const tokenUtilizador = localStorage.getItem('userToken');
@@ -127,20 +214,46 @@ export default function Manager() {
         );
     };
 
+    const formatDate = (date) => {
+        return date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase());
+    };
+
     return (
         <div className="main-container">
             <NavbarManager />
             <div className="container-manager">
-                <div className="team-members">
-                    <h2>Membros da Equipa</h2>
-                    <ul>
-                        {teamMembers.map(member => (
-                            <li key={member.id}><b>{member.posicao} - </b>{member.primeironome} {member.segundonome}</li>
+                <div className="month-selector">
+                    <button onClick={() => handleYearChange('prev')}>&laquo;</button>
+                    <button onClick={() => handleMonthChange('prev')}>&lsaquo;</button>
+                    <span>{formatDate(selectedDate)}</span>
+                    <button onClick={() => handleMonthChange('next')}>&rsaquo;</button>
+                    <button onClick={() => handleYearChange('next')}>&raquo;</button>
+                </div>
+                <div className="all-users-events">
+                    <h2>Plano mensal equipa</h2>
+                    <table className="events-table">
+                        <thead>
+                        <tr>
+                            <th>Nome do Colaborador</th>
+                            {Array.from({ length: new Date(currentYear, currentMonth + 1, 0).getDate() }, (_, i) => (
+                                <th key={i + 1}>{String(i + 1).padStart(2, '0')}/{String(currentMonth + 1).padStart(2, '0')}</th>
+                            ))}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {formattedEvents.map((userEvents, index) => (
+                            <tr key={index}>
+                                <td>{userEvents.user.primeironome} {userEvents.user.segundonome}</td>
+                                {userEvents.days.map((day, i) => (
+                                    <td key={i} className={day}>{day}</td>
+                                ))}
+                            </tr>
                         ))}
-                    </ul>
+                        </tbody>
+                    </table>
                 </div>
                 <div className="pending-events">
-                    <h2>Marcações Pendentes</h2>
+                    <h2>Aprovações Pendentes</h2>
                     <div className="event-section">
                         <h3 onClick={toggleFerias} className="expandable-title">Férias</h3>
                         {mostrarFerias && (
