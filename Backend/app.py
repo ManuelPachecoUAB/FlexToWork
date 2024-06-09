@@ -605,6 +605,7 @@ def get_all_users_events():
                     "id": user.idutlizador,
                     "primeironome": user.primeironome,
                     "segundonome": user.segundonome,
+                    "idequipa": user.idequipa,
                 },
                 "ferias": [],
                 "ausencias": [],
