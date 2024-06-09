@@ -156,6 +156,7 @@ export default function Manager() {
                     setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
                 }
                 alert('Evento aprovado com sucesso!');
+                fetchAllUserEvents();
             })
             .catch(error => {
                 console.error('Erro ao aprovar evento:', error);
@@ -185,6 +186,7 @@ export default function Manager() {
                     setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
                 }
                 alert('Evento rejeitado com sucesso!');
+                fetchAllUserEvents();
             })
             .catch(error => {
                 console.error('Erro ao rejeitar evento:', error);
