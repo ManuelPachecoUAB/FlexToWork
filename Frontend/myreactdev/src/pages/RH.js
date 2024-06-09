@@ -71,19 +71,19 @@ export default function RH() {
             userEvents.ferias.forEach(event => {
                 const date = new Date(event.data);
                 if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                    days[date.getDate() - 1] = event.estado === 1 ? 'F-P' : 'F-A';
+                    days[date.getDate() - 1] = event.estado === 1 ? 'F-P' : 'F';
                 }
             });
             userEvents.ausencias.forEach(event => {
                 const date = new Date(event.data);
                 if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                    days[date.getDate() - 1] = event.estado === 1 ? 'A-P' : 'A-A';
+                    days[date.getDate() - 1] = event.estado === 1 ? 'A-P' : 'A';
                 }
             });
             userEvents.presenciais.forEach(event => {
                 const date = new Date(event.data);
                 if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                    days[date.getDate() - 1] = event.estado === 1 ? 'P-P' : 'P-A';
+                    days[date.getDate() - 1] = event.estado === 1 ? 'P-P' : 'P';
                 }
             });
             return { user: userEvents.user, days };
@@ -133,34 +133,42 @@ export default function RH() {
         } else if (type === 'yearly') {
             try {
                 const token = localStorage.getItem('userToken');
+
                 if (!token) {
                     console.error("Token JWT não encontrado");
                     return;
                 }
-                const response = await axios.get('http://localhost:5000/api/all_users_events', {
+                let response;
+                response = await axios.get('http://localhost:5000/api/all_users_events', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                const filteredEvents = selectedTeam ? response.data.filter(event => event.user.idequipa === selectedTeam) : response.data;
+                let idselectedTeam;
+                for (let t in teams){
+                    if (teams[t].nome === selectedTeam){
+                        idselectedTeam = teams[t].id;
+                    }
+                }
+                const filteredEvents = idselectedTeam ? response.data.filter(event => event.user.idequipa === idselectedTeam) : response.data;
                 const yearlyEvents = filteredEvents.map(userEvents => {
                     const months = Array(12).fill('').map(() => Array(31).fill(''));
                     userEvents.ferias.forEach(event => {
                         const date = new Date(event.data);
                         if (date.getFullYear() === currentYear) {
-                            months[date.getMonth()][date.getDate() - 1] = event.estado === 1 ? 'F-P' : 'F-A';
+                            months[date.getMonth()][date.getDate() - 1] = event.estado === 1 ? 'F-P' : 'F';
                         }
                     });
                     userEvents.ausencias.forEach(event => {
                         const date = new Date(event.data);
                         if (date.getFullYear() === currentYear) {
-                            months[date.getMonth()][date.getDate() - 1] = event.estado === 1 ? 'A-P' : 'A-A';
+                            months[date.getMonth()][date.getDate() - 1] = event.estado === 1 ? 'A-P' : 'A';
                         }
                     });
                     userEvents.presenciais.forEach(event => {
                         const date = new Date(event.data);
                         if (date.getFullYear() === currentYear) {
-                            months[date.getMonth()][date.getDate() - 1] = event.estado === 1 ? 'P-P' : 'P-A';
+                            months[date.getMonth()][date.getDate() - 1] = event.estado === 1 ? 'P-P' : 'P';
                         }
                     });
                     return { user: userEvents.user, months };
