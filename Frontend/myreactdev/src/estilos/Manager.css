@@ -1,9 +1,8 @@
-
-
 .container-manager {
     display: flex;
-    width: 95%;
-    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 .team-members {
@@ -101,4 +100,93 @@
 
 .event-actions button {
     margin-right: 5px;
+}
+
+.month-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.month-selector button {
+    background: none;
+    border: none;
+    font-size: 2.9rem;
+    cursor: pointer;
+    margin: 0 10px;
+    color: white;
+    text-shadow: -2px -2px 0 #007bff, 2px -2px 0 #007bff, -2px 2px 0 #007bff, 2px 2px 0 #007bff, -2px 0 0 #007bff, 2px 0 0 #007bff, 0 -2px 0 #007bff, 0 2px 0 #007bff;
+}
+
+.month-selector button:hover {
+    color: #007bff;
+}
+
+.month-selector span {
+    font-size: 2.9em;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.all-users-events {
+    margin: 20px;
+    width: 100%;
+}
+
+.events-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.events-table th, .events-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.events-table th {
+    background-color: #f2f2f2;
+    color: black;
+}
+
+.events-table td {
+    height: 40px;
+    width: 40px;
+}
+
+.events-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Cores para os estados dos eventos */
+.P-P {
+    background-color: lightblue;
+    color: #000;
+}
+
+.P-A {
+    background-color: blue;
+    color: #fff;
+}
+
+.F-P {
+    background-color: lightgreen;
+    color: #000;
+}
+
+.F-A {
+    background-color: green;
+    color: #fff;
+}
+
+.A-P {
+    background-color: lightcoral;
+    color: #000;
+}
+
+.A-A {
+    background-color: orange;
+    color: #fff;
 }
