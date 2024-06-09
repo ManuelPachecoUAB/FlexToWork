@@ -114,19 +114,19 @@ export default function Manager() {
             userEvents.ferias.forEach(event => {
                 const date = new Date(event.data);
                 if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                    days[date.getDate() - 1] = event.estado === 1 ? 'F-P' : 'F-A';
+                    days[date.getDate() - 1] = event.estado === 1 ? 'F-P' : 'F';
                 }
             });
             userEvents.ausencias.forEach(event => {
                 const date = new Date(event.data);
                 if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                    days[date.getDate() - 1] = event.estado === 1 ? 'A-P' : 'A-A';
+                    days[date.getDate() - 1] = event.estado === 1 ? 'A-P' : 'A';
                 }
             });
             userEvents.presenciais.forEach(event => {
                 const date = new Date(event.data);
                 if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                    days[date.getDate() - 1] = event.estado === 1 ? 'P-P' : 'P-A';
+                    days[date.getDate() - 1] = event.estado === 1 ? 'P-P' : 'P';
                 }
             });
             return { user: userEvents.user, days };
