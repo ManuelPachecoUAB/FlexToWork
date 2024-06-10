@@ -266,9 +266,9 @@ export default function Admin() {
                         {erro && <div className="erro">{erro}</div>}
                         {sucesso && <div className="sucesso">{sucesso}</div>}
                         <input type="email" value={email} placeholder="@Email" readOnly />
-                        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
-                        <input type="number" value={idequipa} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" min="1" max="10" />
-                        <input type="number" value={idnivel} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
+                        <input type="password" value={password || ''} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
+                        <input type="number" value={idequipa || ''} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" min="1" max="10" />
+                        <input type="number" value={idnivel || ''} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
                         <button className="admin-button" onClick={handleUpdateUser}>Atualizar Utilizador</button>
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
