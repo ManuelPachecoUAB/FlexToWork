@@ -161,9 +161,15 @@ export default function Admin() {
     function handleUpdateUser() {
         const userToken = localStorage.getItem('userToken');
         const updatedUser = {};
-        if (password) updatedUser.password = password;
-        if (idequipa) updatedUser.equipa = parseInt(idequipa, 10);
-        if (idnivel) updatedUser.nivel = parseInt(idnivel, 10);
+        if (password) {
+            updatedUser.password = password;
+        }
+        if (idequipa) {
+            updatedUser.equipa = parseInt(idequipa, 10);
+        }
+        if (idnivel) {
+            updatedUser.nivel = parseInt(idnivel, 10);
+        }
 
         axios.put(`http://127.0.0.1:5000/api/users/${selectedUser.id}`, updatedUser, {
             headers: { Authorization: `Bearer ${userToken}` }
