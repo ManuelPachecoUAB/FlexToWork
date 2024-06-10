@@ -152,8 +152,8 @@ export default function Admin() {
         setEmail(user.email);
         setPrimeironome(user.primeironome);
         setSegundonome(user.segundonome);
-        setIdequipa(user.equipa);
-        setIdnivel(user.nivel);
+        setIdequipa(user.idequipa);
+        setIdnivel(user.idnivel);
         setPassword('');
         setView('editUser');
     }
@@ -273,8 +273,22 @@ export default function Admin() {
                         {sucesso && <div className="sucesso">{sucesso}</div>}
                         <input type="email" value={email} placeholder="@Email" readOnly />
                         <input type="password" value={password || ''} onChange={e => setPassword(e.target.value)} placeholder="Senha" />
-                        <input type="number" value={idequipa || ''} onChange={e => setIdequipa(e.target.value)} placeholder="ID Equipa" min="1" max="10" />
-                        <input type="number" value={idnivel || ''} onChange={e => setIdnivel(e.target.value)} placeholder="Nível de Acesso" min="1" max="5" />
+                        <select value={idequipa} onChange={e => setIdequipa(e.target.value)}>
+                            <option value="" disabled>Selecionar Equipa</option>
+                            {teams.map(team => (
+                                <option key={team.id} value={team.id}>
+                                    {team.nome}
+                                </option>
+                            ))}
+                        </select>
+                        <select value={idnivel} onChange={e => setIdnivel(e.target.value)}>
+                            <option value="" disabled>Selecionar Nível de Acesso</option>
+                            {accessLevels.map(level => (
+                                <option key={level.id} value={level.id}>
+                                    {level.nome}
+                                </option>
+                            ))}
+                        </select>
                         <button className="admin-button" onClick={handleUpdateUser}>Atualizar Utilizador</button>
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
