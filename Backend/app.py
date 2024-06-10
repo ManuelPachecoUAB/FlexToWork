@@ -167,11 +167,21 @@ def update_user(user_id):
         user_to_update.email = request.json.get("email", user_to_update.email)
         user_to_update.primeironome = request.json.get("primeironome", user_to_update.primeironome)
         user_to_update.segundonome = request.json.get("segundonome", user_to_update.segundonome)
-        user_to_update.idequipa = request.json.get("idequipa", user_to_update.idequipa)
-        user_to_update.idnivel = request.json.get("idnivel", user_to_update.idnivel)
+        if 'password' in request.json:
+            user_to_update.password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
+        if 'equipa' in request.json:
+            user_to_update.idequipa = request.json['equipa']
+        if 'nivel' in request.json:
+            user_to_update.idnivel = request.json['nivel']
 
-        db.session.commit()
-        return jsonify({"message": "Utilizador atualizado com sucesso"}), 200
+        try:
+            db.session.commit()
+            print(f"Utilizador atualizado com sucesso: {user_to_update}")
+            return jsonify({"message": "Utilizador atualizado com sucesso"}), 200
+        except Exception as e:
+            print(f"Erro ao atualizar utilizador: {e}")
+            db.session.rollback()
+            return jsonify({"error": "Erro ao atualizar utilizador", "details": str(e)}), 500
     return jsonify({"error": "Utilizador não encontrado"}), 404
 
 @app.route("/api/ferias", methods=["POST"])
