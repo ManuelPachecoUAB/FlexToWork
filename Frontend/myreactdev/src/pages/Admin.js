@@ -161,6 +161,11 @@ export default function Admin() {
     function handleUpdateUser() {
         const userToken = localStorage.getItem('userToken');
         const updatedUser = {};
+
+        if (password && password.length < 6) {
+            setErro('A Senha deve ter pelo menos 6 caracteres.');
+            return;
+        }
         if (password) {
             updatedUser.password = password;
         }
