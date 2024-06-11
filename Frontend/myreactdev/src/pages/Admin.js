@@ -290,15 +290,18 @@ export default function Admin() {
             <NavbarAdmin />
             <div className="page-container">
                 {view === null && (
-                    <div className="icon-container">
+                <div className="icon-container">
+                    <div className="icon-column">
                         <div className="icon-wrapper" onClick={() => setView('createUser')}>
                             <img src={addUserIcon} alt="Add User" className="icon" />
                             <div className="icon-label">Criar Utilizador</div>
                         </div>
-                        <div className="icon-wrapper" onClick={() => setView('createTeam')}> {/* Novo botão para criar equipa */}
+                        <div className="icon-wrapper" onClick={() => setView('createTeam')}>
                             <img src={addTeamIcon} alt="Add Team" className="icon" />
                             <div className="icon-label">Criar Equipa</div>
                         </div>
+                    </div>
+                    <div className="icon-column">
                         <div className="icon-wrapper" onClick={() => setView('viewUsers')}>
                             <img src={searchUserIcon} alt="Search User" className="icon" />
                             <div className="icon-label">Ver Utilizadores</div>
@@ -308,7 +311,8 @@ export default function Admin() {
                             <div className="icon-label">Ver Equipas</div>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
                 {view === 'createUser' && (
                     <div className="create-user-form">
                         <h1>Criar Utilizador</h1>
