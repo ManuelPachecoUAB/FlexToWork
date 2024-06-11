@@ -113,6 +113,7 @@ export default function Admin() {
             .then(() => {
                 setTeamName('');
                 setSucesso('Equipa criada com sucesso!');
+                fetchTeams();
             })
             .catch(error => {
                 console.error('Erro ao adicionar equipa', error);
@@ -238,7 +239,7 @@ export default function Admin() {
         axios.put(`http://127.0.0.1:5000/api/teams/${selectedTeam.id}`, { nomeequipa: teamName }, {
             headers: { Authorization: `Bearer ${userToken}` }
         })
-            .then(response => {
+            .then(()=> {
                 setTeamName('');
                 setSucesso('Equipa atualizada com sucesso!');
                 fetchTeams();
