@@ -251,8 +251,8 @@ export default function Admin() {
 
     function handleUpdateTeam() {
         const userToken = localStorage.getItem('userToken');
-        if (teamName.length < 4) {
-            setErro('O nome da equipa deve ter pelo menos 4 caracteres.');
+        if (teamName.length < 3) {
+            setErro('O nome da equipa deve ter pelo menos 3 caracteres.');
             return;
         }
         axios.put(`http://127.0.0.1:5000/api/teams/${selectedTeam.id}`, { nomeequipa: teamName }, {
@@ -262,7 +262,6 @@ export default function Admin() {
                 setTeamName('');
                 setSucesso('Equipa atualizada com sucesso!');
                 fetchTeams();
-                handleResetView();
             })
             .catch(error => {
                 console.error('Erro ao atualizar equipa', error);
