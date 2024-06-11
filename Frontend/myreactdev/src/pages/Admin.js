@@ -281,6 +281,8 @@ export default function Admin() {
         handleClearForm();
         setView(null);
         setSearchQuery('');
+        setTeamName('');
+        setSearchTeamQuery('');
     }
 
     return (
@@ -367,7 +369,7 @@ export default function Admin() {
                         {sucesso && <div className="sucesso">{sucesso}</div>}
                         <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} placeholder="Nome da Equipa" />
                         <button className="admin-button" onClick={handleAddTeam}>Adicionar Equipa</button>
-                        <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
                 {view === 'viewTeams' && (
