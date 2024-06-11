@@ -5,8 +5,7 @@ import '../estilos/Admin.css';
 import addUserIcon from '../img/add_user.png';
 import searchUserIcon from '../img/search_user.png';
 import addTeamIcon from '../img/add_teams.png';
-
-
+import searchTeamIcon from '../img/search_teams.png';
 
 export default function Admin() {
     const [view, setView] = useState(null);
@@ -25,6 +24,9 @@ export default function Admin() {
     const [teamName, setTeamName] = useState('');
     const [teams, setTeams] = useState([]); // Novo estado para equipes
     const [accessLevels, setAccessLevels] = useState([]); // Novo estado para níveis de acesso
+    const [selectedTeam, setSelectedTeam] = useState(null);
+    const [searchTeamQuery, setSearchTeamQuery] = useState('');
+    const filteredTeams = teams.filter(team => team.nome.toLowerCase().includes(searchTeamQuery.toLowerCase()));
 
     useEffect(() => {
         fetchUsers();
@@ -147,6 +149,30 @@ export default function Admin() {
         }
     }
 
+    function handleDeleteTeam(id) {
+        const userToken = localStorage.getItem('userToken');
+        if (window.confirm("Tem certeza que deseja excluir esta equipa?")) {
+            axios.delete(`http://127.0.0.1:5000/api/teams/${id}`, {
+                headers: { Authorization: `Bearer ${userToken}` }
+            })
+                .then(response => {
+                    console.log('Equipa removida com sucesso!', response.data);
+                    setSucesso(`Equipa removida com sucesso: ${id}`);
+                    setErro('');
+                    fetchTeams();
+                })
+                .catch(error => {
+                    console.error('Falha ao remover equipa!', error);
+                    if (error.response && error.response.data && error.response.data.error) {
+                        setErro(`Erro ao remover a equipa: ${error.response.data.error}`);
+                    } else {
+                        setErro(`Erro ao remover a equipa: Um erro desconhecido ocorreu.`);
+                    }
+                    setSucesso('');
+                });
+        }
+    }
+
     function handleEditUser(user) {
         setSelectedUser(user);
         setEmail(user.email);
@@ -156,6 +182,12 @@ export default function Admin() {
         setIdnivel(user.idnivel);
         setPassword('');
         setView('editUser');
+    }
+
+    function handleEditTeam(team) {
+        setSelectedTeam(team);
+        setTeamName(team.nome);
+        setView('editTeam');
     }
 
     function handleUpdateUser() {
@@ -193,6 +225,31 @@ export default function Admin() {
                     setErro('Erro ao atualizar utilizador: ' + error.response.data.error);
                 } else {
                     setErro('Erro ao atualizar utilizador: An unknown error occurred.');
+                }
+            });
+    }
+
+    function handleUpdateTeam() {
+        const userToken = localStorage.getItem('userToken');
+        if (teamName.length < 4) {
+            setErro('O nome da equipa deve ter pelo menos 4 caracteres.');
+            return;
+        }
+        axios.put(`http://127.0.0.1:5000/api/teams/${selectedTeam.id}`, { nomeequipa: teamName }, {
+            headers: { Authorization: `Bearer ${userToken}` }
+        })
+            .then(response => {
+                setTeamName('');
+                setSucesso('Equipa atualizada com sucesso!');
+                fetchTeams();
+                handleResetView();
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar equipa', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    setErro('Erro ao atualizar equipa: ' + error.response.data.error);
+                } else {
+                    setErro('Erro ao atualizar equipa: Um erro desconhecido ocorreu.');
                 }
             });
     }
@@ -242,6 +299,10 @@ export default function Admin() {
                         <div className="icon-wrapper" onClick={() => setView('viewUsers')}>
                             <img src={searchUserIcon} alt="Search User" className="icon" />
                             <div className="icon-label">Ver Utilizadores</div>
+                        </div>
+                        <div className="icon-wrapper" onClick={() => setView('viewTeams')}>
+                            <img src={searchTeamIcon} alt="Search Team" className="icon" />
+                            <div className="icon-label">Ver Equipas</div>
                         </div>
                     </div>
                 )}
@@ -306,6 +367,44 @@ export default function Admin() {
                         <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} placeholder="Nome da Equipa" />
                         <button className="admin-button" onClick={handleAddTeam}>Adicionar Equipa</button>
                         <button className="admin-button" onClick={() => setView(null)}>Voltar</button>
+                    </div>
+                )}
+                {view === 'viewTeams' && (
+                    <div className="view-users-container">
+                        <h1>Alterar/Apagar Equipas</h1>
+                        <input
+                            type="text"
+                            value={searchTeamQuery}
+                            onChange={e => setSearchTeamQuery(e.target.value)}
+                            placeholder="Pesquisar por nome da equipa"
+                            className="search-input"
+                        />
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
+                        {erro && <div className="erro">{erro}</div>}
+                        {searchTeamQuery && (
+                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {filteredTeams.map(team => (
+                                    <li key={team.id}>
+                                        <span style={{ flexGrow: 1 }}>{team.nome}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
+                                            <button onClick={() => handleEditTeam(team)} className="action-button edit-button">Alterar</button>
+                                            <button onClick={() => handleDeleteTeam(team.id)} className="action-button delete-button">Excluir</button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
+                    </div>
+                )}
+                {view === 'editTeam' && (
+                    <div className="create-user-form">
+                        <h1>Editar Nome da Equipa</h1>
+                        {erro && <div className="erro">{erro}</div>}
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
+                        <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} placeholder="Nome da Equipa" />
+                        <button className="admin-button" onClick={handleUpdateTeam}>Atualizar Equipa</button>
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
                 {view === 'viewUsers' && (
