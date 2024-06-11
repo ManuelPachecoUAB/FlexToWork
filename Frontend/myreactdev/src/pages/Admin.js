@@ -34,6 +34,25 @@ export default function Admin() {
         fetchAccessLevels();
     }, []);
 
+    // useEffect para limpar mensagens de sucesso e erro após 6 segundos
+    useEffect(() => {
+        if (sucesso) {
+            const timer = setTimeout(() => {
+                setSucesso('');
+            }, 6000);
+            return () => clearTimeout(timer);
+        }
+    }, [sucesso]);
+
+    useEffect(() => {
+        if (erro) {
+            const timer = setTimeout(() => {
+                setErro('');
+            }, 6000);
+            return () => clearTimeout(timer);
+        }
+    }, [erro]);
+
     function fetchUsers() {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/users', {
@@ -158,7 +177,7 @@ export default function Admin() {
             })
                 .then(response => {
                     console.log('Equipa removida com sucesso!', response.data);
-                    setSucesso(`Equipa removida com sucesso: ${id}`);
+                    setSucesso(`Equipa removida com sucesso com o id: ${id}`);
                     setErro('');
                     fetchTeams();
                 })
