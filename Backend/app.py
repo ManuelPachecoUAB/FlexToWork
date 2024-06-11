@@ -760,6 +760,42 @@ def add_team():
 
     return jsonify({"message": "Equipa criada com sucesso"}), 201
 
+@app.route("/api/teams/<int:id>", methods=["DELETE"])
+@jwt_required()
+def delete_team(id):
+    try:
+        team = equipa.query.filter_by(idequipa=id).first()
+        if not team:
+            return jsonify({"error": "Equipa não encontrada"}), 404
+
+        users_in_team = users.query.filter_by(idequipa=id).count()
+        if users_in_team > 0:
+            return jsonify({"error": "Não é possível excluir a equipa. Existem utilizadores nesta equipa."}), 400
+
+        db.session.delete(team)
+        db.session.commit()
+        return jsonify({"message": "Equipa removida com sucesso"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Erro ao remover a equipa: {e}"}), 500
+
+@app.route("/api/teams/<int:id>", methods=["PUT"])
+@jwt_required()
+def update_team(id):
+    try:
+        team_name = request.json["nomeequipa"]
+        if not team_name or len(team_name) < 4:
+            return jsonify({"error": "Nome da equipa é obrigatório e deve ter pelo menos 4 caracteres."}), 400
+
+        team = equipa.query.filter_by(idequipa=id).first()
+        if not team:
+            return jsonify({"error": "Equipa não encontrada"}), 404
+
+        team.nomeequipa = team_name
+        db.session.commit()
+        return jsonify({"message": "Equipa atualizada com sucesso"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Erro ao atualizar a equipa: {e}"}), 500
+
 @app.route("/api/access_levels", methods=["GET"])
 @jwt_required()
 def get_access_levels():
