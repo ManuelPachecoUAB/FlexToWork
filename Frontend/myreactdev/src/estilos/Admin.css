@@ -191,6 +191,27 @@ h1:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+.view-users-container .edit-button {
+    background-color: #ffffff;
+    color: #000;
+    border: 2px solid #ffa500;
+    margin-right: 10px;
+}
+
+.view-users-container .edit-button:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.view-users-container .delete-button {
+    background-color: #ff4d4d;
+}
+
+.view-users-container .delete-button:hover {
+    background-color: #cc0000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 /* Botão Alterar */
 .view-users-container .edit-button {
     background-color: #ffffff;
