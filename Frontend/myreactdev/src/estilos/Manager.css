@@ -98,9 +98,6 @@
     margin-bottom: 10px;
 }
 
-.event-actions button {
-    margin-right: 5px;
-}
 
 .month-selector {
     display: flex;
@@ -189,4 +186,28 @@
 .A {
     background-color: orange;
     color: #fff;
+}
+
+.buttonAprovar{
+    margin: 0 15px;
+    margin-right: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: lightgreen;
+    font-weight: bold;
+}
+
+.buttonRejeitar{
+    margin: 0 15px;
+    margin-right: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: lightcoral;
+    font-weight: bold;
 }

@@ -204,11 +204,9 @@ export default function Manager() {
                 <div key={evento.id} className="event-card">
                     <p>
                         <strong>{evento.user}</strong> - {moment(evento.date).format('DD/MM/YYYY')} - {evento.title}
+                        <button className="buttonAprovar" onClick={() => handleApprove(evento.id, evento.type)}>Aprovar</button>
+                        <button className="buttonRejeitar" onClick={() => handleReject(evento.id, evento.type)}>Rejeitar</button>
                     </p>
-                    <div className="event-actions">
-                        <button onClick={() => handleApprove(evento.id, evento.type)}>Aprovar</button>
-                        <button onClick={() => handleReject(evento.id, evento.type)}>Rejeitar</button>
-                    </div>
                 </div>
             ))
         ) : (
