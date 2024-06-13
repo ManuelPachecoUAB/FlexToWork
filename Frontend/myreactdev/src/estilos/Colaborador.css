@@ -24,12 +24,20 @@
 }
 
 .selected-dates-container {
-    text-align: center;
-}
-
-.legend-container {
     flex: 0 0 15%;
     padding-left: 50px;
+    /* Adicionando o estilo para alinhar verticalmente */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+
+.legend-container {
+    flex: 0 0 0%;
+    padding-left: 0px;
+    align-content: center;
 }
 
 .legend-container h2 {
@@ -56,29 +64,35 @@
 
 .legend-presencial-pending {
     background-color: lightblue;
+    margin-left: 15px;
 }
 
 .legend-presencial-approved {
     background-color: blue;
     color: white;
+    margin-left: 15px;
 }
 
 .legend-ferias-pending {
     background-color: lightgreen;
+    margin-left: 15px;
 }
 
 .legend-ferias-approved {
     background-color: green;
     color: white;
+    margin-left: 15px;
 }
 
 .legend-ausencia-pending {
     background-color: lightcoral;
+    margin-left: 15px;
 }
 
 .legend-ausencia-approved {
     background-color: orange;
     color: white;
+    margin-left: 15px;
 }
 
 .react-calendar {
@@ -88,19 +102,20 @@
 
 .react-calendar__navigation {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 24px;
-    padding: 10px;
+    justify-content: center;
+    margin: 20px 0;
 }
 
 
 .react-calendar__navigation button {
-    min-width: 44px;
     background: none;
-    font-size: 32px;
-    padding: 4px 10px;
+    border: none;
+    font-size: 2.9rem;
     cursor: pointer;
+    margin: 0 10px;
+    color: white;
+    text-shadow: -2px -2px 0 #007bff, 2px -2px 0 #007bff, -2px 2px 0 #007bff, 2px 2px 0 #007bff, -2px 0 0 #007bff, 2px 0 0 #007bff, 0 -2px 0 #007bff, 0 2px 0 #007bff;
 }
 
 .react-calendar__month-view__weekdays__weekday {
@@ -124,6 +139,7 @@
     padding: 5px;
     cursor: pointer;
 }
+
 
 .selected {
     background-color: lightgray !important;

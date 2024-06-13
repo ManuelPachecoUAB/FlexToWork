@@ -250,6 +250,19 @@ export default function Colaborador() {
                     <p>Aprovadas: <span id="ferias-aprovadas">{metrics.feriasAprovadas}</span></p>
                     <p>Pendentes: <span id="ferias-pendentes">{metrics.feriasPendentes}</span></p>
                     <p>Disponiveis: <span id="ferias-por-marcar">{metrics.feriasPorMarcar}</span></p>
+                    <br></br>
+                    <h2 className="legend-container">Legenda</h2>
+                    <ul className="legend-container">
+                        <li><span className="legend-presencial-pending"></span> Presencial Pendentes</li>
+                        <li><span className="legend-presencial-approved"></span> Presencial Aprovadas</li>
+                        <li><span className="legend-ferias-pending"></span> Férias Pendentes</li>
+                        <li><span className="legend-ferias-approved"></span> Férias Aprovadas</li>
+                        <li><span className="legend-ausencia-pending"></span> Ausência Pendentes</li>
+                        <li><span className="legend-ausencia-approved"></span> Ausência Aprovadas</li>
+                    </ul>
+                </div>
+                <div className="legend-container">
+
                 </div>
                 <div className="calendar-and-actions">
                     <div className="calendar-container">
@@ -263,35 +276,25 @@ export default function Colaborador() {
                             }}
                         />
                     </div>
-                    <div className="selected-dates-container">
-                        <h2>Selected Dates</h2>
-                        <ul>
-                            {selectedDates.map(date => (
-                                <li key={date.toDateString()}>{date.toDateString()}</li>
-                            ))}
-                        </ul>
-                        {selectedDates.length === 1 && events.some(event => event.date.toDateString() === selectedDates[0].toDateString()) ? (
-                            <div className="button-group">
-                                <button onClick={Delete_Event_Fun}>Eliminar Marcação</button>
-                            </div>
-                        ) : (
-                            <div className="button-group">
-                                <button onClick={() => Create_Event_Fun("Presencial")}>Presencial</button>
-                                <button onClick={() => Create_Event_Fun("Férias")}>Férias</button>
-                                <button onClick={() => Create_Event_Fun("Ausência")}>Ausência</button>
-                            </div>
-                        )}
-                    </div>
+
+                    {selectedDates.length === 1 && events.some(event => event.date.toDateString() === selectedDates[0].toDateString()) ? (
+                        <div className="button-group">
+                            <button onClick={Delete_Event_Fun}>Eliminar Marcação</button>
+                        </div>
+                    ) : (
+                        <div className="button-group">
+                            <button onClick={() => Create_Event_Fun("Presencial")}>Presencial</button>
+                            <button onClick={() => Create_Event_Fun("Férias")}>Férias</button>
+                            <button onClick={() => Create_Event_Fun("Ausência")}>Ausência</button>
+                        </div>
+                    )}
                 </div>
-                <div className="legend-container">
-                    <h2>Legenda</h2>
+                <div className="selected-dates-container">
+                    <h2>Selected Dates</h2>
                     <ul>
-                        <li><span className="legend-presencial-pending"></span> Presencial Pendentes</li>
-                        <li><span className="legend-presencial-approved"></span> Presencial Aprovadas</li>
-                        <li><span className="legend-ferias-pending"></span> Férias Pendentes</li>
-                        <li><span className="legend-ferias-approved"></span> Férias Aprovadas</li>
-                        <li><span className="legend-ausencia-pending"></span> Ausência Pendentes</li>
-                        <li><span className="legend-ausencia-approved"></span> Ausência Aprovadas</li>
+                        {selectedDates.map(date => (
+                            <li key={date.toDateString()}>{date.toDateString()}</li>
+                        ))}
                     </ul>
                 </div>
             </div>
