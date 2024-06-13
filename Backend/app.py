@@ -5,12 +5,14 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas, equipa, nivelacesso
 from datetime import datetime
+from datetime import timedelta
 
 app = Flask(__name__)
 
 #Configurações Flask
 app.config['SECRET_KEY'] = 'a34r435e354v&%&%&wsd534%&%&%&f4dsasd56r&%&%ety543g#$%"#%fg3544'
 app.config['JWT_SECRET_KEY'] = 'a34r435sdf4fgdf#$&#$&r4533-ddd-346-7856fd7644$##$&gfd543-^3544'
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
