@@ -283,9 +283,9 @@ export default function Colaborador() {
                         </div>
                     ) : (
                         <div className="button-group">
-                            <button onClick={() => Create_Event_Fun("Presencial")}>Presencial</button>
-                            <button onClick={() => Create_Event_Fun("Férias")}>Férias</button>
-                            <button onClick={() => Create_Event_Fun("Ausência")}>Ausência</button>
+                            <button className="button-presencial" onClick={() => Create_Event_Fun("Presencial")}>Presencial</button>
+                            <button className="button-ferias" onClick={() => Create_Event_Fun("Férias")}>Férias</button>
+                            <button className="button-ausencia" onClick={() => Create_Event_Fun("Ausência")}>Ausência</button>
                         </div>
                     )}
                 </div>
