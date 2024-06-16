@@ -5,9 +5,10 @@
 }
 
 .metrics {
-    flex: 0 0 15%;
+    flex: 0 0 250px; /* Define uma largura fixa */
     margin-left: 50px;
     padding-left: 10px;
+    text-align: center; /* Centraliza o texto nas métricas */
 }
 
 .calendar-and-actions {
@@ -32,8 +33,6 @@
     justify-content: flex-start;
 }
 
-
-
 .legend-container {
     flex: 0 0 0%;
     padding-left: 0px;
@@ -53,6 +52,10 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    border: 1px solid #000; /* Adicionando moldura */
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px; /* Adiciona bordas arredondadas */
 }
 
 .legend-container span {
@@ -96,8 +99,9 @@
 }
 
 .react-calendar {
-    min-width: 800px;
-    width: 100%;
+    min-width: 1000px; /* Aumentar a largura mínima */
+    width: 100%; /* Garantir que o calendário use 100% da largura disponível */
+    font-size: 20px; /* Aumentar o tamanho da fonte para tornar o calendário maior */
 }
 
 .react-calendar__navigation {
@@ -107,11 +111,10 @@
     margin: 20px 0;
 }
 
-
 .react-calendar__navigation button {
     background: none;
     border: none;
-    font-size: 2.9rem;
+    font-size: 3rem; /* Aumentar o tamanho da fonte dos botões de navegação */
     cursor: pointer;
     margin: 0 10px;
     color: white;
@@ -122,7 +125,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 20px; /* Aumentar o tamanho da fonte dos dias da semana */
     font-weight: bold;
     padding: 10px 0;
 }
@@ -134,12 +137,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 18px; /* Aumentar o tamanho da fonte das células */
     font-weight: bold;
-    padding: 5px;
+    padding: 10px; /* Aumentar o padding das células */
     cursor: pointer;
 }
-
 
 .selected {
     background-color: lightgray !important;
@@ -185,10 +187,33 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    width: 150px; /* Define uma largura fixa maior para os botões */
+}
+
+.button-presencial {
+    background-color: blue;
+    color: white;
+}
+
+.button-ferias {
+    background-color: green;
+    color: white;
+}
+
+.button-ausencia {
+    background-color: orange;
+    color: white;
 }
 
 .button-group button:hover {
-    background-color: #ddd;
+    opacity: 0.8;
+}
+
+.metrics p, .metrics h3 {
+    border: 1px solid #000; /* Ajuste a cor conforme necessário */
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px; /* Adiciona bordas arredondadas */
 }
 
 @media (max-width: 768px) {
@@ -218,3 +243,4 @@
         padding: 10px;
     }
 }
+
