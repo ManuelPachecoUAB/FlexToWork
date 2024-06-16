@@ -44,7 +44,7 @@ export default function LoginPage(){
                         localStorage.setItem('userToken', token);
                     }
                     else if (nivel === 4) {
-                        navigate("/RHManager");
+                        navigate("/RH");
                         localStorage.setItem('nivel', nivel);
                         localStorage.setItem('userToken', token);
                     }
