@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import NavbarAdmin from '../components/NavbarLogado.js';
 import '../estilos/Admin.css';
 import addUserIcon from '../img/add_user.png';
 import searchUserIcon from '../img/search_user.png';
 import addTeamIcon from '../img/add_teams.png';
 import searchTeamIcon from '../img/search_teams.png';
+import NavbarLogado from "../components/NavbarLogado.js";
 
 export default function Admin() {
     const [view, setView] = useState(null);
@@ -305,7 +305,7 @@ export default function Admin() {
 
     return (
         <div className="main-container">
-            <NavbarAdmin />
+            <NavbarLogado />
             <div className="page-container">
                 {view === null && (
                 <div className="icon-container">
