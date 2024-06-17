@@ -468,9 +468,9 @@ def approve_event(id):
         return jsonify({"message": "Evento aprovado com sucesso"}), 200
     return jsonify({"error": "Evento não encontrado"}), 404
 
-@app.route("/api/ferias/reject/<int:id>", methods=["PUT"])
-@app.route("/api/ausencias/reject/<int:id>", methods=["PUT"])
-@app.route("/api/presencial/reject/<int:id>", methods=["PUT"])
+@app.route("/api/ferias/reject/<int:id>", methods=["DELETE"])
+@app.route("/api/ausencias/reject/<int:id>", methods=["DELETE"])
+@app.route("/api/presencial/reject/<int:id>", methods=["DELETE"])
 @jwt_required()
 def reject_event(id):
     current_user_email = get_jwt_identity()
@@ -489,7 +489,7 @@ def reject_event(id):
         return jsonify({"error": "Evento não encontrado"}), 404
 
     if event:
-        event.estado = 3  # Rejeitado
+        db.session.delete(event)
         db.session.commit()
         return jsonify({"message": "Evento rejeitado com sucesso"}), 200
     return jsonify({"error": "Evento não encontrado"}), 404

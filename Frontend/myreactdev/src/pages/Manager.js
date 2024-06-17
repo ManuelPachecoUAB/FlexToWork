@@ -155,7 +155,7 @@ export default function Manager() {
                 } else if (type === 'presencial') {
                     setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
                 }
-                alert('Evento aprovado com sucesso!');
+                console.log('Evento aprovado com sucesso!');
                 fetchAllUserEvents();
             })
             .catch(error => {
@@ -172,26 +172,34 @@ export default function Manager() {
             return;
         }
 
-        let endpoint = `http://127.0.0.1:5000/api/${type}/reject/${id}`;
+            let endpoint = '';
+        console.log(type);
+            if (type === "ferias") {
+                endpoint = `http://127.0.0.1:5000/api/ferias/reject/${id}`;
+            } else if (type === "ausencias") {
+                endpoint = `http://127.0.0.1:5000/api/ausencias/reject/${id}`;
+            } else if (type === "presencial") {
+                endpoint = `http://127.0.0.1:5000/api/presencial/reject/${id}`;
+            }
 
-        axios.put(endpoint, {}, {
-            headers: { Authorization: `Bearer ${tokenUtilizador}` }
-        })
-            .then(response => {
-                if (type === 'ferias') {
-                    setFeriasPendentes(feriasPendentes.filter(evento => evento.id !== id));
-                } else if (type === 'ausencias') {
-                    setAusenciasPendentes(ausenciasPendentes.filter(evento => evento.id !== id));
-                } else if (type === 'presencial') {
-                    setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
-                }
-                alert('Evento rejeitado com sucesso!');
-                fetchAllUserEvents();
+            axios.delete(endpoint, {
+                headers: { Authorization: `Bearer ${tokenUtilizador}` }
             })
-            .catch(error => {
-                console.error('Erro ao rejeitar evento:', error);
-                alert('Erro ao rejeitar evento. Tente novamente.');
-            });
+                .then(response => {
+                    if (type === 'ferias') {
+                        setFeriasPendentes(feriasPendentes.filter(evento => evento.id !== id));
+                    } else if (type === 'ausencias') {
+                        setAusenciasPendentes(ausenciasPendentes.filter(evento => evento.id !== id));
+                    } else if (type === 'presencial') {
+                        setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
+                    }
+                    fetchAllUserEvents(); // Atualiza os eventos após deletar
+                    alert('Marcação removida com sucesso!');
+                })
+                .catch(error => {
+                    console.error('Erro ao remover marcação:', error.response ? error.response.data.error : error);
+                    alert(`Erro ao remover marcação: ${error.response ? error.response.data.error : error.message}. Tente novamente.`);
+                });
     };
 
     const toggleFerias = () => setMostrarFerias(!mostrarFerias);
