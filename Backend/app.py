@@ -25,6 +25,20 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+    # Verificar se a tabela nivelacesso está vazia
+    if nivelacesso.query.count() == 0:
+        # Adicionar níveis de acesso
+        niveis = [
+            nivelacesso(id=1, tipoutilizador="Colaborador"),
+            nivelacesso(id=2, tipoutilizador="Manager"),
+            nivelacesso(id=3, tipoutilizador="RH"),
+            nivelacesso(id=4, tipoutilizador="ManagerRH"),
+            nivelacesso(id=5, tipoutilizador="Admin")
+        ]
+        db.session.bulk_save_objects(niveis)
+        db.session.commit()
+        print("Níveis de acesso inicializados.")
+
 
 @app.route("/")
 def hello():
