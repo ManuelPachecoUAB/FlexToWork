@@ -134,7 +134,7 @@ export default function Colaborador() {
                 .then(response => {
                     fetchUserEvents(currentYear, currentMonth); // Atualiza os eventos após criar
                     setSelectedDates([]);
-                    alert(`${type} marcadas com sucesso!`);
+                    console.log(`${type} marcadas com sucesso!`);
                 })
                 .catch(error => {
                     console.error('Erro ao marcar eventos:', error.response ? error.response.data.error : error);
@@ -166,7 +166,7 @@ export default function Colaborador() {
                     .then(response => {
                         fetchUserEvents(currentYear, currentMonth); // Atualiza os eventos após deletar
                         setSelectedDates([]);
-                        alert('Marcação removida com sucesso!');
+                        console.log('Marcação removida com sucesso!');
                     })
                     .catch(error => {
                         console.error('Erro ao remover marcação:', error.response ? error.response.data.error : error);
