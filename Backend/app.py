@@ -38,7 +38,22 @@ with app.app_context():
         db.session.bulk_save_objects(niveis)
         db.session.commit()
         print("Níveis de acesso inicializados.")
-
+    # Verificar se existe um administrador
+    admin_email = "admin@flextowork.com"
+    admin_exists = users.query.filter_by(email=admin_email).first()
+    if not admin_exists:
+        hashed_password = bcrypt.generate_password_hash("admin123")
+        admin_user = users(
+            email=admin_email,
+            password=hashed_password,
+            primeironome="Admin",
+            segundonome="User",
+            idequipa=9999,  # Altere para o ID da equipe desejada
+            idnivel=5  # Nível de acesso para Admin
+        )
+        db.session.add(admin_user)
+        db.session.commit()
+        print("Administrador administrador criado.")
 
 @app.route("/")
 def hello():
