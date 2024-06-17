@@ -3,6 +3,7 @@ import './App.css';
   
 import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
 
+import LandingPage from "./pages/LandingPage";
 import LoginPage from './pages/LoginPage'
 import Colaborador from './pages/Colaborador'
 import Manager from './pages/Manager'
@@ -19,6 +20,7 @@ function App() {
   return (
       <BrowserRouter>
           <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/colaborador" element={
                   <ProtectedRoute1>
