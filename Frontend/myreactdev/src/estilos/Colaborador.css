@@ -101,7 +101,8 @@
 .react-calendar {
     min-width: 1000px; /* Aumentar a largura mínima */
     width: 100%; /* Garantir que o calendário use 100% da largura disponível */
-    font-size: 20px; /* Aumentar o tamanho da fonte para tornar o calendário maior */
+    font-size: 30px; /* Aumentar o tamanho da fonte para tornar o calendário maior */
+    font-weight: bold;
 }
 
 .react-calendar__navigation {
@@ -138,14 +139,13 @@
     justify-content: center;
     align-items: center;
     font-size: 18px; /* Aumentar o tamanho da fonte das células */
-    font-weight: bold;
     padding: 10px; /* Aumentar o padding das células */
     cursor: pointer;
 }
 
 .selected {
-    background-color: lightgray !important;
-    color: white;
+    background-color: lightgrey !important;
+    color: black;
 }
 
 .home-office-pending {
