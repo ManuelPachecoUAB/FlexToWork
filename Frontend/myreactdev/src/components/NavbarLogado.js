@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import '../estilos/NavbarLogado.css';
-import '../estilos/NavbarAdmin.css';
 import axios from "axios"; // Make sure the navbar styles are located here
 
 function NavbarLogado() {
@@ -112,7 +111,7 @@ function NavbarLogado() {
     }
     else if (isAuthenticated && nivel === '5') {
         return (
-            <nav className="NavbarAdmin">
+            <nav className="NavbarLogado">
                 <div className="logo-container">
                     <Link to="/" className="navbar-logo">
                         <img src={'/img/logo.png'} alt="Flex2Work" />

@@ -6,9 +6,9 @@ const ProtectedRoute4 = ({ children }) => {
     const nivel = localStorage.getItem('nivel');
 
     useEffect(() => {
-        if (!isAuthenticated || (nivel !== '4' && nivel !== '5')) {  // Alterado para verificar se o nível é '3'
-            localStorage.removeItem('nivel');     // Limpa o nível de acesso inadequado
-            setIsAllowed(false);                  // Atualiza o estado para não permitido
+        if (!isAuthenticated || nivel !== '5') {
+            localStorage.removeItem('nivel');  // Limpa o nível de acesso inadequado
+            setIsAllowed(false);              // Atualiza o estado para não permitido
         }
     }, [isAuthenticated, nivel]);
 
@@ -20,6 +20,5 @@ const ProtectedRoute4 = ({ children }) => {
     // Renderiza os componentes filhos se estiver autenticado e com o nível correto
     return children;
 };
-
 
 export default ProtectedRoute4;
