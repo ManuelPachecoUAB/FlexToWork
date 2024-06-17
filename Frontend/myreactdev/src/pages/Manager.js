@@ -173,7 +173,6 @@ export default function Manager() {
         }
 
             let endpoint = '';
-        console.log(type);
             if (type === "ferias") {
                 endpoint = `http://127.0.0.1:5000/api/ferias/reject/${id}`;
             } else if (type === "ausencias") {
@@ -194,7 +193,7 @@ export default function Manager() {
                         setPresenciaisPendentes(presenciaisPendentes.filter(evento => evento.id !== id));
                     }
                     fetchAllUserEvents(); // Atualiza os eventos após deletar
-                    alert('Marcação removida com sucesso!');
+                    console.log('Marcação removida com sucesso!');
                 })
                 .catch(error => {
                     console.error('Erro ao remover marcação:', error.response ? error.response.data.error : error);
