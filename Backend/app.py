@@ -46,15 +46,26 @@ with app.app_context():
         admin_user = users(
             email=admin_email,
             password=hashed_password,
-            primeironome="Admin",
-            segundonome="User",
+            primeironome="Administrador",
+            segundonome="SuperAdmin",
             idequipa=9999,  # Altere para o ID da equipe desejada
             idnivel=5  # Nível de acesso para Admin
         )
         db.session.add(admin_user)
         db.session.commit()
         print("Administrador administrador criado.")
+        # Inicializar 25 dias de férias para o novo utilizador
+        ano_atual = datetime.now().year
+        new_ferias = ferias(idcolaborador=1,ano=ano_atual)
+        db.session.add(new_ferias)
+        db.session.commit()
 
+        # Inicializar 10 dias de presencial por mês para o novo utilizador
+        for mes in range(1, 13):
+            new_presencial = presencial(idcolaborador=1, ano=ano_atual, mes=mes)
+            db.session.add(new_presencial)
+
+    db.session.commit()
 @app.route("/")
 def hello():
     if session.get("user_id") is None:
