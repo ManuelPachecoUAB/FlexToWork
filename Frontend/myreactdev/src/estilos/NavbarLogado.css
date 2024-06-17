@@ -30,7 +30,7 @@
 }
 
 .nav-item {
-    margin-left: 1rem;
+    margin-right: 2rem;
 }
 
 .nav-link {
@@ -40,4 +40,5 @@
     color: #007bff;
     text-transform: uppercase;
 }
+
 
