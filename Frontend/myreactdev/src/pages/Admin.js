@@ -84,11 +84,11 @@ export default function Admin() {
         const userToken = localStorage.getItem('userToken');
         const erros = validarDados(email, primeironome, segundonome, password);
         if (!idequipa) {
-            erros.push('Deve selecionar uma equipa.');
+            erros.push('Deve selecionar uma equipa');
         }
 
         if (!idnivel) {
-            erros.push('Deve selecionar um nivel de acesso.');
+            erros.push('Deve selecionar um nivel de acesso');
         }
         if (erros.length > 0) {
             setErro(erros.join(', '));
@@ -283,10 +283,10 @@ export default function Admin() {
 
     function validarDados(email, primeironome, segundonome, password, idequipa, idnivel) {
         const erros = [];
-        if (!email.includes('@')) erros.push('Insira um endereço de Email válido.');
-        if (primeironome.length < 2) erros.push('O Nome deve ter pelo menos 2 caracteres.');
-        if (segundonome.length < 2) erros.push('O Apelido deve ter pelo menos 2 caracteres.');
-        if (password.length < 6) erros.push('A Senha deve ter pelo menos 6 caracteres.');
+        if (!email.includes('@')) erros.push('Insira um endereço de Email válido');
+        if (primeironome.length < 2) erros.push('O Nome deve ter pelo menos 2 caracteres');
+        if (segundonome.length < 2) erros.push('O Apelido deve ter pelo menos 2 caracteres');
+        if (password.length < 8) erros.push('A Senha deve ter pelo menos 8 caracteres');
         return erros;
     }
 
