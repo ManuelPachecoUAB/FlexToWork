@@ -82,11 +82,19 @@ export default function Admin() {
 
     function handleAddUser() {
         const userToken = localStorage.getItem('userToken');
-        const erros = validarDados(email, primeironome, segundonome, password, idequipa, idnivel);
+        const erros = validarDados(email, primeironome, segundonome, password);
+        if (!idequipa) {
+            erros.push('Deve selecionar uma equipa.');
+        }
+
+        if (!idnivel) {
+            erros.push('Deve selecionar um nivel de acesso.');
+        }
         if (erros.length > 0) {
             setErro(erros.join(', '));
             return;
         }
+
         setErro('');
         const newUser = {
             email,
