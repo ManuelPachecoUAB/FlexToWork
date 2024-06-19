@@ -294,7 +294,7 @@ export default function Admin() {
             });
     }
 
-    function validarDados(email, primeironome, segundonome, password, idequipa, idnivel) {
+    function validarDados(email, primeironome, segundonome, password) {
         const erros = [];
         if (!email.includes('@')) erros.push('Insira um endereço de Email válido');
         if (primeironome.length < 2) erros.push('O Nome deve ter pelo menos 2 caracteres');
