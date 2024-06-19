@@ -179,7 +179,7 @@ export default function Admin() {
 
     function handleDeleteTeam(id) {
         const userToken = localStorage.getItem('userToken');
-        if (window.confirm("Tem certeza que deseja excluir esta equipa?")) {
+        if (window.confirm("Tem a certeza que deseja apagar a equipa selecionada?")) {
             axios.delete(`http://127.0.0.1:5000/api/teams/${id}`, {
                 headers: { Authorization: `Bearer ${userToken}` }
             })
@@ -188,6 +188,7 @@ export default function Admin() {
                     setSucesso(`Equipa removida com sucesso com o id: ${id}`);
                     setErro('');
                     fetchTeams();
+                    setSearchTeamQuery('');
                 })
                 .catch(error => {
                     console.error('Falha ao remover equipa!', error);
@@ -444,6 +445,8 @@ export default function Admin() {
                 {view === 'viewTeams' && (
                     <div className="view-users-container">
                         <h1>Alterar/Apagar Equipas</h1>
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
+                        {erro && <div className="erro">{erro}</div>}
                         <input
                             type="text"
                             value={searchTeamQuery}
@@ -451,8 +454,6 @@ export default function Admin() {
                             placeholder="Pesquisar por nome da equipa"
                             className="search-input"
                         />
-                        {sucesso && <div className="sucesso">{sucesso}</div>}
-                        {erro && <div className="erro">{erro}</div>}
                         {searchTeamQuery && (
                             <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
                                 {filteredTeams.map(team => (
@@ -460,7 +461,7 @@ export default function Admin() {
                                         <span style={{ flexGrow: 1 }}>{team.nome}</span>
                                         <div style={{ display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
                                             <button onClick={() => handleEditTeam(team)} className="action-button edit-button">Alterar</button>
-                                            <button onClick={() => handleDeleteTeam(team.id)} className="action-button delete-button">Excluir</button>
+                                            <button onClick={() => handleDeleteTeam(team.id)} className="action-button delete-button">Apagar</button>
                                         </div>
                                     </li>
                                 ))}
