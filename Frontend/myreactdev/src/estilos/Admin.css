@@ -67,6 +67,7 @@ h1:hover {
     justify-content: center;
     align-items: center;
     height: 50vh;
+    padding-top: 20px;
 }
 
 .icon-column {
