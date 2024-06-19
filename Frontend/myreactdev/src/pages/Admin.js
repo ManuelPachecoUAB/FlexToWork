@@ -275,12 +275,10 @@ export default function Admin() {
 
     function validarDados(email, primeironome, segundonome, password, idequipa, idnivel) {
         const erros = [];
-        if (!email.includes('@')) erros.push('Email inválido.');
-        if (primeironome.length < 2) erros.push('Primeiro nome muito pequeno.');
-        if (segundonome.length < 2) erros.push('Sobrenome muito pequeno.');
-        if (password.length < 6) erros.push('Senha deve ter pelo menos 6 caracteres.');
-        if (!Number.isInteger(+idequipa) || idequipa < 1 || idequipa > 10) erros.push('ID de equipa deve ser numérico e entre 1 e 10.');
-        if (!Number.isInteger(+idnivel) || idnivel < 1 || idnivel > 5) erros.push('Nível de acesso deve ser numérico e entre 1 e 5.');
+        if (!email.includes('@')) erros.push('Insira um endereço de Email válido.');
+        if (primeironome.length < 2) erros.push('O Nome deve ter pelo menos 2 caracteres.');
+        if (segundonome.length < 2) erros.push('O Apelido deve ter pelo menos 2 caracteres.');
+        if (password.length < 6) erros.push('A Senha deve ter pelo menos 6 caracteres.');
         return erros;
     }
 
