@@ -290,10 +290,10 @@ export default function Colaborador() {
                     )}
                 </div>
                 <div className="selected-dates-container">
-                    <h2>Selected Dates</h2>
+                    <h2>Dias Selecionados</h2>
                     <ul>
                         {selectedDates.map(date => (
-                            <li key={date.toDateString()}>{date.toDateString()}</li>
+                            <li className="datas-selecionadas" key={date.toDateString()}>{date.toDateString()}</li>
                         ))}
                     </ul>
                 </div>

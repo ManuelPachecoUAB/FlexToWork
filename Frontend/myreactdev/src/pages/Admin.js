@@ -297,7 +297,7 @@ export default function Admin() {
 
     function validarDados(email, primeironome, segundonome, password) {
         const erros = [];
-        if (!email.includes('@')) erros.push('Insira um endereço de Email válido');
+        if (!email.includes('@') || !email.includes('.')) erros.push('Insira um endereço de Email válido');
         if (primeironome.length < 2) erros.push('O Nome deve ter pelo menos 2 caracteres');
         if (segundonome.length < 2) erros.push('O Apelido deve ter pelo menos 2 caracteres');
         if (password.length < 8) erros.push('A Senha deve ter pelo menos 8 caracteres');
@@ -390,7 +390,7 @@ export default function Admin() {
                             className="search-input"
                         />
                         {searchQuery && (
-                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                            <ul className="mostrar-pesquisa">
                                 {filteredUsers.map(user => (
                                     <li key={user.id}>
                                         <span style={{ flexGrow: 1 }}>{user.email} - {user.primeironome}</span>
@@ -455,7 +455,7 @@ export default function Admin() {
                             className="search-input"
                         />
                         {searchTeamQuery && (
-                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                            <ul className="mostrar-pesquisa">
                                 {filteredTeams.map(team => (
                                     <li key={team.id}>
                                         <span style={{ flexGrow: 1 }}>{team.nome}</span>

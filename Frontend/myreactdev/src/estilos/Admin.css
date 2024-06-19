@@ -86,6 +86,10 @@ h1:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.mostrar-pesquisa{
+    overflowY: 'flex';
+}
+
 .icon-wrapper .icon {
     width: 100px;
     height: 100px;

@@ -26,11 +26,10 @@
 
 .selected-dates-container {
     flex: 0 0 15%;
-    padding-left: 50px;
-    /* Adicionando o estilo para alinhar verticalmente */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+}
+
+.datas-selecionadas{
+    font-size: 20px;
 }
 
 .legend-container {
@@ -99,9 +98,9 @@
 }
 
 .react-calendar {
-    min-width: 1000px; /* Aumentar a largura mínima */
+    min-width: 800px; /* Aumentar a largura mínima */
     width: 100%; /* Garantir que o calendário use 100% da largura disponível */
-    font-size: 30px; /* Aumentar o tamanho da fonte para tornar o calendário maior */
+    font-size: 27px; /* Aumentar o tamanho da fonte para tornar o calendário maior */
     font-weight: bold;
 }
 
@@ -115,11 +114,11 @@
 .react-calendar__navigation button {
     background: none;
     border: none;
-    font-size: 3rem; /* Aumentar o tamanho da fonte dos botões de navegação */
+    font-size: 4rem; /* Aumentar o tamanho da fonte dos botões de navegação */
     cursor: pointer;
-    margin: 0 10px;
-    color: white;
-    text-shadow: -2px -2px 0 #007bff, 2px -2px 0 #007bff, -2px 2px 0 #007bff, 2px 2px 0 #007bff, -2px 0 0 #007bff, 2px 0 0 #007bff, 0 -2px 0 #007bff, 0 2px 0 #007bff;
+    color: black;
+    font-weight: bold;
+
 }
 
 .react-calendar__month-view__weekdays__weekday {
