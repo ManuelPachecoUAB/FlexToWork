@@ -154,7 +154,7 @@ export default function Admin() {
 
     function handleDeleteUser(id) {
         const userToken = localStorage.getItem('userToken');
-        if (window.confirm("Tem certeza que deseja excluir este utilizador?")) {
+        if (window.confirm("Tem a certeza que deseja apagar este utilizador?")) {
             console.log('ID do utilizador a remover', id);
             axios.delete(`http://127.0.0.1:5000/api/users/${id}`, {
                 headers: { Authorization: `Bearer ${userToken}` }
@@ -221,19 +221,27 @@ export default function Admin() {
     function handleUpdateUser() {
         const userToken = localStorage.getItem('userToken');
         const updatedUser = {};
+        let ifChanged = false; // para validar se nenhum dado alterado
 
-        if (password && password.length < 6) {
-            setErro('A Senha deve ter pelo menos 6 caracteres.');
+        if (password && password.length < 8) {
+            setErro('A Senha deve ter pelo menos 8 caracteres.');
             return;
         }
         if (password) {
             updatedUser.password = password;
+            ifChanged = true;
         }
-        if (idequipa) {
+        if (idequipa && idequipa !== selectedUser.idequipa) {
             updatedUser.equipa = parseInt(idequipa, 10);
+            ifChanged = true;
         }
-        if (idnivel) {
+        if (idnivel && idnivel !== selectedUser.idnivel) {
             updatedUser.nivel = parseInt(idnivel, 10);
+            ifChanged = true;
+        }
+        if (!ifChanged) {
+            setErro('Não foi feita nenhuma alteração');
+            return;
         }
 
         axios.put(`http://127.0.0.1:5000/api/users/${selectedUser.id}`, updatedUser, {
@@ -390,6 +398,34 @@ export default function Admin() {
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
+                {view === 'viewUsers' && (
+                    <div className="view-users-container">
+                        <h1>Alterar/Apagar Utilizadores</h1>
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            placeholder="Pesquisar por email"
+                            className="search-input"
+                        />
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
+                        {erro && <div className="erro">{erro}</div>}
+                        {searchQuery && (
+                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {filteredUsers.map(user => (
+                                    <li key={user.id}>
+                                        <span style={{ flexGrow: 1 }}>{user.email} - {user.primeironome}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
+                                            <button onClick={() => handleEditUser(user)} className="action-button edit-button">Alterar</button>
+                                            <button onClick={() => handleDeleteUser(user.id)} className="action-button delete-button">Apagar</button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
+                    </div>
+                )}
                 {view === 'createTeam' && ( /* Novo formulário para criar equipa */
                     <div className="create-user-form">
                         <h1>Criar Equipa</h1>
@@ -435,34 +471,6 @@ export default function Admin() {
                         {sucesso && <div className="sucesso">{sucesso}</div>}
                         <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} placeholder="Nome da Equipa" />
                         <button className="admin-button" onClick={handleUpdateTeam}>Atualizar Equipa</button>
-                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
-                    </div>
-                )}
-                {view === 'viewUsers' && (
-                    <div className="view-users-container">
-                        <h1>Alterar/Apagar Utilizadores</h1>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            placeholder="Pesquisar por email"
-                            className="search-input"
-                        />
-                        {sucesso && <div className="sucesso">{sucesso}</div>}
-                        {erro && <div className="erro">{erro}</div>}
-                        {searchQuery && (
-                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                                {filteredUsers.map(user => (
-                                    <li key={user.id}>
-                                        <span style={{ flexGrow: 1 }}>{user.email} - {user.primeironome}</span>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
-                                            <button onClick={() => handleEditUser(user)} className="action-button edit-button">Alterar</button>
-                                            <button onClick={() => handleDeleteUser(user.id)} className="action-button delete-button">Excluir</button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
