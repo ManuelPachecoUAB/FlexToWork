@@ -253,14 +253,12 @@ export default function Admin() {
         })
             .then(response => {
                 console.log('Utilizador atualizado com sucesso!', response.data);
-                setSucesso('Utilizador atualizado com sucesso! Campos modificados: ${modifiedAtributes.join(', ')}.');
+                handleClearForm();
+                setSucesso(`Utilizador atualizado com sucesso! Campos modificados: ${modifiedAtributes.join(', ')}.`);
                 setErro('');
                 fetchUsers();
-                handleClearForm();
-                setTimeout(() => {
-                    setView('viewUsers');
-                    setSucesso('');
-                }, 2000); // //definido timeout para permitir mensagens antes de limpar a view
+                setView('viewUsers');
+                setSearchQuery('');
             })
             .catch(error => {
                 console.error('Erro ao atualizar utilizador', error);
