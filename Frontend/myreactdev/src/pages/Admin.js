@@ -222,6 +222,7 @@ export default function Admin() {
         const userToken = localStorage.getItem('userToken');
         const updatedUser = {};
         let ifChanged = false; // para validar se nenhum dado alterado
+        let modifiedAtributes = []; // para armazenar os campos alterados
 
         if (password && password.length < 8) {
             setErro('A Senha deve ter pelo menos 8 caracteres.');
@@ -230,14 +231,17 @@ export default function Admin() {
         if (password) {
             updatedUser.password = password;
             ifChanged = true;
+            modifiedAtributes.push('senha');
         }
         if (idequipa && idequipa !== selectedUser.idequipa) {
             updatedUser.equipa = parseInt(idequipa, 10);
             ifChanged = true;
+            modifiedAtributes.push('equipa');
         }
         if (idnivel && idnivel !== selectedUser.idnivel) {
             updatedUser.nivel = parseInt(idnivel, 10);
             ifChanged = true;
+            modifiedAtributes.push('nível de acesso');
         }
         if (!ifChanged) {
             setErro('Não foi feita nenhuma alteração');
@@ -249,11 +253,14 @@ export default function Admin() {
         })
             .then(response => {
                 console.log('Utilizador atualizado com sucesso!', response.data);
-                setSucesso('Utilizador atualizado com sucesso!');
+                setSucesso('Utilizador atualizado com sucesso! Campos modificados: ${modifiedAtributes.join(', ')}.');
                 setErro('');
                 fetchUsers();
                 handleClearForm();
-                setView('viewUsers');
+                setTimeout(() => {
+                    setView('viewUsers');
+                    setSucesso('');
+                }, 2000); // //definido timeout para permitir mensagens antes de limpar a view
             })
             .catch(error => {
                 console.error('Erro ao atualizar utilizador', error);
@@ -371,6 +378,34 @@ export default function Admin() {
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
+                {view === 'viewUsers' && (
+                    <div className="view-users-container">
+                        <h1>Alterar/Apagar Utilizadores</h1>
+                        {sucesso && <div className="sucesso">{sucesso}</div>}
+                        {erro && <div className="erro">{erro}</div>}
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            placeholder="Pesquisar por email"
+                            className="search-input"
+                        />
+                        {searchQuery && (
+                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {filteredUsers.map(user => (
+                                    <li key={user.id}>
+                                        <span style={{ flexGrow: 1 }}>{user.email} - {user.primeironome}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
+                                            <button onClick={() => handleEditUser(user)} className="action-button edit-button">Alterar</button>
+                                            <button onClick={() => handleDeleteUser(user.id)} className="action-button delete-button">Apagar</button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
+                    </div>
+                )}
                 {view === 'editUser' && (
                     <div className="create-user-form">
                         <h1>Editar Utilizador</h1>
@@ -395,34 +430,6 @@ export default function Admin() {
                             ))}
                         </select>
                         <button className="admin-button" onClick={handleUpdateUser}>Atualizar Utilizador</button>
-                        <button className="admin-button" onClick={handleResetView}>Voltar</button>
-                    </div>
-                )}
-                {view === 'viewUsers' && (
-                    <div className="view-users-container">
-                        <h1>Alterar/Apagar Utilizadores</h1>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            placeholder="Pesquisar por email"
-                            className="search-input"
-                        />
-                        {sucesso && <div className="sucesso">{sucesso}</div>}
-                        {erro && <div className="erro">{erro}</div>}
-                        {searchQuery && (
-                            <ul style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                                {filteredUsers.map(user => (
-                                    <li key={user.id}>
-                                        <span style={{ flexGrow: 1 }}>{user.email} - {user.primeironome}</span>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
-                                            <button onClick={() => handleEditUser(user)} className="action-button edit-button">Alterar</button>
-                                            <button onClick={() => handleDeleteUser(user.id)} className="action-button delete-button">Apagar</button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                         <button className="admin-button" onClick={handleResetView}>Voltar</button>
                     </div>
                 )}
