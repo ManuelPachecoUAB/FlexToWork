@@ -297,7 +297,8 @@ export default function Admin() {
 
     function validarDados(email, primeironome, segundonome, password) {
         const erros = [];
-        if (!email.includes('@') || !email.includes('.')) erros.push('Insira um endereço de Email válido');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/;
+        if (!emailRegex.test(email)) erros.push('Insira um endereço de Email válido');
         if (primeironome.length < 2) erros.push('O Nome deve ter pelo menos 2 caracteres');
         if (segundonome.length < 2) erros.push('O Apelido deve ter pelo menos 2 caracteres');
         if (password.length < 8) erros.push('A Senha deve ter pelo menos 8 caracteres');
