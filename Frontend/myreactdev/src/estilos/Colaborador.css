@@ -26,6 +26,7 @@
 
 .selected-dates-container {
     flex: 0 0 15%;
+    height: 450px;
 }
 
 .datas-selecionadas{
