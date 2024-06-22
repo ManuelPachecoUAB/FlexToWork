@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas, equipa, nivelacesso
+from models import db, users, ferias, presencial, feriasmarcadas, ausenciasmarcadas, presencialmarcadas, equipa, nivelacesso, notificacoes
 from datetime import datetime
 from datetime import timedelta
 
@@ -99,13 +99,13 @@ def signup():
 
     # Inicializar 25 dias de férias para o novo utilizador
     ano_atual = datetime.now().year
-    new_ferias = ferias(idcolaborador=new_user.idutlizador,ano=ano_atual)
+    new_ferias = ferias(idcolaborador=new_user.idutilizador,ano=ano_atual)
     db.session.add(new_ferias)
     db.session.commit()
 
     # Inicializar 10 dias de presencial por mês para o novo utilizador
     for mes in range(1, 13):
-        new_presencial = presencial(idcolaborador=new_user.idutlizador, ano=ano_atual, mes=mes)
+        new_presencial = presencial(idcolaborador=new_user.idutilizador, ano=ano_atual, mes=mes)
         db.session.add(new_presencial)
 
     db.session.commit()
@@ -245,13 +245,13 @@ def add_ferias():
         estado = 1  # Pendente de aprovação
 
         # Verificar se há dias de férias suficientes
-        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutlizador, ano=datetime.now().year).first()
+        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutilizador, ano=datetime.now().year).first()
         if ferias_registro.feriasdisponiveis < duracao:
             return jsonify({"error": "Não há dias de férias suficientes disponíveis"}), 400
 
         for data in datas:
             nova_ferias = feriasmarcadas(
-                idcolaborador=current_user.idutlizador,
+                idcolaborador=current_user.idutilizador,
                 duracao=1,  # Cada dia é um registro separado
                 data=datetime.strptime(data, '%Y-%m-%d').date(),
                 estado=estado
@@ -287,7 +287,7 @@ def add_ausencias():
 
         for data in datas:
             nova_ausencia = ausenciasmarcadas(
-                idcolaborador=current_user.idutlizador,
+                idcolaborador=current_user.idutilizador,
                 duracao=1,
                 data=datetime.strptime(data, '%Y-%m-%d').date(),
                 estado=estado
@@ -320,7 +320,7 @@ def add_presencial():
 
         for data in datas:
             nova_presencial = presencialmarcadas(
-                idcolaborador=current_user.idutlizador,
+                idcolaborador=current_user.idutilizador,
                 data=datetime.strptime(data, '%Y-%m-%d').date(),
                 estado=estado
             )
@@ -350,21 +350,21 @@ def get_user_events():
         if not ano:
             return jsonify({"error": "Ano é obrigatório"}), 400
 
-        ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+        ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=current_user.idutilizador).filter(
             db.extract('year', feriasmarcadas.data) == ano
         ).all()
 
-        ausencias = ausenciasmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+        ausencias = ausenciasmarcadas.query.filter_by(idcolaborador=current_user.idutilizador).filter(
             db.extract('year', ausenciasmarcadas.data) == ano
         ).all()
 
-        presenciais = presencialmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+        presenciais = presencialmarcadas.query.filter_by(idcolaborador=current_user.idutilizador).filter(
             db.extract('year', presencialmarcadas.data) == ano,
             db.extract('month', presencialmarcadas.data) == mes
         ).all()
 
         # Recuperar o registro de férias do colaborador
-        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutlizador, ano=ano).first()
+        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutilizador, ano=ano).first()
         ferias_disponiveis = ferias_registro.feriasdisponiveis if ferias_registro else 0
 
         events = {
@@ -389,8 +389,8 @@ def delete_ferias(id):
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutlizador, ano=datetime.now().year).first()
-        ferias_marcada = feriasmarcadas.query.filter_by(id=id, idcolaborador=current_user.idutlizador).first()
+        ferias_registro = ferias.query.filter_by(idcolaborador=current_user.idutilizador, ano=datetime.now().year).first()
+        ferias_marcada = feriasmarcadas.query.filter_by(id=id, idcolaborador=current_user.idutilizador).first()
 
         if ferias_marcada:
             duracao = ferias_marcada.duracao
@@ -417,7 +417,7 @@ def delete_ausencias(id):
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        ausencia = ausenciasmarcadas.query.filter_by(id=id, idcolaborador=current_user.idutlizador).first()
+        ausencia = ausenciasmarcadas.query.filter_by(id=id, idcolaborador=current_user.idutilizador).first()
         if ausencia:
             db.session.delete(ausencia)
             db.session.commit()
@@ -437,7 +437,7 @@ def delete_presencial(id):
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        presencial = presencialmarcadas.query.filter_by(id=id, idcolaborador=current_user.idutlizador).first()
+        presencial = presencialmarcadas.query.filter_by(id=id, idcolaborador=current_user.idutilizador).first()
         if presencial:
             db.session.delete(presencial)
             db.session.commit()
@@ -462,11 +462,11 @@ def get_team_events():
             return jsonify({"error": "Acesso não autorizado"}), 403
 
         team_members = users.query.filter_by(idequipa=current_user.idequipa).all()
-        team_member_ids = [member.idutlizador for member in team_members]
+        team_member_ids = [member.idutilizador for member in team_members]
 
-        ferias = db.session.query(feriasmarcadas, users).join(users, feriasmarcadas.idcolaborador == users.idutlizador).filter(feriasmarcadas.idcolaborador.in_(team_member_ids), feriasmarcadas.estado == 1).all()
-        ausencias = db.session.query(ausenciasmarcadas, users).join(users, ausenciasmarcadas.idcolaborador == users.idutlizador).filter(ausenciasmarcadas.idcolaborador.in_(team_member_ids), ausenciasmarcadas.estado == 1).all()
-        presenciais = db.session.query(presencialmarcadas, users).join(users, presencialmarcadas.idcolaborador == users.idutlizador).filter(presencialmarcadas.idcolaborador.in_(team_member_ids), presencialmarcadas.estado == 1).all()
+        ferias = db.session.query(feriasmarcadas, users).join(users, feriasmarcadas.idcolaborador == users.idutilizador).filter(feriasmarcadas.idcolaborador.in_(team_member_ids), feriasmarcadas.estado == 1).all()
+        ausencias = db.session.query(ausenciasmarcadas, users).join(users, ausenciasmarcadas.idcolaborador == users.idutilizador).filter(ausenciasmarcadas.idcolaborador.in_(team_member_ids), ausenciasmarcadas.estado == 1).all()
+        presenciais = db.session.query(presencialmarcadas, users).join(users, presencialmarcadas.idcolaborador == users.idutilizador).filter(presencialmarcadas.idcolaborador.in_(team_member_ids), presencialmarcadas.estado == 1).all()
 
         events = [
             {"id": f.feriasmarcadas.id, "date": f.feriasmarcadas.data, "title": "Férias", "type": "ferias", "user": f.users.primeironome + ' ' + f.users.segundonome} for f in ferias
@@ -550,7 +550,7 @@ def get_presencial_obrigatorios():
         if not ano or not mes:
             return jsonify({"error": "Ano e mês são obrigatórios"}), 400
 
-        presenciais = presencial.query.filter_by(idcolaborador=current_user.idutlizador, ano=ano, mes=mes).first()
+        presenciais = presencial.query.filter_by(idcolaborador=current_user.idutilizador, ano=ano, mes=mes).first()
 
         if presenciais:
             total_presencial = presenciais.totalpresencial
@@ -578,7 +578,7 @@ def get_presencial_mes():
         if not ano or not mes:
             return jsonify({"error": "Ano e mês são obrigatórios"}), 400
 
-        presenciais = presencialmarcadas.query.filter_by(idcolaborador=current_user.idutlizador).filter(
+        presenciais = presencialmarcadas.query.filter_by(idcolaborador=current_user.idutilizador).filter(
             db.extract('year', presencialmarcadas.data) == ano,
             db.extract('month', presencialmarcadas.data) == mes
         ).all()
@@ -620,7 +620,7 @@ def get_team_members():
 
         team_members_list = [
             {
-                "id": member.idutlizador,
+                "id": member.idutilizador,
                 "primeironome": member.primeironome,
                 "segundonome": member.segundonome,
                 "idnivel": member.idnivel,
@@ -654,7 +654,7 @@ def get_all_users_events():
         for user in all_users:
             user_events = {
                 "user": {
-                    "id": user.idutlizador,
+                    "id": user.idutilizador,
                     "primeironome": user.primeironome,
                     "segundonome": user.segundonome,
                     "idequipa": user.idequipa,
@@ -664,9 +664,9 @@ def get_all_users_events():
                 "presenciais": []
             }
 
-            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
-            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
-            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
+            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
+            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
 
             user_events["ferias"] = [{"id": f.id, "data": f.data, "estado": f.estado} for f in ferias_marcadas]
             user_events["ausencias"] = [{"id": a.id, "data": a.data, "estado": a.estado} for a in ausencias_marcadas]
@@ -704,7 +704,7 @@ def get_all_users_events_byteam(selectedTeam):
         for user in all_users:
             user_events = {
                 "user": {
-                    "id": user.idutlizador,
+                    "id": user.idutilizador,
                     "primeironome": user.primeironome,
                     "segundonome": user.segundonome,
                 },
@@ -713,9 +713,9 @@ def get_all_users_events_byteam(selectedTeam):
                 "presenciais": []
             }
 
-            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
-            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
-            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
+            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
+            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
 
             user_events["ferias"] = [{"id": f.id, "data": f.data, "estado": f.estado} for f in ferias_marcadas]
             user_events["ausencias"] = [{"id": a.id, "data": a.data, "estado": a.estado} for a in ausencias_marcadas]
@@ -758,7 +758,7 @@ def get_eventos_equipa_manager():
         for user in team_members:
             user_events = {
                 "user": {
-                    "id": user.idutlizador,
+                    "id": user.idutilizador,
                     "primeironome": user.primeironome,
                     "segundonome": user.segundonome,
                 },
@@ -767,9 +767,9 @@ def get_eventos_equipa_manager():
                 "presenciais": []
             }
 
-            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
-            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
-            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutlizador).all()
+            ferias_marcadas = feriasmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
+            ausencias_marcadas = ausenciasmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
+            presenciais_marcadas = presencialmarcadas.query.filter_by(idcolaborador=user.idutilizador).all()
 
             user_events["ferias"] = [{"id": f.id, "data": f.data, "estado": f.estado} for f in ferias_marcadas]
             user_events["ausencias"] = [{"id": a.id, "data": a.data, "estado": a.estado} for a in ausencias_marcadas]
@@ -847,6 +847,50 @@ def get_access_levels():
     except Exception as e:
         print(f"Erro ao obter os niveis: {e}")
         return jsonify({"error": f"Erro ao obter os niveis: {e}"}), 500
+
+@app.route("/api/notificacao", methods=["POST"])
+@jwt_required()
+def notifica():
+    current_user_email = get_jwt_identity()
+    current_user = users.query.filter_by(email=current_user_email).first()
+    text = request.json.get("texto")
+    event_id = request.json.get("id")  # Recupere o id do evento do JSON
+    tipo = request.json.get("type")
+
+    if not current_user or current_user.idnivel not in [2, 4, 5]:  # Verifica se é gerente ou autorizado
+        return jsonify({"error": "Acesso não autorizado"}), 403
+
+    event = None
+    if 'ferias' in tipo:
+        event = feriasmarcadas.query.get(event_id)
+    elif 'ausencias' in tipo:
+        event = ausenciasmarcadas.query.get(event_id)
+    elif 'presencial' in tipo:
+        event = presencialmarcadas.query.get(event_id)
+
+    if event:
+        notificacao = notificacoes(idcolaborador=event.idcolaborador, data=event.data, conteudo=text, tipo=tipo)
+        db.session.add(notificacao)
+        db.session.commit()
+        return jsonify({"message": "Evento rejeitado com sucesso"}), 200
+    return jsonify({"error": "Evento não encontrado"}), 404
+
+@app.route("/api/notificacoes", methods=["GET"])
+@jwt_required()
+def get_notificacoes():
+    current_user_email = get_jwt_identity()
+    current_user = users.query.filter_by(email=current_user_email).first()
+
+    if not current_user:
+        return jsonify({"error": "Acesso não autorizado"}), 403
+
+    notificacoes_utilizador = notificacoes.query.filter_by(idcolaborador=current_user.idutilizador).all()
+    notificacoes_list = [
+        {"id": n.id, "data": n.data, "conteudo": n.tipo, "conteudo": n.conteudo}
+        for n in notificacoes_utilizador
+    ]
+
+    return jsonify(notificacoes_list), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
