@@ -21,6 +21,7 @@ export default function Colaborador() {
     });
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    const [notificacoes, setNotificacoes] = useState([]);
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     const fetchUserEvents = (ano, mes) => {
@@ -228,9 +229,25 @@ export default function Colaborador() {
             });
     };
 
+    const fetchNotificacoes = () => {
+        const userToken = localStorage.getItem('userToken');
+        fetch(`http://127.0.0.1:5000/api/notificacoes`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        })
+            .then(response => response.json())
+            .then(response => console.log(response))
+            .then(response => setNotificacoes(response))
+            .catch(error => console.error('Erro:', error));
+    };
+
     useEffect(() => {
         fetchUserEvents(currentYear, currentMonth);
         fetchPresencialMes(currentYear, currentMonth);
+        fetchNotificacoes();
     }, [currentMonth, currentYear]);
 
     return (
@@ -289,14 +306,23 @@ export default function Colaborador() {
                         </div>
                     )}
                 </div>
-                <div className="selected-dates-container">
-                    <h2>Dias Selecionados</h2>
-                    <ul>
-                        {selectedDates.map(date => (
-                            <li className="datas-selecionadas" key={date.toDateString()}>{date.toDateString()}</li>
-                        ))}
-                    </ul>
+                <div className="selected-dates">
+                    <div className="selected-dates-container">
+                        <h2>Dias Selecionados</h2>
+                        <ul>
+                            {selectedDates.map(date => (
+                                <li className="datas-selecionadas" key={date.toDateString()}>{date.toDateString()}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="notifications-container">
+                        <h2>Notificações</h2>
+                        <ul>
+                            notificacoes
+                        </ul>
+                    </div>
                 </div>
+
             </div>
         </div>
     );
