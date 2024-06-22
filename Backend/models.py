@@ -10,7 +10,7 @@ def get_uuid():
 class users(db.Model):
     __tablename__ = "users"
     id = db.Column(db.String(11), unique=True, default=get_uuid)
-    idutlizador = db.Column(db.Integer, primary_key=True, unique=True)
+    idutilizador = db.Column(db.Integer, primary_key=True, unique=True)
     email = db.Column(db.String(150), unique=True)
     primeironome = db.Column(db.Text, nullable=False)
     segundonome = db.Column(db.Text, nullable=False)
@@ -23,7 +23,7 @@ class users(db.Model):
 class ferias(db.Model):
     __tablename__ = "ferias"
     id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     totalferias = db.Column(db.Integer, default=25)  # Inicialmente 25 dias de férias
     feriasdisponiveis = db.Column(db.Integer, default=25)
     ano = db.Column(db.Integer, nullable=False)
@@ -37,7 +37,7 @@ class ferias(db.Model):
 class presencial(db.Model):
     __tablename__ = "presencial"
     id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     totalpresencial = db.Column(db.Integer, nullable=False, default=10)
     ano = db.Column(db.Integer, nullable=False)
     mes = db.Column(db.Integer, nullable=False)
@@ -79,7 +79,7 @@ class capacidadezona(db.Model):
 class feriasmarcadas(db.Model):
     __tablename__ = "feriasmarcadas"
     id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     duracao = db.Column(db.Integer, nullable=False)
     data = db.Column(db.Date, nullable=False)
     estado = db.Column(db.Integer, nullable=False)
@@ -88,7 +88,7 @@ class feriasmarcadas(db.Model):
 class ausencias(db.Model):
     __tablename__ = "ausencias"
     id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     totalausencias = db.Column(db.Integer, nullable=False)
     ano = db.Column(db.Integer, nullable=False)
 
@@ -97,7 +97,7 @@ class ausencias(db.Model):
 class ausenciasmarcadas(db.Model):
     __tablename__ = "ausenciasmarcadas"
     id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     duracao = db.Column(db.Integer, nullable=False)
     data = db.Column(db.Date, nullable=False)
     estado = db.Column(db.Integer, nullable=False)
@@ -107,6 +107,14 @@ class ausenciasmarcadas(db.Model):
 class presencialmarcadas(db.Model):
     __tablename__ = "presencialmarcadas"
     id = db.Column(db.Integer, primary_key=True)
-    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutlizador'))
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     data = db.Column(db.Date, nullable=False)
     estado = db.Column(db.Integer, nullable=False)
+
+class notificacoes(db.Model):
+    __tablename__ = "notificacoes"
+    id = db.Column(db.Integer, primary_key=True)
+    idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
+    data = db.Column(db.Date, nullable=False)
+    conteudo = db.Column(db.Text, nullable=False)
+    tipo = db.Column(db.Text, nullable=False)
