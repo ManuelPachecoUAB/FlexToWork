@@ -171,7 +171,9 @@ export default function Manager() {
             alert('Token não encontrado. Faça login novamente.');
             return;
         }
-
+        let texto='';
+        texto = prompt("Razão da Rejeição: ","text");
+        console.log(texto);
             let endpoint = '';
             if (type === "ferias") {
                 endpoint = `http://127.0.0.1:5000/api/ferias/reject/${id}`;
@@ -180,7 +182,22 @@ export default function Manager() {
             } else if (type === "presencial") {
                 endpoint = `http://127.0.0.1:5000/api/presencial/reject/${id}`;
             }
-
+            const newNotification = {
+                texto,
+                id,
+                type
+            };
+            axios.post('http://127.0.0.1:5000/api/notificacao', newNotification, {
+                headers: {Authorization: `Bearer ${tokenUtilizador}`}
+            })
+                .then(() => {
+                    texto = '';
+                    console.log('Notificação enviada ao colaborador!');
+                })
+                .catch(error => {
+                    console.error('Erro ao remover marcação:', error.response ? error.response.data.error : error);
+                    alert(`Erro ao remover marcação: ${error.response ? error.response.data.error : error.message}. Tente novamente.`);
+                });
             axios.delete(endpoint, {
                 headers: { Authorization: `Bearer ${tokenUtilizador}` }
             })
