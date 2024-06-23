@@ -95,7 +95,6 @@ export default function Colaborador() {
             });
     };
 
-
     const Date_Click_Fun = (date) => {
         const dateString = date.toDateString();
         const event = events.find(event => event.date.toDateString() === dateString);
@@ -143,7 +142,6 @@ export default function Colaborador() {
                 });
         }
     };
-
 
     const Delete_Event_Fun = () => {
         const userToken = localStorage.getItem('userToken');
@@ -239,9 +237,46 @@ export default function Colaborador() {
             }
         })
             .then(response => response.json())
-            .then(response => console.log(response))
             .then(response => setNotificacoes(response))
             .catch(error => console.error('Erro:', error));
+    };
+
+    const handleDeleteNotificacao = (id) => {
+        const userToken = localStorage.getItem('userToken');
+        fetch(`http://127.0.0.1:5000/api/notificacoes/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    setNotificacoes(notificacoes.filter(notificacao => notificacao.id !== id));
+                } else {
+                    console.error('Erro ao excluir notificação');
+                }
+            })
+            .catch(error => console.error('Erro ao excluir notificação:', error));
+    };
+
+    const handleDeleteAllNotificacoes = () => {
+        const userToken = localStorage.getItem('userToken');
+        fetch(`http://127.0.0.1:5000/api/notificacoes`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    setNotificacoes([]);
+                } else {
+                    console.error('Erro ao excluir todas as notificações');
+                }
+            })
+            .catch(error => console.error('Erro ao excluir todas as notificações:', error));
     };
 
     useEffect(() => {
@@ -249,6 +284,10 @@ export default function Colaborador() {
         fetchPresencialMes(currentYear, currentMonth);
         fetchNotificacoes();
     }, [currentMonth, currentYear]);
+
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
 
     return (
         <div className="main-container">
@@ -317,8 +356,14 @@ export default function Colaborador() {
                     </div>
                     <div className="notifications-container">
                         <h2>Notificações</h2>
+                        <button onClick={handleDeleteAllNotificacoes}>Apagar todas as notificações</button>
                         <ul>
-                            notificacoes
+                            {notificacoes.map(notificacao => (
+                                <li key={notificacao.id}>
+                                    {new Date(notificacao.data).toDateString()}: {capitalizeFirstLetter(notificacao.tipo)} - {notificacao.conteudo}
+                                    <button onClick={() => handleDeleteNotificacao(notificacao.id)}>X</button>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
