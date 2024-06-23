@@ -886,11 +886,44 @@ def get_notificacoes():
 
     notificacoes_utilizador = notificacoes.query.filter_by(idcolaborador=current_user.idutilizador).all()
     notificacoes_list = [
-        {"id": n.id, "data": n.data, "conteudo": n.tipo, "conteudo": n.conteudo}
+        {"id": n.id, "data": n.data, "conteudo": n.conteudo, "tipo": n.tipo}
         for n in notificacoes_utilizador
     ]
 
     return jsonify(notificacoes_list), 200
+
+@app.route("/api/notificacoes/<int:notificacao_id>", methods=["DELETE"])
+@jwt_required()
+def delete_notificacao(notificacao_id):
+    current_user_email = get_jwt_identity()
+    current_user = users.query.filter_by(email=current_user_email).first()
+
+    if not current_user:
+        return jsonify({"error": "Acesso não autorizado"}), 403
+
+    notificacao = notificacoes.query.filter_by(id=notificacao_id, idcolaborador=current_user.idutilizador).first()
+    if notificacao:
+        db.session.delete(notificacao)
+        db.session.commit()
+        return jsonify({"message": "Notificação removida com sucesso"}), 200
+    return jsonify({"error": "Notificação não encontrada"}), 404
+
+@app.route("/api/notificacoes", methods=["DELETE"])
+@jwt_required()
+def delete_all_notificacoes():
+    current_user_email = get_jwt_identity()
+    current_user = users.query.filter_by(email=current_user_email).first()
+
+    if not current_user:
+        return jsonify({"error": "Acesso não autorizado"}), 403
+
+    notificacoes_utilizador = notificacoes.query.filter_by(idcolaborador=current_user.idutilizador).all()
+    for notificacao in notificacoes_utilizador:
+        db.session.delete(notificacao)
+    db.session.commit()
+
+    return jsonify({"message": "Todas as notificações foram removidas com sucesso"}), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
