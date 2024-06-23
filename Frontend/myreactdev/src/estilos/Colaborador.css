@@ -27,6 +27,9 @@
 .selected-dates-container {
     flex: 0 0 15%;
     height: 450px;
+    max-height: 400px; /* Define uma altura máxima */
+    overflow-y: auto; /* Adiciona barra de rolagem vertical */
+    margin-right: 20px; /* Adiciona margem à direita para separação */
 }
 
 .datas-selecionadas{
@@ -256,3 +259,48 @@
     }
 }
 
+.notifications-container {
+    margin-top: 20px;
+    max-width: 300px; /* Defina a largura máxima para as notificações */
+    max-height: 400px; /* Defina a altura máxima para as notificações */
+    overflow-y: auto; /* Adicionar barra de rolagem vertical quando necessário */
+    word-wrap: break-word; /* Quebrar palavras longas para não ultrapassar a largura máxima */
+    margin-left: 20px; /* Adicionar um pouco de margem para separação */
+    padding-right: 10px; /* Adicionar padding para afastar da barra de rolagem */
+}
+
+.notifications-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notifications-container li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    word-break: break-word; /* Quebra as palavras longas */
+}
+
+.notifications-container ul li button {
+    margin-left: 10px;
+    padding: 3px 7px;
+    border: none;
+    background-color: red;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.notifications-container button {
+    margin: 10px 0;
+    padding: 5px 10px;
+    border: none;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
