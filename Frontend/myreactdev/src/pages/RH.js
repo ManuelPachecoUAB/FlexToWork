@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import Navbarlogado from '../components/NavbarLogado.js';
 import '../estilos/NavbarLogado.css';
-import '../estilos/RH.css'; // Certifique-se de criar esse arquivo para os estilos
+import '../estilos/RH.css';
 
+// Componente principal para a página de Recursos Humanos (RH)
 export default function RH() {
+    // Estados para armazenar data selecionada, eventos dos usuários, eventos formatados, mês e ano atuais, equipa selecionada e equipas disponíveis
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [allUserEvents, setAllUserEvents] = useState([]);
     const [formattedEvents, setFormattedEvents] = useState([]);
@@ -13,11 +15,13 @@ export default function RH() {
     const [selectedTeam, setSelectedTeam] = useState('');
     const [teams, setTeams] = useState([]);
 
+    // useEffect para procurar eventos de todos os utilizadores e equipas ao carregar o componente ou quando mês/ano/equipa mudam
     useEffect(() => {
         fetchAllUserEvents();
         fetchTeams();
     }, [currentMonth, currentYear, selectedTeam]);
 
+    // Função para procurar todos os eventos dos utilizadores
     const fetchAllUserEvents = async () => {
         try {
             const token = localStorage.getItem('userToken');
@@ -46,6 +50,7 @@ export default function RH() {
         }
     };
 
+    // Função para procurar todas as equipss
     const fetchTeams = async () => {
         try {
             const token = localStorage.getItem('userToken');
@@ -64,6 +69,7 @@ export default function RH() {
         }
     };
 
+    // Função para formatar eventos
     const formatEvents = (events) => {
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         const formatted = events.map(userEvents => {
@@ -91,6 +97,7 @@ export default function RH() {
         setFormattedEvents(formatted);
     };
 
+    // Função para mudar o mês atual
     const handleMonthChange = (direction) => {
         let newDate;
         if (direction === 'prev') {
@@ -103,6 +110,7 @@ export default function RH() {
         setSelectedDate(newDate);
     };
 
+    // Função para mudar o ano atual
     const handleYearChange = (direction) => {
         let newDate;
         if (direction === 'prev') {
@@ -114,10 +122,12 @@ export default function RH() {
         setSelectedDate(newDate);
     };
 
+    // Função para mudar a equipa selecionada
     const handleTeamChange = (event) => {
         setSelectedTeam(event.target.value);
     };
 
+    // Função para gerar relatório CSV
     const generateCSVReport = async (type) => {
         let reportData = [];
         if (type === 'monthly') {
@@ -190,7 +200,7 @@ export default function RH() {
             }
         }
 
-        // Utilize ponto e vírgula como delimitador para compatibilidade com Excel em diferentes configurações regionais
+        // Utiliza ; como delimitador para compatibilidade com Excel em diferentes configurações regionais
         const csvContent = [
             ["Nome do Colaborador", ...Array.from({ length: type === 'monthly' ? new Date(currentYear, currentMonth + 1, 0).getDate() : 12 * 31 }, (_, i) =>
                 type === 'monthly' ? `${String(i + 1).padStart(2, '0')}/${String(currentMonth + 1).padStart(2, '0')}` : `${String(i % 31 + 1).padStart(2, '0')}/${String(Math.floor(i / 31) + 1).padStart(2, '0')}`)],
@@ -210,6 +220,7 @@ export default function RH() {
         document.body.removeChild(link);
     };
 
+    // Função para formatar a data
     const formatDate = (date) => {
         return date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase());
     };

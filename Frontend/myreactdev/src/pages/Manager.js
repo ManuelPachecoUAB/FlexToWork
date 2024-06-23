@@ -4,7 +4,9 @@ import '../estilos/Manager.css';
 import axios from 'axios';
 import moment from 'moment';
 
+// Componente principal para a página Manager
 export default function Manager() {
+    // Estados para armazenar data selecionada, eventos dos utilizadores, eventos pendentes, membros da equipa, e visibilidade de seções
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [allUserEvents, setAllUserEvents] = useState([]);
     const [feriasPendentes, setFeriasPendentes] = useState([]);
@@ -18,8 +20,7 @@ export default function Manager() {
     const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
     const [formattedEvents, setFormattedEvents] = useState([]);
 
-
-
+    // useEffect para procurar eventos pendentes e membros da equipa ao carregar o componente
     useEffect(() => {
         const tokenUtilizador = localStorage.getItem('userToken');
         if (!tokenUtilizador) {
@@ -28,6 +29,7 @@ export default function Manager() {
             return;
         }
 
+        // Procura eventos pendentes da equipa
         axios.get('http://127.0.0.1:5000/api/get_team_events', {
             headers: { Authorization: `Bearer ${tokenUtilizador}` }
         })
@@ -42,6 +44,7 @@ export default function Manager() {
                 alert('Erro ao carregar eventos pendentes. Tente novamente.');
             });
 
+        // Procura membros da equipa
         axios.get('http://127.0.0.1:5000/api/team_members', {
             headers: { Authorization: `Bearer ${tokenUtilizador}` }
         })
@@ -54,10 +57,12 @@ export default function Manager() {
             });
     }, []);
 
+    // useEffect para procurar eventos de todos os utilizadores quando o mês ou ano atual muda
     useEffect(() => {
         fetchAllUserEvents();
     }, [currentMonth, currentYear]);
 
+    // Função para procurar eventos de todos os utilizadores
     const fetchAllUserEvents = async () => {
         try {
             const token = localStorage.getItem('userToken');
@@ -79,11 +84,11 @@ export default function Manager() {
                 console.error("Unexpected response format:", eventsData);
             }
         } catch (error) {
-            console.error("Erro ao obter eventos de todos os usuários:", error.response ? error.response.data : error.message);
+            console.error("Erro ao obter eventos de todos os utilizadores:", error.response ? error.response.data : error.message);
         }
     };
 
-
+    // Função para mudar o mês atual
     const handleMonthChange = (direction) => {
         let newDate;
         if (direction === 'prev') {
@@ -96,6 +101,7 @@ export default function Manager() {
         setSelectedDate(newDate);
     };
 
+    // Função para mudar o ano atual
     const handleYearChange = (direction) => {
         let newDate;
         if (direction === 'prev') {
@@ -107,6 +113,7 @@ export default function Manager() {
         setSelectedDate(newDate);
     };
 
+    // Função para formatar eventos
     const formatEvents = (events) => {
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         const formatted = events.map(userEvents => {
@@ -134,6 +141,7 @@ export default function Manager() {
         setFormattedEvents(formatted);
     };
 
+    // Função para aprovar um evento
     const handleApprove = (id, type) => {
         const tokenUtilizador = localStorage.getItem('userToken');
         if (!tokenUtilizador) {
@@ -164,6 +172,7 @@ export default function Manager() {
             });
     };
 
+    // Função para rejeitar um evento
     const handleReject = (id, type) => {
         const tokenUtilizador = localStorage.getItem('userToken');
         if (!tokenUtilizador) {
@@ -218,10 +227,12 @@ export default function Manager() {
                 });
     };
 
+    // Funções para alternar a visibilidade das seções de eventos pendentes
     const toggleFerias = () => setMostrarFerias(!mostrarFerias);
     const toggleAusencias = () => setMostrarAusencias(!mostrarAusencias);
     const togglePresenciais = () => setMostrarPresenciais(!mostrarPresenciais);
 
+    // Função para renderizar eventos pendentes
     const renderEventosPendentes = (eventos, tipo) => {
         return eventos.length > 0 ? (
             eventos.map(evento => (
@@ -238,6 +249,7 @@ export default function Manager() {
         );
     };
 
+    // Função para formatar data
     const formatDate = (date) => {
         return date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase());
     };

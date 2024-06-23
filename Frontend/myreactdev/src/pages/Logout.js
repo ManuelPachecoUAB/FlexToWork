@@ -7,7 +7,7 @@ export default function Logout() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Call the backend logout endpoint
+        // Chamada API logout
         axios.get('/logout') // Assuming the backend is proxied correctly
             .then(response => {
                 // If using sessions, the backend will clear the session

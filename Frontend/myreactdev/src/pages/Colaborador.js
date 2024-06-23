@@ -6,7 +6,9 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from 'axios';
 
+// Componente principal para a página do colaborador
 export default function Colaborador() {
+    // Estados para armazenar datas selecionadas, eventos, métricas, mês e ano atuais, e notificações
     const [selectedDates, setSelectedDates] = useState([]);
     const [events, setEvents] = useState([]);
     const [metrics, setMetrics] = useState({
@@ -24,6 +26,7 @@ export default function Colaborador() {
     const [notificacoes, setNotificacoes] = useState([]);
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
+    // Função para procurar eventos do utilizador
     const fetchUserEvents = (ano, mes) => {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/get_user_events', {
@@ -44,6 +47,7 @@ export default function Colaborador() {
                     feriasPorMarcar: userEvents.ferias_disponiveis || 0,
                 };
 
+                // Processar eventos de férias
                 userEvents.ferias.forEach(event => {
                     newEvents.push({
                         id: event.id,
@@ -58,6 +62,7 @@ export default function Colaborador() {
                     }
                 });
 
+                // Processar eventos de ausências
                 userEvents.ausencias.forEach(event => {
                     newEvents.push({
                         id: event.id,
@@ -72,6 +77,7 @@ export default function Colaborador() {
                     }
                 });
 
+                // Processar eventos de presença
                 userEvents.presenciais.forEach(event => {
                     newEvents.push({
                         id: event.id,
@@ -90,11 +96,12 @@ export default function Colaborador() {
                 setMetrics(metricsUpdate);
             })
             .catch(error => {
-                console.error('Erro ao carregar eventos do usuário:', error);
-                alert('Erro ao carregar eventos do usuário. Tente novamente.');
+                console.error('Erro ao carregar eventos do utilizador:', error);
+                alert('Erro ao carregar eventos do utilizador. Tente novamente.');
             });
     };
 
+    // Função chamada ao clicar numa data no calendário
     const Date_Click_Fun = (date) => {
         const dateString = date.toDateString();
         const event = events.find(event => event.date.toDateString() === dateString);
@@ -113,6 +120,7 @@ export default function Colaborador() {
         }
     };
 
+    // Função para criar eventos (férias, ausência, presencial)
     const Create_Event_Fun = (type) => {
         const userToken = localStorage.getItem('userToken');
         if (selectedDates.length > 0) {
@@ -143,6 +151,7 @@ export default function Colaborador() {
         }
     };
 
+    // Função para apagar eventos
     const Delete_Event_Fun = () => {
         const userToken = localStorage.getItem('userToken');
         if (selectedDates.length > 0) {
@@ -175,6 +184,7 @@ export default function Colaborador() {
         }
     };
 
+    // Função para definir a classe do tile do calendário
     const getTileClassName = ({ date, view }) => {
         if (view === 'month') {
             const selected = selectedDates.some(selectedDate => date.toDateString() === selectedDate.toDateString());
@@ -194,6 +204,7 @@ export default function Colaborador() {
         return '';
     };
 
+    // Função para procurar presenças do mês
     const fetchPresencialMes = (ano, mes) => {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/presencial_mes', {
@@ -227,6 +238,7 @@ export default function Colaborador() {
             });
     };
 
+    // Função para procurar notificações
     const fetchNotificacoes = () => {
         const userToken = localStorage.getItem('userToken');
         fetch(`http://127.0.0.1:5000/api/notificacoes`, {
@@ -241,6 +253,7 @@ export default function Colaborador() {
             .catch(error => console.error('Erro:', error));
     };
 
+    // Função para apagar uma notificação
     const handleDeleteNotificacao = (id) => {
         const userToken = localStorage.getItem('userToken');
         fetch(`http://127.0.0.1:5000/api/notificacoes/${id}`, {
@@ -260,6 +273,7 @@ export default function Colaborador() {
             .catch(error => console.error('Erro ao excluir notificação:', error));
     };
 
+    // Função para apagar todas as notificação
     const handleDeleteAllNotificacoes = () => {
         const userToken = localStorage.getItem('userToken');
         fetch(`http://127.0.0.1:5000/api/notificacoes`, {
@@ -279,12 +293,14 @@ export default function Colaborador() {
             .catch(error => console.error('Erro ao excluir todas as notificações:', error));
     };
 
+    // Hook useEffect para procurar dados quando o componente é iniciado ou quando o mês/ano atual mudam (acção do utilizador no calendario)
     useEffect(() => {
         fetchUserEvents(currentYear, currentMonth);
         fetchPresencialMes(currentYear, currentMonth);
         fetchNotificacoes();
     }, [currentMonth, currentYear]);
 
+    // Função para capitalizar a primeira letra de uma string
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import '../estilos/Navbar.css';
-import axios from "axios"; // Make sure the navbar styles are located here
+import axios from "axios";
 
+// Componente Navbar para utilizadores não logados
 function Navbar() {
     const navigate = useNavigate();
 
+    // Função para lidar com o logout
     const handleLogout = () => {
-        // Call the backend logout endpoint
-        axios.get('http://127.0.0.1:5000/logout') // Assuming the backend is proxied correctly
+        // Chama o endpoint de logout do backend
+        axios.get('http://127.0.0.1:5000/logout')
             .then(response => {
                 sessionStorage.removeItem('userToken');
                 localStorage.removeItem('userToken');

@@ -7,7 +7,9 @@ import addTeamIcon from '../img/add_teams.png';
 import searchTeamIcon from '../img/search_teams.png';
 import NavbarLogado from "../components/NavbarLogado.js";
 
+// Componente principal para a página de administração
 export default function Admin() {
+    // Estados para gerir as visualizações, utilizadores, equipas, níveis de acesso e mensagens de sucesso/erro
     const [view, setView] = useState(null);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -22,7 +24,7 @@ export default function Admin() {
     const [searchQuery, setSearchQuery] = useState('');
     const filteredUsers = users.filter(user => user.email.toLowerCase().includes(searchQuery.toLowerCase()));
     const [teamName, setTeamName] = useState('');
-    const [teams, setTeams] = useState([]); // Novo estado para equipes
+    const [teams, setTeams] = useState([]); // Novo estado para equipas
     const [accessLevels, setAccessLevels] = useState([]); // Novo estado para níveis de acesso
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [searchTeamQuery, setSearchTeamQuery] = useState('');
@@ -44,6 +46,7 @@ export default function Admin() {
         }
     }, [sucesso]);
 
+    // useEffect para limpar mensagens de erro após 6 segundos
     useEffect(() => {
         if (erro) {
             const timer = setTimeout(() => {
@@ -53,6 +56,7 @@ export default function Admin() {
         }
     }, [erro]);
 
+    // Função para procurar utilizadores
     function fetchUsers() {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/users', {
@@ -62,6 +66,7 @@ export default function Admin() {
             .catch(error => console.error('Failed to fetch users', error));
     }
 
+    // Função para procurar equipas
     function fetchTeams() {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/teams',{
@@ -71,6 +76,7 @@ export default function Admin() {
             .catch(error => console.error('Failed to fetch teams', error));
     }
 
+    // Função para procurar niveis de acesso
     function fetchAccessLevels() {
         const userToken = localStorage.getItem('userToken');
         axios.get('http://127.0.0.1:5000/api/access_levels',{
@@ -80,6 +86,7 @@ export default function Admin() {
             .catch(error => console.error('Failed to fetch access levels', error));
     }
 
+    // Função para criar um novo utilizador
     function handleAddUser() {
         const userToken = localStorage.getItem('userToken');
         const erros = validarDados(email, primeironome, segundonome, password);
@@ -128,6 +135,7 @@ export default function Admin() {
             });
     }
 
+    // Função para criar uma nova equipa
     function handleAddTeam() {
         const userToken = localStorage.getItem('userToken');
         if (teamName.length < 3) {
@@ -152,6 +160,7 @@ export default function Admin() {
             });
     }
 
+    // Função para apagar um utilizador
     function handleDeleteUser(id) {
         const userToken = localStorage.getItem('userToken');
         if (window.confirm("Tem a certeza que deseja apagar este utilizador?")) {
@@ -177,6 +186,7 @@ export default function Admin() {
         }
     }
 
+    // Função para apagar uma equipa
     function handleDeleteTeam(id) {
         const userToken = localStorage.getItem('userToken');
         if (window.confirm("Tem a certeza que deseja apagar a equipa selecionada?")) {
@@ -202,6 +212,7 @@ export default function Admin() {
         }
     }
 
+    // Função para editar um utilizador
     function handleEditUser(user) {
         setSelectedUser(user);
         setEmail(user.email);
@@ -213,12 +224,14 @@ export default function Admin() {
         setView('editUser');
     }
 
+    // Função para editar uma equipa
     function handleEditTeam(team) {
         setSelectedTeam(team);
         setTeamName(team.nome);
         setView('editTeam');
     }
 
+    // Função para atualizar um utilizador
     function handleUpdateUser() {
         const userToken = localStorage.getItem('userToken');
         const updatedUser = {};
@@ -271,6 +284,7 @@ export default function Admin() {
             });
     }
 
+    // Função para atualizar uma equipa
     function handleUpdateTeam() {
         const userToken = localStorage.getItem('userToken');
         if (teamName.length < 3) {
@@ -295,6 +309,7 @@ export default function Admin() {
             });
     }
 
+    // Função para validar dados do utilizador
     function validarDados(email, primeironome, segundonome, password) {
         const erros = [];
         const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/;
@@ -305,6 +320,7 @@ export default function Admin() {
         return erros;
     }
 
+    // Função para limpar formulário
     function handleClearForm() {
         setEmail('');
         setPrimeironome('');
@@ -316,6 +332,7 @@ export default function Admin() {
         setErro('');
     }
 
+    // Função para redefinir a visualização
     function handleResetView(){
         handleClearForm();
         setView(null);

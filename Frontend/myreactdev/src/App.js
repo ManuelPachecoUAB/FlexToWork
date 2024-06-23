@@ -15,7 +15,8 @@ import ProtectedRoute2 from './components/ProtectedRoute2';
 import ProtectedRoute3 from './components/ProtectedRoute3';
 import ProtectedRoute4 from './components/ProtectedRoute4';
 
- 
+
+// Componente principal da aplicação
 function App() {
   return (
       <BrowserRouter>

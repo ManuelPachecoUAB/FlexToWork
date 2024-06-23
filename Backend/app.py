@@ -23,9 +23,10 @@ bcrypt = Bcrypt(app)
 CORS(app, supports_credentials=True)
 db.init_app(app)
 
+# Criação das tabelas e inserção de dados iniciais
 with app.app_context():
     db.create_all()
-    # Verificar se a tabela nivelacesso está vazia
+    # Verifica se a tabela nivelacesso está vazia
     if nivelacesso.query.count() == 0:
         # Adicionar níveis de acesso
         niveis = [
@@ -66,12 +67,15 @@ with app.app_context():
             db.session.add(new_presencial)
 
     db.session.commit()
+
+# Rota "base"
 @app.route("/")
 def hello():
     if session.get("user_id") is None:
         return redirect("/login")
     return "Proximas paginas"
 
+# Rota para registar de novos utilizadores
 @app.route("/signup", methods=["POST"])
 def signup():
     email = request.json["email"]
@@ -118,7 +122,7 @@ def signup():
         "idnivel": new_user.idnivel
     })
 
-
+# Rota para login
 @app.route("/login", methods=["POST"])
 def login_user():
     email = request.json["email"]
@@ -132,6 +136,7 @@ def login_user():
 
     return jsonify({"error": "Acesso não autorizado"}), 401
 
+# Rota para logout
 @app.route("/logout", methods=["GET"])
 def logout():
     # Limpar sessão
@@ -139,8 +144,9 @@ def logout():
     # Pagina de login
     return "Logout"
 
+# Rota para adicionar novos utilizadores (apenas para admins)
 @app.route("/api/users", methods=["POST"])
-@jwt_required()  # Requer que o usuário esteja autenticado
+@jwt_required()  # Requer que o utilizador esteja autenticado
 def add_user():
     current_user_email = get_jwt_identity()
     current_user = users.query.filter_by(email=current_user_email).first()
@@ -161,7 +167,7 @@ def add_user():
     if len(password) < 8:
         return jsonify({"error": "Senha muito pequena"}), 400
     if nivel > 5 or nivel < 1:
-        return jsonify({"error": "Nível de usuário inexistente"}), 400
+        return jsonify({"error": "Nível de utilizador inexistente"}), 400
     user_exists = users.query.filter_by(email=email).first() is not None
     if user_exists:
         return jsonify({"error": "Email já existe"}), 409
@@ -181,7 +187,7 @@ def add_user():
     }), 201
 
 
-#Listar Utilizadores
+# Rota para Listar Utilizadores
 @app.route("/api/users", methods=["GET"])
 def list_users():
     all_users = users.query.all()
@@ -191,7 +197,7 @@ def list_users():
         for user in all_users
     ])
 
-#Apagar Utilizadores
+# Rota para Apagar Utilizadores
 @app.route("/api/users/<string:user_id>", methods=["DELETE"])
 def delete_user(user_id):
     user_to_delete = users.query.filter_by(id=user_id).first()
@@ -201,7 +207,7 @@ def delete_user(user_id):
         return jsonify({"message": "Utilizador removido!"}), 200
     return jsonify({"error": "Utilizador não encontrado"}), 404
 
-#Modificar Utilizadores
+#Rota para Modificar Utilizadores
 @app.route("/api/users/<string:user_id>", methods=["PUT"])
 def update_user(user_id):
     user_to_update = users.query.filter_by(id=user_id).first()
@@ -226,6 +232,7 @@ def update_user(user_id):
             return jsonify({"error": "Erro ao atualizar utilizador", "details": str(e)}), 500
     return jsonify({"error": "Utilizador não encontrado"}), 404
 
+# Rota para adicionar férias
 @app.route("/api/ferias", methods=["POST"])
 @jwt_required()
 def add_ferias():
@@ -258,7 +265,7 @@ def add_ferias():
             )
             db.session.add(nova_ferias)
 
-        # Atualizar feriasdisponiveis
+        # Atualizar ferias disponiveis
         ferias_registro.feriasdisponiveis -= duracao
         db.session.commit()
 
@@ -267,8 +274,7 @@ def add_ferias():
         print(f"Erro ao marcar férias: {e}")
         return jsonify({"error": f"Erro ao marcar férias: {e}"}), 500
 
-
-
+# Rota para adicionar ausências
 @app.route("/api/ausencias", methods=["POST"])
 @jwt_required()
 def add_ausencias():
@@ -301,7 +307,7 @@ def add_ausencias():
         print(f"Erro ao marcar ausência: {e}")
         return jsonify({"error": f"Erro ao marcar ausência: {e}"}), 500
 
-
+# Rota para adicionar Ida ao escritorio
 @app.route("/api/presencial", methods=["POST"])
 @jwt_required()
 def add_presencial():
@@ -333,7 +339,7 @@ def add_presencial():
         print(f"Erro ao marcar presencial: {e}")
         return jsonify({"error": f"Erro ao marcar presencial: {e}"}), 500
 
-
+# Rota para obter eventos do  utilizador
 @app.route("/api/get_user_events", methods=["GET"])
 @jwt_required()
 def get_user_events():
@@ -376,9 +382,10 @@ def get_user_events():
 
         return jsonify(events), 200
     except Exception as e:
-        print(f"Erro ao obter eventos do usuário: {e}")
-        return jsonify({"error": f"Erro ao obter eventos do usuário: {e}"}), 500
+        print(f"Erro ao obter eventos do utilizador: {e}")
+        return jsonify({"error": f"Erro ao obter eventos do utilizador: {e}"}), 500
 
+# Rota para apagar férias
 @app.route("/api/ferias/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_ferias(id):
@@ -406,7 +413,7 @@ def delete_ferias(id):
         print(f"Erro ao remover férias: {e}")
         return jsonify({"error": f"Erro ao remover férias: {e}"}), 500
 
-
+# Rota para apagar ausencias
 @app.route("/api/ausencias/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_ausencias(id):
@@ -427,6 +434,7 @@ def delete_ausencias(id):
         print(f"Erro ao remover ausência: {e}")
         return jsonify({"error": f"Erro ao remover ausência: {e}"}), 500
 
+# Rota para apagar idas ao escritorio
 @app.route("/api/presencial/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_presencial(id):
@@ -447,6 +455,7 @@ def delete_presencial(id):
         print(f"Erro ao remover presencial: {e}")
         return jsonify({"error": f"Erro ao remover presencial: {e}"}), 500
 
+# Rota para obter eventos de uma equipa
 @app.route("/api/get_team_events", methods=["GET"])
 @jwt_required()
 def get_team_events():
@@ -457,7 +466,7 @@ def get_team_events():
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        if current_user.idnivel not in [2, 4, 5]:  # Verifica se o nível do usuário é 2, 4 ou 5
+        if current_user.idnivel not in [2, 4, 5]:  # Verifica se o nível do utilizador é 2, 4 ou 5
             print(f"Acesso negado para {current_user_email}, nível {current_user.idnivel}")
             return jsonify({"error": "Acesso não autorizado"}), 403
 
@@ -481,7 +490,7 @@ def get_team_events():
         print(f"Erro ao obter eventos da equipe: {e}")
         return jsonify({"error": f"Erro ao obter eventos da equipe: {e}"}), 500
 
-
+# Rotas para aprovar eventos (férias, ausências, presenças)
 @app.route("/api/ferias/approve/<int:id>", methods=["PUT"])
 @app.route("/api/ausencias/approve/<int:id>", methods=["PUT"])
 @app.route("/api/presencial/approve/<int:id>", methods=["PUT"])
@@ -508,6 +517,7 @@ def approve_event(id):
         return jsonify({"message": "Evento aprovado com sucesso"}), 200
     return jsonify({"error": "Evento não encontrado"}), 404
 
+# Rotas para rejeitar eventos (férias, ausências, presenças)
 @app.route("/api/ferias/reject/<int:id>", methods=["DELETE"])
 @app.route("/api/ausencias/reject/<int:id>", methods=["DELETE"])
 @app.route("/api/presencial/reject/<int:id>", methods=["DELETE"])
@@ -534,6 +544,7 @@ def reject_event(id):
         return jsonify({"message": "Evento rejeitado com sucesso"}), 200
     return jsonify({"error": "Evento não encontrado"}), 404
 
+# Rota para obter presenciais obrigatórios
 @app.route("/api/presencial_obrigatorios", methods=["GET"])
 @jwt_required()
 def get_presencial_obrigatorios():
@@ -562,6 +573,7 @@ def get_presencial_obrigatorios():
         print(f"Erro ao obter presenciais obrigatórios: {e}")
         return jsonify({"error": f"Erro ao obter presenciais obrigatórios: {e}"}), 500
 
+# Rota para obter presenciais por mês
 @app.route("/api/presencial_mes", methods=["GET"])
 @jwt_required()
 def get_presencial_mes():
@@ -594,6 +606,7 @@ def get_presencial_mes():
         print(f"Erro ao obter presenciais por mês: {e}")
         return jsonify({"error": f"Erro ao obter presenciais por mês: {e}"}), 500
 
+# Rota para obter membros de uma equipa
 @app.route("/api/team_members", methods=["GET"])
 @jwt_required()
 def get_team_members():
@@ -635,6 +648,7 @@ def get_team_members():
         print(f"Erro ao obter membros da equipe: {e}")
         return jsonify({"error": f"Erro ao obter membros da equipe: {e}"}), 500
 
+# Rota para obter eventos de todos os utilizadores
 @app.route("/api/all_users_events", methods=["GET"])
 @jwt_required()
 def get_all_users_events():
@@ -645,7 +659,7 @@ def get_all_users_events():
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        if current_user.idnivel not in [3, 4, 5]:  # Verifica se o nível do usuário é RH Manager ou Admin
+        if current_user.idnivel not in [3, 4, 5]:  # Verifica se o nível do utilizador é RH Manager ou Admin
             return jsonify({"error": "Acesso não autorizado"}), 403
 
         all_users = users.query.all()
@@ -676,9 +690,10 @@ def get_all_users_events():
 
         return jsonify(all_events), 200
     except Exception as e:
-        print(f"Erro ao obter eventos de todos os usuários: {e}")
-        return jsonify({"error": f"Erro ao obter eventos de todos os usuários: {e}"}), 500
+        print(f"Erro ao obter eventos de todos os utilizadores: {e}")
+        return jsonify({"error": f"Erro ao obter eventos de todos os utilizadores: {e}"}), 500
 
+# Rota para obter eventos de todos os utilizadores por equipa
 @app.route("/api/all_users_events_byteam/<string:selectedTeam>", methods=["GET"])
 @jwt_required()
 def get_all_users_events_byteam(selectedTeam):
@@ -689,7 +704,7 @@ def get_all_users_events_byteam(selectedTeam):
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        if current_user.idnivel not in [3, 4, 5]:  # Verifica se o nível do usuário é RH, RH Manager ou Admin
+        if current_user.idnivel not in [3, 4, 5]:  # Verifica se o nível do utilizador é RH, RH Manager ou Admin
             return jsonify({"error": "Acesso não autorizado"}), 403
 
         # Obter o ID da equipe pelo nome da equipe
@@ -725,10 +740,10 @@ def get_all_users_events_byteam(selectedTeam):
 
         return jsonify(all_events), 200
     except Exception as e:
-        print(f"Erro ao obter eventos de todos os usuários: {e}")
-        return jsonify({"error": f"Erro ao obter eventos de todos os usuários: {e}"}), 500
+        print(f"Erro ao obter eventos de todos os utilizadores: {e}")
+        return jsonify({"error": f"Erro ao obter eventos de todos os utilizadores: {e}"}), 500
 
-
+# Rota para obter todas as equipas
 @app.route("/api/teams", methods=["GET"])
 @jwt_required()
 def get_teams():
@@ -739,6 +754,7 @@ def get_teams():
         print(f"Erro ao obter equipes: {e}")
         return jsonify({"error": f"Erro ao obter equipes: {e}"}), 500
 
+# Rota para criar uma nova equipa
 @app.route("/api/eventos_equipa_manager", methods=["GET"])
 @jwt_required()
 def get_eventos_equipa_manager():
@@ -749,7 +765,7 @@ def get_eventos_equipa_manager():
         if not current_user:
             return jsonify({"error": "Acesso não autorizado"}), 403
 
-        if current_user.idnivel not in [2, 3, 4, 5]:  # Verifica se o nível do usuário é Manager, RH, RH Manager ou Admin
+        if current_user.idnivel not in [2, 3, 4, 5]:  # Verifica se o nível do utilizador é Manager, RH, RH Manager ou Admin
             return jsonify({"error": "Acesso não autorizado"}), 403
 
         team_members = users.query.filter_by(idequipa=current_user.idequipa).all()
@@ -779,9 +795,10 @@ def get_eventos_equipa_manager():
 
         return jsonify(all_events), 200
     except Exception as e:
-        print(f"Erro ao obter eventos de todos os usuários: {e}")
-        return jsonify({"error": f"Erro ao obter eventos de todos os usuários: {e}"}), 500
+        print(f"Erro ao obter eventos de todos os utilizadores: {e}")
+        return jsonify({"error": f"Erro ao obter eventos de todos os utilizadores: {e}"}), 500
 
+# Rota para apagar uma equipa
 @app.route("/api/add_equipa", methods=["POST"])
 @jwt_required()
 def add_team():
@@ -802,6 +819,7 @@ def add_team():
 
     return jsonify({"message": "Equipa criada com sucesso"}), 201
 
+# Rota para atualizar uma equipa
 @app.route("/api/teams/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_team(id):
@@ -820,6 +838,7 @@ def delete_team(id):
     except Exception as e:
         return jsonify({"error": f"Erro ao remover a equipa: {e}"}), 500
 
+# Rota para obter níveis de acesso
 @app.route("/api/teams/<int:id>", methods=["PUT"])
 @jwt_required()
 def update_team(id):
@@ -838,6 +857,7 @@ def update_team(id):
     except Exception as e:
         return jsonify({"error": f"Erro ao atualizar a equipa: {e}"}), 500
 
+# Rota para criar notificação
 @app.route("/api/access_levels", methods=["GET"])
 @jwt_required()
 def get_access_levels():
@@ -848,6 +868,7 @@ def get_access_levels():
         print(f"Erro ao obter os niveis: {e}")
         return jsonify({"error": f"Erro ao obter os niveis: {e}"}), 500
 
+# Rota para criar notificação
 @app.route("/api/notificacao", methods=["POST"])
 @jwt_required()
 def notifica():
@@ -875,6 +896,7 @@ def notifica():
         return jsonify({"message": "Evento rejeitado com sucesso"}), 200
     return jsonify({"error": "Evento não encontrado"}), 404
 
+# Rota para obter notificações do utilizador
 @app.route("/api/notificacoes", methods=["GET"])
 @jwt_required()
 def get_notificacoes():
@@ -892,6 +914,7 @@ def get_notificacoes():
 
     return jsonify(notificacoes_list), 200
 
+# Rota para apagar notificação do utilizador
 @app.route("/api/notificacoes/<int:notificacao_id>", methods=["DELETE"])
 @jwt_required()
 def delete_notificacao(notificacao_id):
@@ -908,6 +931,7 @@ def delete_notificacao(notificacao_id):
         return jsonify({"message": "Notificação removida com sucesso"}), 200
     return jsonify({"error": "Notificação não encontrada"}), 404
 
+# Rota para apagar todas as notificações do utilizador
 @app.route("/api/notificacoes", methods=["DELETE"])
 @jwt_required()
 def delete_all_notificacoes():
@@ -924,6 +948,6 @@ def delete_all_notificacoes():
 
     return jsonify({"message": "Todas as notificações foram removidas com sucesso"}), 200
 
-
+# Inicialização do servidor
 if __name__ == "__main__":
     app.run(debug=True)

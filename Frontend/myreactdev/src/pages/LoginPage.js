@@ -4,12 +4,14 @@ import {useNavigate} from "react-router-dom";
 import Navbar from '../components/Navbar';
 import '../estilos/LoginPage.css';
 
+// Componente de página de login
 export default function LoginPage(){
-
+    // Definição dos estados para email e senha
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const navigate = useNavigate();
 
+    // Função para "logar" o utilizador
     const logInUser = () => {
         if(email.length === 0){
             alert("Email vazio!");
@@ -18,6 +20,7 @@ export default function LoginPage(){
             alert("Password vazia!");
         }
         else{
+            // Chamada API login
             axios.post('http://127.0.0.1:5000/login', {
                 email: email,
                 password: password
@@ -26,7 +29,7 @@ export default function LoginPage(){
                     console.log(response);
                     const token = response.data.access_token;
                     const nivel = response.data.idnivel;
-
+                    // Redirecionamento baseado no nível de acesso do utilizador
                     if (nivel === 1) {
                         navigate("/Colaborador");
                         localStorage.setItem('nivel', nivel);

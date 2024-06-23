@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import '../estilos/NavbarLogado.css';
-import axios from "axios"; // Make sure the navbar styles are located here
+import axios from "axios";
 
+// Componente Navbar para utilizadores logados
 function NavbarLogado() {
     const navigateLogado = useNavigate();
     const isAuthenticated = localStorage.getItem('userToken');
     const nivel = localStorage.getItem('nivel');
+
+    // Função para lidar com o logout
     const handleLogout = () => {
-        // Call the backend logout endpoint
-        axios.get('http://127.0.0.1:5000/logout') // Assuming the backend is proxied correctly
+        // Chama o endpoint de logout do backend
+        axios.get('http://127.0.0.1:5000/logout')
             .then(response => {
                 sessionStorage.removeItem('userToken');
                 localStorage.removeItem('userToken');
@@ -21,6 +24,7 @@ function NavbarLogado() {
             });
     };
 
+    // Navbar para nível 1 (Colaborador)
     if (isAuthenticated && nivel === '1') {
         return (
             <nav className="NavbarLogado">
@@ -40,6 +44,7 @@ function NavbarLogado() {
             </nav>
         );
     }
+    // Navbar para nível 2 (Manager)
     else if (isAuthenticated && nivel === '2') {
         return (
             <nav className="NavbarLogado">
@@ -62,6 +67,7 @@ function NavbarLogado() {
             </nav>
         );
     }
+    // Navbar para nível 3 (RH)
     else if (isAuthenticated && nivel === '3') {
         return (
             <nav className="NavbarLogado">
@@ -84,6 +90,7 @@ function NavbarLogado() {
             </nav>
         );
     }
+    // Navbar para nível 4 (RH Manager)
     else if (isAuthenticated && nivel === '4') {
         return (
             <nav className="NavbarLogado">
@@ -109,6 +116,7 @@ function NavbarLogado() {
             </nav>
         );
     }
+    // Navbar para nível 5 (Administrador)
     else if (isAuthenticated && nivel === '5') {
         return (
             <nav className="NavbarLogado">
