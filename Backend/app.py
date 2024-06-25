@@ -204,7 +204,7 @@ def delete_user(user_id):
     if user_to_delete:
         db.session.delete(user_to_delete)
         db.session.commit()
-        return jsonify({"message": "Utilizador removido!"}), 200
+        return jsonify({"email": user_to_delete.email}), 200
     return jsonify({"error": "Utilizador não encontrado"}), 404
 
 #Rota para Modificar Utilizadores
@@ -834,7 +834,7 @@ def delete_team(id):
 
         db.session.delete(team)
         db.session.commit()
-        return jsonify({"message": "Equipa removida com sucesso"}), 200
+        return jsonify({"id": team.idequipa, "nome": team.nomeequipa}), 200
     except Exception as e:
         return jsonify({"error": f"Erro ao remover a equipa: {e}"}), 500
 

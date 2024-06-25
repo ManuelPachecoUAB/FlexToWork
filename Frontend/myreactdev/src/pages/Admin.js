@@ -170,7 +170,7 @@ export default function Admin() {
             })
                 .then(response => {
                     console.log('Utilizador removido com sucesso!', response.data);
-                    setSucesso(`Removido com sucesso o utilizador com o id: ${id}`);
+                    setSucesso(`Removido com sucesso o utilizador: ${response.data.email}`);
                     setErro('');
                     fetchUsers(); // Atualizar a lista de utilizadores após remoção
                 })
@@ -195,7 +195,7 @@ export default function Admin() {
             })
                 .then(response => {
                     console.log('Equipa removida com sucesso!', response.data);
-                    setSucesso(`Equipa removida com sucesso com o id: ${id}`);
+                    setSucesso(`Equipa removida com sucesso: ${response.data.nome}`);
                     setErro('');
                     fetchTeams();
                     setSearchTeamQuery('');
