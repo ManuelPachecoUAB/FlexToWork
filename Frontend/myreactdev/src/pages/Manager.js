@@ -182,7 +182,6 @@ export default function Manager() {
         }
         let texto='';
         texto = prompt("Razão da Rejeição: ","text");
-        console.log(texto);
             let endpoint = '';
             if (type === "ferias") {
                 endpoint = `http://127.0.0.1:5000/api/ferias/reject/${id}`;
