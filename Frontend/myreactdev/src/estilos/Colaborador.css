@@ -157,12 +157,12 @@
     border-radius: 50%;
 }
 
-.home-office-pending {
+.presencial-pending {
     background-color: lightblue !important;
     border-radius: 50%;
 }
 
-.home-office-approved {
+.presencial-approved {
     background-color: blue !important;
     border-radius: 50%;
     color: white;

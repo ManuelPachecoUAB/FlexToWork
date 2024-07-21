@@ -192,7 +192,7 @@ export default function Colaborador() {
             const event = events.find(event => event.date.toDateString() === date.toDateString());
             if (event) {
                 if (event.title === "Presencial") {
-                    return event.status === "approved" ? 'home-office-approved' : 'home-office-pending';
+                    return event.status === "approved" ? 'presencial-approved' : 'presencial-pending';
                 } else if (event.title === "Férias") {
                     return event.status === "approved" ? 'ferias-approved' : 'ferias-pending';
                 } else if (event.title === "Ausência") {

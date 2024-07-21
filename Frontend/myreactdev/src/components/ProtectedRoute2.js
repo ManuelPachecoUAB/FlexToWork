@@ -22,8 +22,8 @@ const ProtectedRoute2 = ({ children }) => {
                     }
                 })
                 .catch(error => {
-                    console.error('Erro ao marcar eventos:', error.response ? error.response.data.error : error);
-                    alert(`Erro ao marcar eventos: ${error.response ? error.response.data.error : error.message}. Tente novamente.`);
+                    console.error('Erro: ', error.response ? error.response.data.error : error);
+                    alert(`Erro: ${error.response ? error.response.data.error : error.message}. Tente novamente.`);
                     setIsAllowed(false);
                 });
         } else {
