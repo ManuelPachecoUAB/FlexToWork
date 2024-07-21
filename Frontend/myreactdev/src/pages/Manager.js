@@ -191,6 +191,7 @@ export default function Manager() {
             } else if (type === "presencial") {
                 endpoint = `http://127.0.0.1:5000/api/presencial/reject/${id}`;
             }
+            texto = "Marcação rejeitada - "+texto;
             const newNotification = {
                 texto,
                 id,

@@ -1,16 +1,35 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
 
 const ProtectedRoute2 = ({ children }) => {
     const [isAllowed, setIsAllowed] = useState(true);
     const isAuthenticated = localStorage.getItem('userToken');
-    const nivel = localStorage.getItem('nivel');
+    const [nivelutilisador, setNivelutilisador] = useState(null);
 
     useEffect(() => {
-        if (!isAuthenticated || (nivel !== '2' && nivel !== '4' && nivel !== '5')) {  // Alterado para verificar se o nível é '2'
-            localStorage.removeItem('nivel');     // Limpa o nível de acesso inadequado
-            setIsAllowed(false);                  // Atualiza o estado para não permitido
+        const userToken = localStorage.getItem('userToken');
+        if (userToken) {
+            axios.get(`http://127.0.0.1:5000/api/usernivel`, {
+                headers: {Authorization: `Bearer ${userToken}`}
+            })
+                .then(response => {
+                    const nivel = response.data.nivel;
+                    setNivelutilisador(nivel);
+                    if (!isAuthenticated || ![2, 4, 5].includes(nivel)) {  // Alterado para verificar se o nível é '2'
+                        setIsAllowed(false);                  // Atualiza o estado para não permitido
+                    } else {
+                        setIsAllowed(true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao marcar eventos:', error.response ? error.response.data.error : error);
+                    alert(`Erro ao marcar eventos: ${error.response ? error.response.data.error : error.message}. Tente novamente.`);
+                    setIsAllowed(false);
+                });
+        } else {
+            setIsAllowed(false);
         }
-    }, [isAuthenticated, nivel]);
+    }, [isAuthenticated]);
 
     if (!isAllowed) {
         // Mostra uma mensagem ou componente específico que não requer mudança de página

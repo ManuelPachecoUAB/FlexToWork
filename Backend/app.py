@@ -948,6 +948,18 @@ def delete_all_notificacoes():
 
     return jsonify({"message": "Todas as notificações foram removidas com sucesso"}), 200
 
+# Rota para apagar todas as notificações do utilizador
+@app.route("/api/usernivel", methods=["GET"])
+@jwt_required()
+def get_usernivel():
+    current_user_email = get_jwt_identity()
+    current_user = users.query.filter_by(email=current_user_email).first()
+
+    if not current_user:
+        return jsonify({"error": "Acesso não autorizado"}), 403
+
+    return jsonify({"nivel": current_user.idnivel}), 200
+
 # Inicialização do servidor
 if __name__ == "__main__":
     app.run(debug=True)
