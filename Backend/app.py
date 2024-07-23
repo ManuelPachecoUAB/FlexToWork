@@ -877,6 +877,7 @@ def notifica():
     text = request.json.get("texto")
     event_id = request.json.get("id")  # Recupere o id do evento do JSON
     tipo = request.json.get("type")
+    estado = "1"
 
     if not current_user or current_user.idnivel not in [2, 4, 5]:  # Verifica se é gerente ou autorizado
         return jsonify({"error": "Acesso não autorizado"}), 403
@@ -890,7 +891,7 @@ def notifica():
         event = presencialmarcadas.query.get(event_id)
 
     if event:
-        notificacao = notificacoes(idcolaborador=event.idcolaborador, data=event.data, conteudo=text, tipo=tipo)
+        notificacao = notificacoes(idcolaborador=event.idcolaborador, data=event.data, conteudo=text, tipo=tipo, estado=estado)
         db.session.add(notificacao)
         db.session.commit()
         return jsonify({"message": "Evento rejeitado com sucesso"}), 200
@@ -906,7 +907,7 @@ def get_notificacoes():
     if not current_user:
         return jsonify({"error": "Acesso não autorizado"}), 403
 
-    notificacoes_utilizador = notificacoes.query.filter_by(idcolaborador=current_user.idutilizador).all()
+    notificacoes_utilizador = notificacoes.query.filter_by(idcolaborador=current_user.idutilizador, estado=1).all()
     notificacoes_list = [
         {"id": n.id, "data": n.data, "conteudo": n.conteudo, "tipo": n.tipo}
         for n in notificacoes_utilizador
@@ -915,7 +916,7 @@ def get_notificacoes():
     return jsonify(notificacoes_list), 200
 
 # Rota para apagar notificação do utilizador
-@app.route("/api/notificacoes/<int:notificacao_id>", methods=["DELETE"])
+@app.route("/api/notificacoes/<int:notificacao_id>", methods=["PUT"])
 @jwt_required()
 def delete_notificacao(notificacao_id):
     current_user_email = get_jwt_identity()
@@ -926,13 +927,13 @@ def delete_notificacao(notificacao_id):
 
     notificacao = notificacoes.query.filter_by(id=notificacao_id, idcolaborador=current_user.idutilizador).first()
     if notificacao:
-        db.session.delete(notificacao)
+        notificacao.estado = "2"
         db.session.commit()
         return jsonify({"message": "Notificação removida com sucesso"}), 200
     return jsonify({"error": "Notificação não encontrada"}), 404
 
 # Rota para apagar todas as notificações do utilizador
-@app.route("/api/notificacoes", methods=["DELETE"])
+@app.route("/api/notificacoes", methods=["PUT"])
 @jwt_required()
 def delete_all_notificacoes():
     current_user_email = get_jwt_identity()
@@ -943,7 +944,7 @@ def delete_all_notificacoes():
 
     notificacoes_utilizador = notificacoes.query.filter_by(idcolaborador=current_user.idutilizador).all()
     for notificacao in notificacoes_utilizador:
-        db.session.delete(notificacao)
+        notificacao.estado = "2"
     db.session.commit()
 
     return jsonify({"message": "Todas as notificações foram removidas com sucesso"}), 200

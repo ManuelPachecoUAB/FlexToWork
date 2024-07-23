@@ -171,3 +171,5 @@ class notificacoes(db.Model):
     conteudo = db.Column(db.Text, nullable=False)
     # Coluna para armazenar o tipo de notificação
     tipo = db.Column(db.Text, nullable=False)
+    # Estado da notificação
+    estado = db.Column(db.Integer, nullable=False)

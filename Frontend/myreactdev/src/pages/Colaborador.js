@@ -256,7 +256,7 @@ export default function Colaborador() {
     const handleDeleteNotificacao = (id) => {
         const userToken = localStorage.getItem('userToken');
         fetch(`http://127.0.0.1:5000/api/notificacoes/${id}`, {
-            method: 'DELETE',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -276,7 +276,7 @@ export default function Colaborador() {
     const handleDeleteAllNotificacoes = () => {
         const userToken = localStorage.getItem('userToken');
         fetch(`http://127.0.0.1:5000/api/notificacoes`, {
-            method: 'DELETE',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
