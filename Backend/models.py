@@ -23,8 +23,8 @@ class users(db.Model):
     # Coluna para armazenar a senha
     password = db.Column(db.Text, nullable=False)
     # Colunas para armazenar o ID da equipa e o nível de acesso
-    idequipa = db.Column(db.Integer, nullable=False)
-    idnivel = db.Column(db.Integer, nullable=False)
+    idequipa = db.Column(db.Integer, db.ForeignKey('equipa.idequipa'))
+    idnivel = db.Column(db.Integer, db.ForeignKey('nivelacesso.id'))
     # Relacionamento um-para-um com a tabela ferias
     ferias = db.relationship('ferias', backref='users', lazy=True, uselist=False)
 
@@ -32,7 +32,7 @@ class users(db.Model):
 class ferias(db.Model):
     __tablename__ = "ferias"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID do colaborador, chave estrangeira referenciando users.idutilizador
     idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     # Colunas para armazenar o total de férias e as férias disponíveis
@@ -52,7 +52,7 @@ class ferias(db.Model):
 class presencial(db.Model):
     __tablename__ = "presencial"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID do colaborador, chave estrangeira referenciando users.idutilizador
     idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     # Coluna para armazenar o total de dias presenciais
@@ -72,7 +72,7 @@ class presencial(db.Model):
 class equipa(db.Model):
     __tablename__ = "equipa"
     # Coluna para armazenar o ID da equipa, chave primária
-    idequipa = db.Column(db.Integer, primary_key=True)
+    idequipa = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o nome da equipa
     nomeequipa = db.Column(db.Text, nullable=False)
 
@@ -80,7 +80,7 @@ class equipa(db.Model):
 class nivelacesso(db.Model):
     __tablename__ = "nivelacesso"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o tipo de utilizador
     tipoutilizador = db.Column(db.Text, nullable=False)
 
@@ -88,7 +88,7 @@ class nivelacesso(db.Model):
 class zona(db.Model):
     __tablename__ = "zona"
     # Coluna para armazenar o ID da zona, chave primária
-    idzona = db.Column(db.Integer, primary_key=True)
+    idzona = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o nome da zona
     nomezona = db.Column(db.Text, nullable=False)
     # Coluna para armazenar a capacidade total da zona
@@ -98,7 +98,7 @@ class zona(db.Model):
 class capacidadezona(db.Model):
     __tablename__ = "capacidadezona"
     # Coluna para armazenar o ID da capacidade da zona, chave primária
-    idcapacidadezona = db.Column(db.Integer, primary_key=True)
+    idcapacidadezona = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID da zona, chave estrangeira referenciando zona.idzona
     idzona = db.Column(db.Integer, db.ForeignKey('zona.idzona'))
     # Coluna para armazenar o número de lugares livres
@@ -110,7 +110,7 @@ class capacidadezona(db.Model):
 class feriasmarcadas(db.Model):
     __tablename__ = "feriasmarcadas"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID do colaborador, chave estrangeira referenciando users.idutilizador
     idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     # Coluna para armazenar a duração das férias
@@ -124,7 +124,7 @@ class feriasmarcadas(db.Model):
 class ausencias(db.Model):
     __tablename__ = "ausencias"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID do colaborador, chave estrangeira referenciando users.idutilizador
     idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     # Coluna para armazenar o total de ausências
@@ -136,7 +136,7 @@ class ausencias(db.Model):
 class ausenciasmarcadas(db.Model):
     __tablename__ = "ausenciasmarcadas"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID do colaborador, chave estrangeira referenciando users.idutilizador
     idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     # Coluna para armazenar a duração das ausências
@@ -150,7 +150,7 @@ class ausenciasmarcadas(db.Model):
 class presencialmarcadas(db.Model):
     __tablename__ = "presencialmarcadas"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID do colaborador, chave estrangeira referenciando users.idutilizador
     idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     # Coluna para armazenar a data
@@ -162,7 +162,7 @@ class presencialmarcadas(db.Model):
 class notificacoes(db.Model):
     __tablename__ = "notificacoes"
     # Coluna para armazenar o ID, chave primária
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     # Coluna para armazenar o ID do colaborador, chave estrangeira referenciando users.idutilizador
     idcolaborador = db.Column(db.Integer, db.ForeignKey('users.idutilizador'))
     # Coluna para armazenar a data da notificação
